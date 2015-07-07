@@ -1540,6 +1540,7 @@
           <state>$PROJ_DIR$\..\..\Profiles\Roles</state>
           <state>$PROJ_DIR$\..\..\Profiles\SimpleProfile</state>
           <state>$PROJ_DIR$\..\..\Profiles\DevInfo</state>
+          <state>$PROJ_DIR$\..\Source\zlgApp</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -6445,28 +6446,28 @@
     <group>
       <name>zlgBeeApp</name>
       <file>
-        <name>$PROJ_DIR$\..\Source\zigbeeApp.c</name>
+        <name>$PROJ_DIR$\..\Source\zlgApp\zigbeeApp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Source\zigbeeApp.h</name>
+        <name>$PROJ_DIR$\..\Source\zlgApp\zigbeeApp.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Source\zlg_bsp.c</name>
+        <name>$PROJ_DIR$\..\Source\zlgApp\zlg_bsp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Source\zlg_bsp.h</name>
+        <name>$PROJ_DIR$\..\Source\zlgApp\zlg_bsp.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Source\zlg_protocol.c</name>
+        <name>$PROJ_DIR$\..\Source\zlgApp\zlg_protocol.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Source\zlg_protocol.h</name>
+        <name>$PROJ_DIR$\..\Source\zlgApp\zlg_protocol.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Source\zlgAtCmd.c</name>
+        <name>$PROJ_DIR$\..\Source\zlgApp\zlgAtCmd.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Source\zlgAtCmd.h</name>
+        <name>$PROJ_DIR$\..\Source\zlgApp\zlgAtCmd.h</name>
       </file>
     </group>
     <file>
@@ -6608,7 +6609,7 @@
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_mcu.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\Hal_types.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_types.h</name>
           </file>
         </group>
       </group>
