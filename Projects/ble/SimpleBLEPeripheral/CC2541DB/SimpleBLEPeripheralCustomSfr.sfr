@@ -241,6 +241,7 @@ sfr = "I2CDATA",	"XData",	0x6232,	1,	base=16,	modified
 sfr = "I2CADDR",	"XData",	0x6233,	1,	base=16,	modified
 sfr = "I2CWC",	"XData",	0x6234,	1,	base=16,	modified
 sfr = "I2CIO",	"XData",	0x6235,	1,	base=16,	modified
+sfr = "DMAIRQ.DMAIF2",	"SFR",	0xd1,	1,	base=16,	modified
 
 
 [SfrGroupInfo]
