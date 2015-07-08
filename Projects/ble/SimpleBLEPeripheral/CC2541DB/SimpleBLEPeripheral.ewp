@@ -6450,6 +6450,36 @@
       <file>
         <name>$PROJ_DIR$\..\Source\xBeeApp\xbee_api_opt.c</name>
       </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAPI.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAPI.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAtCmd.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAtCmd.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeBsp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeBsp.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.h</name>
+      </file>
     </group>
     <group>
       <name>zlgBeeApp</name>
