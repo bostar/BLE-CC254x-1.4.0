@@ -1349,6 +1349,7 @@
           <state>HAL_UART=TRUE</state>
           <state>HAL_UART_DMA=1</state>
           <state>HAL_UART_ISR=0</state>
+          <state>HAL_I2C=TRUE</state>
           <state>HAL_KEY=FALSE</state>
         </option>
         <option>
@@ -1531,6 +1532,7 @@
           <state>$PROJ_DIR$\..\..\..\..\Components\osal\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\services\saddr</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\ble\include</state>
+          <state>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2541ST</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\ble\controller\phy</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\ble\controller\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\ble\hci</state>
@@ -6567,6 +6569,9 @@
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_flash.c</name>
           </file>
           <file>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2541ST\hal_i2c.c</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_key.c</name>
           </file>
           <file>
@@ -6574,6 +6579,9 @@
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_led.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2541ST\hal_sensor.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_sleep.c</name>
@@ -6609,7 +6617,7 @@
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_mcu.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\Hal_types.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_types.h</name>
           </file>
         </group>
       </group>

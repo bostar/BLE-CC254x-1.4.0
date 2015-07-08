@@ -83,7 +83,7 @@ build/
 *.bat
 *.dni
 *.wsdt
-*dbgdt
+*.dbgdt
 
 # Visual C++ cache files
 ipch/
