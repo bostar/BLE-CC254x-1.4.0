@@ -2,7 +2,7 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>2648534167</fileChecksum>
+  <fileChecksum>1986501744</fileChecksum>
   <configuration>
     <name>CC2541</name>
     <outputs>
@@ -153,7 +153,7 @@
       <file>$TOOLKIT_DIR$\lib\clib\cl-pli-blxd-1e16x01.r51</file>
       <file>$PROJ_DIR$\CC2541\Obj\OnBoard.r51</file>
       <file>$PROJ_DIR$\CC2541\Obj\OnBoard.pbi</file>
-      <file>$PROJ_DIR$\..\..\..\..\Components\osal\include\osal_cbTimer.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\Components\osal\include\osal_cbtimer.h</file>
       <file>$TOOLKIT_DIR$\inc\clib\limits.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Components\ble\hci\hci_data.h</file>
       <file>$PROJ_DIR$\CC2541\Obj\zlg_bsp.pbi</file>
@@ -171,6 +171,7 @@
       <file>$PROJ_DIR$\..\Source\zlgApp\zlg_protocol.c</file>
       <file>$PROJ_DIR$\..\Source\zlgApp\zlgAtCmd.c</file>
       <file>$PROJ_DIR$\..\Source\zlgApp\zlgAtCmd.h</file>
+      <file>$PROJ_DIR$\..\Source\xBeeApp\xbee_api_opt.c</file>
       <file>$PROJ_DIR$\..\..\Include\gapgattserver.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Components\ble\host\gatt_uuid.c</file>
       <file>$PROJ_DIR$\..\..\Include\gattservapp.h</file>
@@ -257,6 +258,9 @@
       <file>$PROJ_DIR$\..\..\..\..\Components\ble\controller\include\ll.h</file>
       <file>$PROJ_DIR$\..\..\common\npi\npi_np\npi.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Components\ble\controller\include\phy.h</file>
+      <file>$PROJ_DIR$\..\Source\xBeeApp\xbee_api_opt.h</file>
+      <file>$PROJ_DIR$\CC2541\Obj\xbee_api_opt.r51</file>
+      <file>$PROJ_DIR$\CC2541\Obj\xbee_api_opt.pbi</file>
     </outputs>
     <file>
       <name>$PROJ_DIR$\..\Source\zigbee.c</name>
@@ -273,7 +277,7 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 105 52 39 7 236 79 62 148 20 91 55 201 235 170 209 76 78 215 207 206 204 87 227 234 245 244 248 75 165 167 182 195 191 185 237 247 64 249 212 8 82 85</file>
+          <file> 105 52 39 7 237 79 62 148 20 91 55 202 236 171 210 76 78 216 208 207 205 87 228 235 246 245 249 75 166 168 183 196 192 186 238 248 64 250 213 8 82 85</file>
         </tool>
       </inputs>
     </file>
@@ -288,7 +292,7 @@
       <inputs>
         <tool>
           <name>XLINK</name>
-          <file> 90 40 41 134 108 88 176 112 25 145 111 101 89 15 50 49 63 172 61 17 19 3 142 143 129 35 137 103 53 98 115 133 45 138 24 48 104 126 86 114 23 116 144</file>
+          <file> 90 40 41 134 108 88 177 112 25 145 111 101 89 15 50 49 63 173 61 17 19 3 142 143 129 35 137 103 53 98 115 133 45 138 24 48 104 126 86 114 23 116 144</file>
         </tool>
       </inputs>
     </file>
@@ -307,7 +311,7 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 151 249 236 78 215 235 79 170 212 105 52 155 62 148 7 20 91</file>
+          <file> 151 250 237 78 216 236 79 171 213 105 52 155 62 148 7 20 91</file>
         </tool>
       </inputs>
     </file>
@@ -322,7 +326,7 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199</file>
+          <file> 198 200</file>
         </tool>
       </inputs>
     </file>
@@ -341,7 +345,7 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 160 236 213 78 215 235 79 170 62 148 52 7 20 91 155 212 249 151 158</file>
+          <file> 160 237 214 78 216 236 79 171 62 148 52 7 20 91 155 213 250 151 158</file>
         </tool>
       </inputs>
     </file>
@@ -350,7 +354,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 175</file>
+          <file> 176</file>
         </tool>
         <tool>
           <name>ICC8051</name>
@@ -360,7 +364,7 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 155 236 151 249 78 215 235 79 170 212 213 62 148 52 7 20 91 105 160 158</file>
+          <file> 155 237 151 250 78 216 236 79 171 213 214 62 148 52 7 20 91 105 160 158</file>
         </tool>
       </inputs>
     </file>
@@ -379,7 +383,7 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 158 155 236 213 78 215 235 79 170</file>
+          <file> 158 155 237 214 78 216 236 79 171</file>
         </tool>
       </inputs>
     </file>
@@ -398,11 +402,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 105 52 39 7 236 79 62 148 20 91 55 201 235 170 209 76 78 215 207 206 204 69 227 234 245 244 248 75 165 167 182 195 191 185 237 247 32 249 212 213 67 241</file>
+          <file> 105 52 39 7 237 79 62 148 20 91 55 202 236 171 210 76 78 216 208 207 205 69 228 235 246 245 249 75 166 168 183 196 192 186 238 248 32 250 213 214 67 242</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 105 52 39 7 236 79 62 148 20 91 55 201 235 170 209 76 78 215 207 206 204 69 227 234 245 244 248 75 165 167 182 195 191 185 237 247 32 249 212 213 67 241</file>
+          <file> 198 200 105 52 39 7 237 79 62 148 20 91 55 202 236 171 210 76 78 216 208 207 205 69 228 235 246 245 249 75 166 168 183 196 192 186 238 248 32 250 213 214 67 242</file>
         </tool>
       </inputs>
     </file>
@@ -421,11 +425,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 236 78 215 235 79 170 249 212</file>
+          <file> 237 78 216 236 79 171 250 213</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 236 78 215 235 79 170 249 212</file>
+          <file> 198 200 237 78 216 236 79 171 250 213</file>
         </tool>
       </inputs>
     </file>
@@ -444,11 +448,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 105 52 7 236 79 78 215 235 170 62 148 20 91 65 55 46 201 209 77</file>
+          <file> 105 52 7 237 79 78 216 236 171 62 148 20 91 65 55 46 202 210 77</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 105 52 7 236 79 78 215 235 170 62 148 20 91 65 55 46 201 209 77</file>
+          <file> 198 200 105 52 7 237 79 78 216 236 171 62 148 20 91 65 55 46 202 210 77</file>
         </tool>
       </inputs>
     </file>
@@ -457,7 +461,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 175</file>
+          <file> 176</file>
         </tool>
         <tool>
           <name>ICC8051</name>
@@ -467,11 +471,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 69 236 67 249 78 215 235 79 170 212 213 62 148 52 7 20 91 105 240 241</file>
+          <file> 69 237 67 250 78 216 236 79 171 213 214 62 148 52 7 20 91 105 241 242</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 69 236 67 249 78 215 235 79 170 212 213 62 148 52 7 20 91 105 240 241</file>
+          <file> 198 200 69 237 67 250 78 216 236 79 171 213 214 62 148 52 7 20 91 105 241 242</file>
         </tool>
       </inputs>
     </file>
@@ -490,11 +494,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 236 62 148 52 7 79 20 91 65 77 248 39 13 244 75 212 78 215 235 170 149 59 147 245 237 247 165 185 227 234 167 191 72 240</file>
+          <file> 237 62 148 52 7 79 20 91 65 77 249 39 13 245 75 213 78 216 236 171 149 59 147 246 238 248 166 186 228 235 168 192 72 241</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 236 62 148 52 7 79 20 91 65 77 248 39 13 244 75 212 78 215 235 170 149 59 147 245 237 247 165 185 227 234 167 191 72 240</file>
+          <file> 198 200 237 62 148 52 7 79 20 91 65 77 249 39 13 245 75 213 78 216 236 171 149 59 147 246 238 248 166 186 228 235 168 192 72 241</file>
         </tool>
       </inputs>
     </file>
@@ -513,11 +517,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 39 7 236 79 62 148 52 20 91 55 201 235 170 209 76 78 215 207 206 204 227 234 245 244 248 75 165 167 182 195 191 185 237 247 72</file>
+          <file> 39 7 237 79 62 148 52 20 91 55 202 236 171 210 76 78 216 208 207 205 228 235 246 245 249 75 166 168 183 196 192 186 238 248 72</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 39 7 236 79 62 148 52 20 91 55 201 235 170 209 76 78 215 207 206 204 227 234 245 244 248 75 165 167 182 195 191 185 237 247 72</file>
+          <file> 198 200 39 7 237 79 62 148 52 20 91 55 202 236 171 210 76 78 216 208 207 205 228 235 246 245 249 75 166 168 183 196 192 186 238 248 72</file>
         </tool>
       </inputs>
     </file>
@@ -536,11 +540,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 236 206 78 215 235 79 170 211 77 207 62 148 52 7 20 91 65 55 135 201 209</file>
+          <file> 237 207 78 216 236 79 171 212 77 208 62 148 52 7 20 91 65 55 135 202 210</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 236 206 78 215 235 79 170 211 77 207 62 148 52 7 20 91 65 55 135 201 209</file>
+          <file> 198 200 237 207 78 216 236 79 171 212 77 208 62 148 52 7 20 91 65 55 135 202 210</file>
         </tool>
       </inputs>
     </file>
@@ -559,11 +563,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 76 236 78 215 235 79 170 230 233 77 206 204 207 213 209 211 212 1 7 62 148 52 20 91</file>
+          <file> 76 237 78 216 236 79 171 231 234 77 207 205 208 214 210 212 213 1 7 62 148 52 20 91</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 76 236 78 215 235 79 170 230 233 77 206 204 207 213 209 211 212 1 7 0 62 148 52 20 91</file>
+          <file> 198 200 76 237 78 216 236 79 171 231 234 77 207 205 208 214 210 212 213 1 7 0 62 148 52 20 91</file>
         </tool>
       </inputs>
     </file>
@@ -582,7 +586,7 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 202 236 213 78 215 235 79 170 62 148 52 7 20 91 87 212 249 82 85</file>
+          <file> 198 200 203 237 214 78 216 236 79 171 62 148 52 7 20 91 87 213 250 82 85</file>
         </tool>
       </inputs>
     </file>
@@ -601,7 +605,7 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 82 249 236 78 215 235 79 170 212 105 52 87 62 148 7 20 91</file>
+          <file> 198 200 82 250 237 78 216 236 79 171 213 105 52 87 62 148 7 20 91</file>
         </tool>
       </inputs>
     </file>
@@ -610,7 +614,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 175</file>
+          <file> 176</file>
         </tool>
         <tool>
           <name>ICC8051</name>
@@ -620,7 +624,7 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 87 236 82 249 78 215 235 79 170 212 213 62 148 52 7 20 91 105 202 85</file>
+          <file> 198 200 87 237 82 250 78 216 236 79 171 213 214 62 148 52 7 20 91 105 203 85</file>
         </tool>
       </inputs>
     </file>
@@ -639,7 +643,7 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 235 79 236 170 77 92 62 148 52 7 20 91 78 215</file>
+          <file> 236 79 237 171 77 92 62 148 52 7 20 91 78 216</file>
         </tool>
       </inputs>
     </file>
@@ -658,11 +662,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 62 148 52 7 236 79 20 91 201 235 170 209 169</file>
+          <file> 62 148 52 7 237 79 20 91 202 236 171 210 170</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 62 148 52 7 236 79 20 91 201 235 170 209 169</file>
+          <file> 198 200 62 148 52 7 237 79 20 91 202 236 171 210 170</file>
         </tool>
       </inputs>
     </file>
@@ -681,11 +685,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 62 148 52 7 236 79 20 91 65 147</file>
+          <file> 62 148 52 7 237 79 20 91 65 147</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 62 148 52 7 236 79 20 91 65 147</file>
+          <file> 198 200 62 148 52 7 237 79 20 91 65 147</file>
         </tool>
       </inputs>
     </file>
@@ -704,11 +708,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 7 236 79 201 235 170 209 62 148 52 20 91 46</file>
+          <file> 7 237 79 202 236 171 210 62 148 52 20 91 46</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 7 236 79 201 235 170 209 62 148 52 20 91 46</file>
+          <file> 198 200 7 237 79 202 236 171 210 62 148 52 20 91 46</file>
         </tool>
       </inputs>
     </file>
@@ -727,7 +731,7 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 105 52 39 7 236 79 62 148 20 91 55 201 235 170 209 76 78 215 207 206 204 164 227 234 245 244 248 75 165 167 182 195 191 185 237 247 156 249 212 213 153 152</file>
+          <file> 198 200 105 52 39 7 237 79 62 148 20 91 55 202 236 171 210 76 78 216 208 207 205 164 228 235 246 245 249 75 166 168 183 196 192 186 238 248 156 250 213 214 153 152</file>
         </tool>
       </inputs>
     </file>
@@ -746,7 +750,7 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 152 164 236 213 78 215 235 79 170</file>
+          <file> 198 200 152 164 237 214 78 216 236 79 171</file>
         </tool>
       </inputs>
     </file>
@@ -765,7 +769,7 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 159 236 213 78 215 235 79 170 62 148 52 7 20 91 164 212 249 153 152</file>
+          <file> 198 200 159 237 214 78 216 236 79 171 62 148 52 7 20 91 164 213 250 153 152</file>
         </tool>
       </inputs>
     </file>
@@ -784,7 +788,7 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 153 249 236 78 215 235 79 170 212 105 52 164 62 148 7 20 91</file>
+          <file> 198 200 153 250 237 78 216 236 79 171 213 105 52 164 62 148 7 20 91</file>
         </tool>
       </inputs>
     </file>
@@ -793,7 +797,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 175</file>
+          <file> 176</file>
         </tool>
         <tool>
           <name>ICC8051</name>
@@ -803,7 +807,26 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 164 236 153 249 78 215 235 79 170 212 213 62 148 52 7 20 91 105 159 152</file>
+          <file> 198 200 164 237 153 250 78 216 236 79 171 213 214 62 148 52 7 20 91 105 159 152</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Source\xBeeApp\xbee_api_opt.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 254</file>
+        </tool>
+        <tool>
+          <name>ICC8051</name>
+          <file> 253</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 252 237 250 78 216 236 79 171 213</file>
         </tool>
       </inputs>
     </file>
@@ -812,7 +835,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 171</file>
+          <file> 172</file>
         </tool>
         <tool>
           <name>ICC8051</name>
@@ -822,11 +845,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 7 236 79 62 148 52 20 91 227 39 234 245 243</file>
+          <file> 7 237 79 62 148 52 20 91 228 39 235 246 244</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 7 236 79 62 148 52 20 91 227 39 234 245 243</file>
+          <file> 198 200 7 237 79 62 148 52 20 91 228 39 235 246 244</file>
         </tool>
       </inputs>
     </file>
@@ -845,11 +868,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 39 7 236 79 62 148 52 20 91 246 234 245 227 243 173 167 182</file>
+          <file> 39 7 237 79 62 148 52 20 91 247 235 246 228 244 174 168 183</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 39 7 236 79 62 148 52 20 91 246 234 245 227 243 173 167 182</file>
+          <file> 198 200 39 7 237 79 62 148 52 20 91 247 235 246 228 244 174 168 183</file>
         </tool>
       </inputs>
     </file>
@@ -868,11 +891,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 7 236 79 62 148 52 20 91 201 235 170 209 75</file>
+          <file> 7 237 79 62 148 52 20 91 202 236 171 210 75</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 7 236 79 62 148 52 20 91 201 235 170 209 75</file>
+          <file> 198 200 7 237 79 62 148 52 20 91 202 236 171 210 75</file>
         </tool>
       </inputs>
     </file>
@@ -885,17 +908,17 @@
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 176</file>
+          <file> 177</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 7 236 79 201 235 170 209 62 148 52 20 91 65 55</file>
+          <file> 7 237 79 202 236 171 210 62 148 52 20 91 65 55</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 7 236 79 201 235 170 209 62 148 52 20 91 65 55</file>
+          <file> 198 200 7 237 79 202 236 171 210 62 148 52 20 91 65 55</file>
         </tool>
       </inputs>
     </file>
@@ -914,11 +937,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 76 236 78 215 235 79 170 205 7 62 148 52 20 91 135 75 210</file>
+          <file> 76 237 78 216 236 79 171 206 7 62 148 52 20 91 135 75 211</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 76 236 78 215 235 79 170 205 7 62 148 52 20 91 135 75 210</file>
+          <file> 198 200 76 237 78 216 236 79 171 206 7 62 148 52 20 91 135 75 211</file>
         </tool>
       </inputs>
     </file>
@@ -937,11 +960,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 7 236 79 201 235 170 209 62 148 52 20 91 211 78 215</file>
+          <file> 7 237 79 202 236 171 210 62 148 52 20 91 212 78 216</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 7 236 79 201 235 170 209 62 148 52 20 91 211 78 215</file>
+          <file> 198 200 7 237 79 202 236 171 210 62 148 52 20 91 212 78 216</file>
         </tool>
       </inputs>
     </file>
@@ -960,11 +983,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 39 7 236 79 237 62 148 52 20 91 247</file>
+          <file> 39 7 237 79 238 62 148 52 20 91 248</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 39 7 236 79 237 62 148 52 20 91 247</file>
+          <file> 198 200 39 7 237 79 238 62 148 52 20 91 248</file>
         </tool>
       </inputs>
     </file>
@@ -983,11 +1006,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 39 7 236 79 62 148 52 20 91 135 237 247 246 227 234 245 243 244 248 75 167 165 185</file>
+          <file> 39 7 237 79 62 148 52 20 91 135 238 248 247 228 235 246 244 245 249 75 168 166 186</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 39 7 236 79 62 148 52 20 91 135 237 247 246 227 234 245 243 244 248 75 167 165 185</file>
+          <file> 198 200 39 7 237 79 62 148 52 20 91 135 238 248 247 228 235 246 244 245 249 75 168 166 186</file>
         </tool>
       </inputs>
     </file>
@@ -1006,11 +1029,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 39 7 236 79 62 148 52 20 91 13 244 248 75 212 78 215 235 170 149 59 245 237 247 246 234 227 135 191 185</file>
+          <file> 39 7 237 79 62 148 52 20 91 13 245 249 75 213 78 216 236 171 149 59 246 238 248 247 235 228 135 192 186</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 39 7 236 79 62 148 52 20 91 13 244 248 75 212 78 215 235 170 149 59 245 237 247 246 234 227 135 191 185</file>
+          <file> 198 200 39 7 237 79 62 148 52 20 91 13 245 249 75 213 78 216 236 171 149 59 246 238 248 247 235 228 135 192 186</file>
         </tool>
       </inputs>
     </file>
@@ -1029,11 +1052,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 39 7 236 79 62 148 52 20 91 246 234 245 227 243 167 185 237 247 195</file>
+          <file> 39 7 237 79 62 148 52 20 91 247 235 246 228 244 168 186 238 248 196</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 39 7 236 79 62 148 52 20 91 246 234 245 227 243 167 185 237 247 195</file>
+          <file> 198 200 39 7 237 79 62 148 52 20 91 247 235 246 228 244 168 186 238 248 196</file>
         </tool>
       </inputs>
     </file>
@@ -1052,11 +1075,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 39 7 236 79 201 235 170 209 62 148 52 20 91 207 78 215 206</file>
+          <file> 39 7 237 79 202 236 171 210 62 148 52 20 91 208 78 216 207</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 39 7 236 79 201 235 170 209 62 148 52 20 91 207 78 215 206</file>
+          <file> 198 200 39 7 237 79 202 236 171 210 62 148 52 20 91 208 78 216 207</file>
         </tool>
       </inputs>
     </file>
@@ -1075,7 +1098,7 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 85 87 236 213 78 215 235 79 170</file>
+          <file> 198 200 85 87 237 214 78 216 236 79 171</file>
         </tool>
       </inputs>
     </file>
@@ -1094,11 +1117,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 33 0 1 7 236 79 207 78 215 235 170 37 34 38 120 121 122</file>
+          <file> 33 0 1 7 237 79 208 78 216 236 171 37 34 38 120 121 122</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 33 0 1 7 79 207 78 2 5 170 37 34 38 120 121 122</file>
+          <file> 198 200 33 0 1 7 79 208 78 2 5 171 37 34 38 120 121 122</file>
         </tool>
       </inputs>
     </file>
@@ -1117,11 +1140,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 76 236 78 215 235 79 170</file>
+          <file> 76 237 78 216 236 79 171</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 76 236 78 215 235 79 170</file>
+          <file> 198 200 76 237 78 216 236 79 171</file>
         </tool>
       </inputs>
     </file>
@@ -1140,11 +1163,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 75 2 5 79 0 170 1 7 236</file>
+          <file> 75 2 5 79 0 171 1 7 237</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 75 2 5 79 0 170 1 7</file>
+          <file> 198 200 75 2 5 79 0 171 1 7</file>
         </tool>
       </inputs>
     </file>
@@ -1172,11 +1195,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 62 148 52 7 236 79 20 91 230 233 78 215 235 170</file>
+          <file> 62 148 52 7 237 79 20 91 231 234 78 216 236 171</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 62 148 52 7 236 79 20 91 230 233 78 215 235 170</file>
+          <file> 198 200 62 148 52 7 237 79 20 91 231 234 78 216 236 171</file>
         </tool>
       </inputs>
     </file>
@@ -1189,17 +1212,17 @@
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 172</file>
+          <file> 173</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 78 215 235 79 236 170 232</file>
+          <file> 78 216 236 79 237 171 233</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 78 215 235 79 236 170 232</file>
+          <file> 198 200 78 216 236 79 237 171 233</file>
         </tool>
       </inputs>
     </file>
@@ -1218,7 +1241,7 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199</file>
+          <file> 198 200</file>
         </tool>
       </inputs>
     </file>
@@ -1227,7 +1250,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 168</file>
+          <file> 169</file>
         </tool>
         <tool>
           <name>ICC8051</name>
@@ -1237,11 +1260,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 233 78 215 235 79 236 170 212</file>
+          <file> 234 78 216 236 79 237 171 213</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 233 78 215 235 79 236 170 212</file>
+          <file> 198 200 234 78 216 236 79 237 171 213</file>
         </tool>
       </inputs>
     </file>
@@ -1260,11 +1283,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 215 235 79 236 170 233 78 205</file>
+          <file> 216 236 79 237 171 234 78 206</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 215 235 79 236 170 233 78 205</file>
+          <file> 198 200 216 236 79 237 171 234 78 206</file>
         </tool>
       </inputs>
     </file>
@@ -1273,7 +1296,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 174</file>
+          <file> 175</file>
         </tool>
         <tool>
           <name>ICC8051</name>
@@ -1282,8 +1305,12 @@
       </outputs>
       <inputs>
         <tool>
+          <name>BICOMP</name>
+          <file> 236 79 237 171 77 76 78 216 207 62 148 52 7 20 91</file>
+        </tool>
+        <tool>
           <name>ICC8051</name>
-          <file> 197 199 235 79 236 170 77 76 78 215 206 62 148 52 7 20 91</file>
+          <file> 198 200 236 79 237 171 77 76 78 216 207 62 148 52 7 20 91</file>
         </tool>
       </inputs>
     </file>
@@ -1302,11 +1329,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 236 204 78 215 235 79 170 62 148 52 7 20 91 201 209 75</file>
+          <file> 237 205 78 216 236 79 171 62 148 52 7 20 91 202 210 75</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 236 204 78 215 235 79 170 62 148 52 7 20 91 201 209 75</file>
+          <file> 198 200 237 205 78 216 236 79 171 62 148 52 7 20 91 202 210 75</file>
         </tool>
       </inputs>
     </file>
@@ -1325,11 +1352,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 78 215 235 79 236 170</file>
+          <file> 78 216 236 79 237 171</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 78 215 235 79 236 170</file>
+          <file> 198 200 78 216 236 79 237 171</file>
         </tool>
       </inputs>
     </file>
@@ -1348,11 +1375,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 235 79 236 170 77 207 78 215 62 148 52 7 20 91</file>
+          <file> 236 79 237 171 77 208 78 216 62 148 52 7 20 91</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 235 79 236 170 77 207 78 215 62 148 52 7 20 91</file>
+          <file> 198 200 236 79 237 171 77 208 78 216 62 148 52 7 20 91</file>
         </tool>
       </inputs>
     </file>
@@ -1371,11 +1398,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 236 235 79 170 78 215 209 207 206 62 148 52 7 20 91 65 55 77 75 51 39 132 141</file>
+          <file> 237 236 79 171 78 216 210 208 207 62 148 52 7 20 91 65 55 77 75 51 39 132 141</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 236 235 79 170 78 215 209 207 206 62 148 52 7 20 91 65 55 77 75 51 39 132 141</file>
+          <file> 198 200 237 236 79 171 78 216 210 208 207 62 148 52 7 20 91 65 55 77 75 51 39 132 141</file>
         </tool>
       </inputs>
     </file>
@@ -1394,11 +1421,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 215 235 79 236 170 77 212 78 131 105 52 75 233</file>
+          <file> 216 236 79 237 171 77 213 78 131 105 52 75 234</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 215 235 79 236 170 77 212 78 131 105 52 75 233</file>
+          <file> 198 200 216 236 79 237 171 77 213 78 131 105 52 75 234</file>
         </tool>
       </inputs>
     </file>
@@ -1417,11 +1444,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 235 79 236 170 77 213 78 215 62 148 52 7 20 91</file>
+          <file> 236 79 237 171 77 214 78 216 62 148 52 7 20 91</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 235 79 236 170 77 213 78 215 62 148 52 7 20 91</file>
+          <file> 198 200 236 79 237 171 77 214 78 216 62 148 52 7 20 91</file>
         </tool>
       </inputs>
     </file>
@@ -1440,11 +1467,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 241 69 236 213 78 215 235 79 170</file>
+          <file> 242 69 237 214 78 216 236 79 171</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 241 69 236 213 78 215 235 79 170</file>
+          <file> 198 200 242 69 237 214 78 216 236 79 171</file>
         </tool>
       </inputs>
     </file>
@@ -1463,11 +1490,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 240 236 213 78 215 235 79 170 62 148 52 7 20 91 69 212 33 0 249 67 241</file>
+          <file> 241 237 214 78 216 236 79 171 62 148 52 7 20 91 69 213 33 0 250 67 242</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 240 236 213 78 215 235 79 170 62 148 52 7 20 91 69 212 33 0 249 67 241</file>
+          <file> 198 200 241 237 214 78 216 236 79 171 62 148 52 7 20 91 69 213 33 0 250 67 242</file>
         </tool>
       </inputs>
     </file>
@@ -1486,11 +1513,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 67 249 236 78 215 235 79 170 212 105 52 69 62 148 7 20 91</file>
+          <file> 67 250 237 78 216 236 79 171 213 105 52 69 62 148 7 20 91</file>
         </tool>
         <tool>
           <name>ICC8051</name>
-          <file> 197 199 67 249 236 78 215 235 79 170 212 105 52 69 62 148 7 20 91</file>
+          <file> 198 200 67 250 237 78 216 236 79 171 213 105 52 69 62 148 7 20 91</file>
         </tool>
       </inputs>
     </file>
@@ -1678,6 +1705,10 @@
       <name>$PROJ_DIR$\..\Source\zlgBeeApp\zlg_protocol.c</name>
       <tool>ICC8051</tool>
     </forcedrebuild>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>XLINK</tool>
+    </forcedrebuild>
   </configuration>
   <configuration>
     <name>CC2541-OAD-Encrypted-ImgA</name>
@@ -1774,7 +1805,7 @@
       <file>$PROJ_DIR$\..\..\..\..\Components\ble\controller\include\ll_timer2.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Components\osal\include\osal_snv.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Components\ble\controller\include\ll_math.h</file>
-      <file>$PROJ_DIR$\..\..\..\..\Components\osal\include\osal_cbTimer.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\Components\osal\include\osal_cbtimer.h</file>
       <file>$TOOLKIT_DIR$\inc\clib\limits.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Components\ble\hci\hci_data.h</file>
       <file>$PROJ_DIR$\CC2541DK-MINI Keyfob\Obj\OSAL_SimpleBLEPeripheral.pbi</file>
