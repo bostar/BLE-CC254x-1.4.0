@@ -1350,7 +1350,7 @@
           <state>HAL_UART_DMA=1</state>
           <state>HAL_UART_ISR=0</state>
           <state>HAL_I2C=TRUE</state>
-          <state>HAL_KEY=FALSE</state>
+          <state>HAL_KEY=TRUE</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
