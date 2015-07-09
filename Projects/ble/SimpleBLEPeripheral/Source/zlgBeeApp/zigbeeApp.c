@@ -3,6 +3,7 @@
 #include "OSAL.h"
 #include "zlgAtCmd.h"
 #include "hal_uart.h"
+#include "hal_sensor.h"
 #include "npi.h"
 #include "zlg_protocol.h"
 #include "zlg_bsp.h"
@@ -35,7 +36,7 @@ void Zigbee_Init( uint8 task_id )
   NPI_InitTransport(npiCBack_uart);
   // Setup a delayed profile startup
   osal_set_event( zigbee_TaskID, ZIGBEE_START_DEVICE_EVT );
-
+  //HalSensorReadReg(0x0a,NULL,3);
 }
 
 
