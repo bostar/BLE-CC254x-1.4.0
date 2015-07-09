@@ -73,7 +73,7 @@ build/
 *.log
 *.vspscc
 *.vssscc
-.builds
+*.builds
 *.pidb
 *.log
 *.scc
@@ -87,6 +87,9 @@ build/
 *.r51
 *.exe
 *.pdf
+*.dep
+*.ewp
+*.sfr
 
 # Visual C++ cache files
 ipch/
