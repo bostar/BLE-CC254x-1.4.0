@@ -99,7 +99,7 @@ void restore_factory_settings(uint16 DstAddr);
 
 void send_data_to_remote_node(uint16 destAddr,unsigned char *data,int len);
 //void send_data_to_remote_node(unsigned char *destAddr,unsigned char *data,int len);
-uint8 receive_data( uint8 task_id, uint16 events );
+uint8 receive_data( uint8 *buf, uint16 len );
 void set_temporary_channel(uint8 channel);
 void set_temporary_DestAddr(uint16 DestAddr);
 void set_temporary_ShowSrcAddr(showSrcAddr_cmd_t cmd);

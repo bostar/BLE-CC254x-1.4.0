@@ -3,10 +3,10 @@
 #include "npi.h"
 #include "hal_zlg.h"
 #include "OSAL.h"
-#include "string.h"
 #include "zigbeeApp.h"
 #include "zlg_bsp.h"
-     
+#include "string.h"
+
 const unsigned short broadcastAddr = 0xffff;
 
 dev_info_t * const stDevInfo;
@@ -23,7 +23,6 @@ static unsigned char wbuf[UART_WRITE_BUF_LEN] , rbuf[UART_READ_BUF_LEN] ;
 void read_local_cfg(void)
 {
     unsigned char wbuf[5];
-    //HalGpioSet(HAL_GPIO_ZM516X_DEF,1);
     //stDevInfo = osal_mem_alloc( sizeof( dev_info_t ) );
 
     wbuf[0] = 0xab;
@@ -313,22 +312,20 @@ void read_temporary_node_rssi(uint16 DstAddr)
   NPI_WriteTransport( wbuf , 6 );
 }
 
-uint8 receive_data( uint8 task_id, uint16 events )
+uint8 receive_data( uint8 *buf, uint16 len )
 {
-  uint8 rlen;
+//  uint8 rlen;
   uint8 state = stateNoWork;
-//  uint16 needBytes;
-  rlen = NPI_RxBufLen();
-//  needBytes = rlen;
-  osal_memset(rbuf,0,UART_READ_BUF_LEN);
-  NPI_ReadTransport(rbuf,rlen);
-  
+//  rlen = NPI_RxBufLen();
+//  osal_memset(rbuf,0,UART_READ_BUF_LEN);
+//  NPI_ReadTransport(rbuf,rlen);
+  osal_memcpy( rbuf, buf, len );
   if((rbuf[0] == 0xab)&&(rbuf[1] == 0xbc)&&(rbuf[2] == 0xcd))
   {
     switch(rbuf[3])
     {
     case enReadLoacalCfg:
-      osal_memcpy(stDevInfo,&rbuf[4],sizeof(dev_info_t));
+      osal_memcpy( stDevInfo, &rbuf[4], sizeof(dev_info_t) );
       localAddress = stDevInfo->devLoacalNetAddr[0]<<8 | stDevInfo->devLoacalNetAddr[1];
       uartReturnFlag.readLocalCfg_SUCCESS = 1;
       state = stateReadCfg;
@@ -446,7 +443,6 @@ uint8 receive_data( uint8 task_id, uint16 events )
           break;      
       }
   }
-  //osal_set_event( task_id, events );
   return state;
 }
 

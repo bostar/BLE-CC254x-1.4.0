@@ -6,6 +6,7 @@
 #include "npi.h"
 #include "zlg_protocol.h"
 #include "zlg_bsp.h"
+
 /*
 const uint8 temp[cmd][len] = {{0,12}{1,11}};
 
@@ -21,8 +22,11 @@ const uint8 CFG_CMD_NONVOLATILE[3] = {0XAB,0XBC,0XCD};
  * LOCAL VARIABLES
  */
 static uint8 zigbee_TaskID;   // Task ID for internal task/event processing
-
+static uint8 rbuf[255];
+static uint8 idx = 0;
+   
 static void npiCBack_uart( uint8 port, uint8 events );
+static unsigned char referenceCmdLength(unsigned char * const command,unsigned char cmd);
 
 void Zigbee_Init( uint8 task_id )
 {
@@ -173,16 +177,18 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   
   if(events & UART_RECEIVE_EVT)
   {
-    uint16 numBytes;
-    static unsigned char numBytes_old = 0;
+//    uint16 numBytes;
+//    static unsigned char numBytes_old = 0;
     unsigned char state_back;
-    numBytes = NPI_RxBufLen();
-    if( numBytes > 0 )
-    {
-      if(numBytes_old == numBytes)
-      {
-        
-        state_back = receive_data( zigbee_TaskID, ZIGBEE_READ_ZM516X_INFO_EVT ); 
+//    numBytes = NPI_RxBufLen();
+//    if( numBytes > 0 )
+//    {
+//      if(numBytes_old == numBytes)
+//      {
+//        
+        state_back = receive_data( rbuf, idx+1 ); 
+        osal_memset(rbuf,0,idx++);
+        idx = 0;
         switch(state_back)
         {
         case stateReadCfg:
@@ -216,87 +222,213 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
         default:
           break;
         }
-        numBytes_old = 0;
-      }
-      else
-      {
-        numBytes_old = numBytes;
-        osal_stop_timerEx( zigbee_TaskID, UART_RECEIVE_EVT );
-        osal_start_timerEx( zigbee_TaskID, UART_RECEIVE_EVT, 3 );
-      }
-    }
+//        numBytes_old = 0;
+//      }
+//      else
+//      {
+//        numBytes_old = numBytes;
+//        osal_stop_timerEx( zigbee_TaskID, UART_RECEIVE_EVT );
+//        osal_start_timerEx( zigbee_TaskID, UART_RECEIVE_EVT, 3 );
+//      }
+//    }
     return ( events ^ UART_RECEIVE_EVT );
   }
   // Discard unknown events
   return 0;
 }
-//static uint8 rbuf[255];
+
 static void npiCBack_uart( uint8 port, uint8 events )
 {
-/*  static npi_serial_parse_state_t pktState = NPI_SERIAL_PACK_HEAD;
+  static npi_serial_parse_state_t pktState = NPI_SERIAL_PACK_HEAD;
   static ptk_t revPara;
   static command_word_t command_word = ZLG_FLASH_SET;
-
   uint8  done = FALSE;
-  uint16 numBytes;*/
+  uint16 numBytes;
   if (events & HAL_UART_RX_TIMEOUT)
   {
-    osal_set_event( zigbee_TaskID, UART_RECEIVE_EVT );
+//    osal_set_event( zigbee_TaskID, UART_RECEIVE_EVT );
    
-/*    numBytes = NPI_RxBufLen();
+    numBytes = NPI_RxBufLen();
       
     while((numBytes > 0) && (!done))
-    {
-      
+    {   
       switch( pktState )
       {
       case NPI_SERIAL_PACK_HEAD:
-        {
-          NPI_ReadTransport(revPara.header,3);
-          numBytes -= 3;
-          //osal_memcmp((const void*)CFG_CMD_NONVOLATILE,(const void*)CFG_CMD_NONVOLATILE,3);
+        {         
+          if (numBytes < 3)
+          {
+            // not enough data to progress, so leave it in driver buffer
+            done = TRUE;
+            break;
+          }
+          do
+          {
+              if( idx != 0 )
+              {
+                // not enough data to progress, so leave it in driver buffer
+                done = TRUE;
+                break;
+              }
+              NPI_ReadTransport( &revPara.header[0], 1 );             
+              numBytes -= 1;
+              if(!numBytes)
+                  return;
+          }while( !(revPara.header[0] == 0xab || revPara.header[0] == 0xde || revPara.header[0] == 'C' \
+                || revPara.header[0] == 'T') );
+          NPI_ReadTransport( &revPara.header[1], 2 );
+          numBytes -= 2;
+          rbuf[idx++] = revPara.header[0];
+          rbuf[idx++] = revPara.header[1];
+          rbuf[idx++] = revPara.header[2];
+
           if((revPara.header[0] == 0xab) && (revPara.header[1] == 0xbc) && (revPara.header[2] == 0xcd))
           {
             command_word = ZLG_FLASH_SET;
           }
+          else if((revPara.header[0] == 0xde) && (revPara.header[1] == 0xdf) && (revPara.header[2] == 0xef))
+          {
+            command_word = ZLG_RAM_SET;
+          }
+          else if((revPara.header[0] == 'C') && (revPara.header[1] == 'F') && (revPara.header[2] == 'G'))
+          {
+            command_word = BASE_STATION_CFG;
+          }
+          else if((revPara.header[0] == 'T') && (revPara.header[1] == 'S') && (revPara.header[2] == 'T'))
+          {
+            command_word = BASE_STATION_TST;
+          }
+          else
+            return;
           pktState = NPI_SERIAL_PACK_CMD;
         }
         break;
       case NPI_SERIAL_PACK_CMD:
         {
-          NPI_ReadTransport(&revPara.cmd,1);
-          numBytes -= 1;
-          switch(command_word)
+          if (numBytes < 1)
           {
-          case ZLG_FLASH_SET:
-            switch(revPara.cmd)
-            {
-            case enReadLoacalCfg:             
-              NPI_ReadTransport((unsigned char*)stDevInfo,sizeof(dev_info_t));
-              break;
-            default:
-              break;
-            }
-            break;
-          case ZLG_RAM_SET:
-            break;
-          default:
+            // not enough data to progress, so leave it in driver buffer
+            done = TRUE;
             break;
           }
+          NPI_ReadTransport(&revPara.cmd,1);
+          numBytes -= 1;
+          rbuf[idx++] = revPara.cmd;
+          revPara.len = referenceCmdLength(revPara.header,revPara.cmd);
+          if(revPara.len == 0)
+          {
+            pktState = NPI_SERIAL_PACK_HEAD;
+            done = TRUE;
+            osal_set_event( zigbee_TaskID, UART_RECEIVE_EVT );
+          }
+          else
+            pktState = NPI_SERIAL_PACK_DATA;
         }
+        break;
+      case NPI_SERIAL_PACK_DATA:
+        // check if there is enough serial port data to finish reading the payload
+        if ( numBytes < revPara.len )
+        {
+          // not enough data to progress, so leave it in driver buffer
+          done = TRUE;
+          break;
+        }
+        NPI_ReadTransport(&rbuf[idx],revPara.len);
+        idx += revPara.len;
+        pktState = NPI_SERIAL_PACK_HEAD;
+        done = TRUE;
+        osal_set_event( zigbee_TaskID, UART_RECEIVE_EVT );
         break;
       default:
         break;
-      }*/
-      
-/*      if(numBytes > 0)
-      numBytes = NPI_RxBufLen();
-      //NPI_ReadTransport(rbuf,numBytes);
-      receive_data( zigbee_TaskID, ZIGBEE_READ_ZM516X_INFO_EVT ); 
-//      osal_start_timerEx( zigbee_TaskID, ZIGBEE_READ_ZM516X_INFO_EVT,10);
-      numBytes -= numBytes;
-      done = TRUE;*/
-//    }
+      }
+    }
   }
   return;
+}
+
+static unsigned char referenceCmdLength(unsigned char * const command,unsigned char cmd)
+{
+   unsigned char cmd_len = 0;
+   
+   if(*command == 0xab && *(command+1) == 0xbc && *(command+2) == 0xcd)
+   {
+     switch(cmd)
+     {
+     case enReadLoacalCfg:
+       cmd_len = 70;
+       break;
+     case enSetChannelNv:
+       cmd_len = 1;
+       break;
+     case enSearchNode:
+       cmd_len = 9;
+       break;
+     case enGetRemoteInfo:
+       cmd_len = 70;
+       break;
+     case enModifyCfg:
+       cmd_len = 3;
+       break;
+     case enResetCfg:
+       cmd_len = 5;
+       break;
+     default:
+       break;
+     }
+   }
+   if(*command == 0xde && *(command+1) == 0xdf && *(command+2) == 0xef)
+   {
+     switch(cmd)
+     {
+     case enSetChannel:
+     case enSetDestAddr:
+     case enShowSrcAddr:
+     case enSetUnicastOrBroadcast:
+     case enReadNodeRssi:
+       cmd_len = 1;
+       break;
+     case enSetIoDirection:
+     case enReadIoStatus:
+     case enSetIoStatus:
+       cmd_len = 3;     
+       break;
+     case enReadAdcValue:
+       cmd_len = 4;     
+       break;
+     default:
+       break;
+     }
+   }
+   if(*command == 'C' && *(command+1) == 'F' && *(command+2) == 'G')
+   {
+     switch(cmd)
+     {
+     case cmdAckCheckIn:
+       cmd_len = 11;
+       break;
+     case cmdAckChangeNodeType:
+       cmd_len = 9;
+       break;
+     case cmdChangePanidChannel:
+       cmd_len = 3;     
+       break;
+     default:
+       break;
+     }
+   }
+   if(*command == 'T' && *(command+1) == 'S' && *(command+2) == 'T')
+   {
+     switch(cmd)
+     {
+     case cmdBeepTest:
+     case cmdLedTest:
+     case cmdMotorTest:
+       cmd_len = 1;     
+       break;
+     default:
+       break;
+     }
+   }
+   return cmd_len;
 }
