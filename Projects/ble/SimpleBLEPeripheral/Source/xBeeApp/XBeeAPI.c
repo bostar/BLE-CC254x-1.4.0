@@ -7,7 +7,7 @@
 #include "XBeeAPI.h"
 #include "hal_types.h"
 #include "npi.h"
-
+#if 0
 void xbee_api_checksum(uint8 *begin,uint16 length)
 {
   uint8 sum = 0;
@@ -44,7 +44,7 @@ XBee_APISendATComd(XBeeAPIFramType,)        //∑¢ÀÕAT√¸¡Ó÷°
 
 
 
-
+#endif
 
 
 

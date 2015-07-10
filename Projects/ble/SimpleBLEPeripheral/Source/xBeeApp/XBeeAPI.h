@@ -27,7 +27,7 @@ typedef enum
 
 typedef enum            
 {
-  
+  ena,
   
 }XBeeATComdType;        //AT指令集 看需要添加AT命令
 
