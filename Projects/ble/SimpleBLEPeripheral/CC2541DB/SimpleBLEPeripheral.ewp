@@ -1543,6 +1543,7 @@
           <state>$PROJ_DIR$\..\..\Profiles\SimpleProfile</state>
           <state>$PROJ_DIR$\..\..\Profiles\DevInfo</state>
           <state>$PROJ_DIR$\..\Source\zlgBeeApp</state>
+          <state>$PROJ_DIR$\..\Source\xBeeApp</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -6447,9 +6448,6 @@
     <name>APP</name>
     <group>
       <name>xBeeApp</name>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\xbee_api_opt.c</name>
-      </file>
       <file>
         <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAPI.c</name>
       </file>

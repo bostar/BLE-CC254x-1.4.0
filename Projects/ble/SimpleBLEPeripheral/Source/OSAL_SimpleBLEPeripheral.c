@@ -76,9 +76,13 @@
 
 /* Application */
 #include "simpleBLEPeripheral.h"
-
+#include "OnBoard.h"
 #if defined ( ZIGBEE_APP )
+#if defined (_USE_ZM516X_)
   #include "zigbeeApp.h"
+#else
+  #include "XBeeApp.h"
+#endif
 #endif
 
 /*********************************************************************

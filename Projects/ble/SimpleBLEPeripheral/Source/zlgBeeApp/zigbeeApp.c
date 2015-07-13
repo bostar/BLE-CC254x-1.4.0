@@ -1,10 +1,14 @@
-#include "zigbeeApp.h"
-#include "hal_zlg.h"
 #include "OSAL.h"
-#include "zlgAtCmd.h"
 #include "hal_uart.h"
 #include "hal_sensor.h"
 #include "npi.h"
+#include "OnBoard.h"
+
+#if defined _USE_ZM516X_
+
+#include "zigbeeApp.h"
+#include "hal_zlg.h"
+#include "zlgAtCmd.h"
 #include "zlg_protocol.h"
 #include "zlg_bsp.h"
 
@@ -433,3 +437,5 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
    }
    return cmd_len;
 }
+
+#endif

@@ -2,6 +2,10 @@
 #include "hal_types.h"
 #include "npi.h"
 
+
+
+
+
 static uint8 xbee_wbuf[256],xbee_rbuf[256];
 
 void xbee_api_atcmd_set_led(uint8 led,uint8 state)
@@ -86,7 +90,7 @@ void xbee_api_atcmd_getadc(uint8 adc)
   }
   atCmd->atPara = (state == LED_ON)?5:4;
   xbee_api_checksum((uint8*)atCmd,5);
-  NPI_WriteTransport(xbee_wbuf, 9);*/
+  NPI_WriteTransport(xbee_wbuf, 9); */  
 }
 
 void xbee_api_checksum(uint8 *begin,uint16 length)
