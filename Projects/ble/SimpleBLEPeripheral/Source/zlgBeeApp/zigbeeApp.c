@@ -303,8 +303,13 @@ static void npiCBack_uart( uint8 port, uint8 events )
           {
             command_word = BASE_STATION_TST;
           }
+          else if((revPara.header[0] == 'C') && (revPara.header[1] == 'T') && (revPara.header[2] == 'L'))
+          {
+            command_word = BASE_STATION_CTL;
+          }
           else
             return;
+          VOID command_word;
           pktState = NPI_SERIAL_PACK_CMD;
         }
         break;
@@ -430,6 +435,17 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
      case cmdLedTest:
      case cmdMotorTest:
        cmd_len = 1;     
+       break;
+     default:
+       break;
+     }
+   }
+   if(*command == 'C' && *(command+1) == 'T' && *(command+2) == 'L')
+   {
+     switch(cmd)
+     {
+     case 0x00:
+       cmd_len = 1;
        break;
      default:
        break;

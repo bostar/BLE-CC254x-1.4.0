@@ -81,7 +81,6 @@ build/
 *.hex
 *.d51
 *.bat
-*.dni
 *.wsdt
 *.dbgdt
 *.r51
