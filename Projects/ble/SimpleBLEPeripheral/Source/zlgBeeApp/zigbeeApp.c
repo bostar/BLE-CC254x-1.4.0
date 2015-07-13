@@ -48,7 +48,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   if ( events & ZIGBEE_START_DEVICE_EVT )
   {
     osal_set_event( zigbee_TaskID, ZIGBEE_RESET_ZM516X_EVT );
-
+   
     return ( events ^ ZIGBEE_START_DEVICE_EVT );
   }
   
