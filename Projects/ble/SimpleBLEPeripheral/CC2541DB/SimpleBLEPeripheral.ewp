@@ -6449,9 +6449,6 @@
     <group>
       <name>xBeeApp</name>
       <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\xbee_api_opt.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAPI.c</name>
       </file>
       <file>
