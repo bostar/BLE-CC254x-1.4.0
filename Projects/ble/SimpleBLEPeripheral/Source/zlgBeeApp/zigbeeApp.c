@@ -47,8 +47,9 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   
   if ( events & ZIGBEE_START_DEVICE_EVT )
   {
-    osal_set_event( zigbee_TaskID, ZIGBEE_RESET_ZM516X_EVT );
+    setMotorStop();
 
+    osal_set_event( zigbee_TaskID, ZIGBEE_RESET_ZM516X_EVT );   
     return ( events ^ ZIGBEE_START_DEVICE_EVT );
   }
   
@@ -237,7 +238,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   // Discard unknown events
   return 0;
 }
-
+ 
 static void npiCBack_uart( uint8 port, uint8 events )
 {
   static npi_serial_parse_state_t pktState = NPI_SERIAL_PACK_HEAD;
@@ -282,7 +283,20 @@ static void npiCBack_uart( uint8 port, uint8 events )
           rbuf[idx++] = revPara.header[0];
           rbuf[idx++] = revPara.header[1];
           rbuf[idx++] = revPara.header[2];
-
+//          switch(revPara.header[0])
+//          {
+//          case 0xab:
+//            
+//            break;
+//          case 0xde:
+//            break;
+//          case 'C':
+//            break;
+//          case 'T':
+//            break;
+//          default:
+//            break;
+//          }
           if((revPara.header[0] == 0xab) && (revPara.header[1] == 0xbc) && (revPara.header[2] == 0xcd))
           {
             command_word = ZLG_FLASH_SET;
@@ -299,8 +313,13 @@ static void npiCBack_uart( uint8 port, uint8 events )
           {
             command_word = BASE_STATION_TST;
           }
+          else if((revPara.header[0] == 'C') && (revPara.header[1] == 'T') && (revPara.header[2] == 'L'))
+          {
+            command_word = BASE_STATION_CTL;
+          }
           else
             return;
+          VOID command_word;
           pktState = NPI_SERIAL_PACK_CMD;
         }
         break;
@@ -431,5 +450,17 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
        break;
      }
    }
+   if(*command == 'T' && *(command+1) == 'C' && *(command+2) == 'L')
+   {
+     switch(cmd)
+     {
+     case 0x00:
+       cmd_len = 1;
+       break;
+     default:
+       break;
+     }
+   }
    return cmd_len;
 }
+

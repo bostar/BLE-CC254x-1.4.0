@@ -10,5 +10,8 @@ void initZlgBsp(void);
 void setBeepOn(void);
 void setBeepOff(void);
 void setLedBit(unsigned char bits);
+void setMotorStop(void);
+void setMotorForward(void);
+void setMotorReverse(void);
 
 #endif

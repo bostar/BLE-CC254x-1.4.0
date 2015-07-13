@@ -22,3 +22,21 @@ void setLedBit(unsigned char bits)
 {
     set_temporary_io_level(localAddress,bits);
 }
+
+void setMotorStop(void)
+{
+    HalGpioSet( HAL_GPIO_ZM516X_MOTOR1, 0 );
+    HalGpioSet( HAL_GPIO_ZM516X_MOTOR2, 0 );
+}
+
+void setMotorForward(void)
+{
+    HalGpioSet( HAL_GPIO_ZM516X_MOTOR1, 0 );
+    HalGpioSet( HAL_GPIO_ZM516X_MOTOR2, 1 );
+}
+
+void setMotorReverse(void)
+{
+    HalGpioSet( HAL_GPIO_ZM516X_MOTOR1, 1 );
+    HalGpioSet( HAL_GPIO_ZM516X_MOTOR2, 0 );
+}

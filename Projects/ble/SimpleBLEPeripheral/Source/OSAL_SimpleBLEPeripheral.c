@@ -104,7 +104,7 @@ const pTaskEventHandlerFn tasksArr[] =
 #if defined ( ZIGBEE_APP )
   Zigbee_ProcessEvent,                                              // task 11
 #endif 
-  SimpleBLEPeripheral_ProcessEvent                                  // task 12
+//  SimpleBLEPeripheral_ProcessEvent                                  // task 12
 };
 
 const uint8 tasksCnt = sizeof( tasksArr ) / sizeof( tasksArr[0] );
@@ -165,9 +165,9 @@ void osalInitTasks( void )
 
   /* Application */
 #if defined ( ZIGBEE_APP )
-  Zigbee_Init( taskID++ );
+  Zigbee_Init( taskID );
 #endif
-  SimpleBLEPeripheral_Init( taskID ); 
+//  SimpleBLEPeripheral_Init( taskID ); 
 }
 
 /*********************************************************************

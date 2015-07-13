@@ -425,7 +425,7 @@ uint8 receive_data( uint8 *buf, uint16 len )
   }
   if((rbuf[0] == 'T')&&(rbuf[1] == 'S')&&(rbuf[2] == 'T'))
   {
-      switch(rbuf[3])
+      switch( rbuf[3] )
       {
         case cmdBeepTest:
           if(cmdBuzz == rbuf[4])
@@ -439,8 +439,35 @@ uint8 receive_data( uint8 *buf, uint16 len )
           uartReturnFlag.ledBitState = rbuf[4];
           state = stateLedTest;
           break;
+        case cmdMotorTest:
+          switch( rbuf[4] )
+          {
+          case cmdStop:
+            setMotorStop();
+            break;
+          case cmdForward:
+            setMotorForward();
+            break;
+          case cmdReverse:
+            setMotorReverse();
+            break;
+          default:
+            break;
+          }
+          break;
         default:
           break;      
+      }
+  }
+  if((rbuf[0] == 'C')&&(rbuf[1] == 'T')&&(rbuf[2] == 'L'))
+  {
+      switch( rbuf[3] )
+      {
+      case 0x00:
+        setMotorStop();
+        break;
+      default:
+        break;
       }
   }
   return state;

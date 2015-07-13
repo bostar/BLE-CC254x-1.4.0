@@ -11,7 +11,7 @@ void applicateForNetwork(unsigned char *IEEEAddress)
     wbuf[0] = 'C';
     wbuf[1] = 'F';
     wbuf[2] = 'G';
-    wbuf[3] = 0x00;//cmd[5]
+    wbuf[3] = cmdCheckIn;//cmd
 
     osal_memcpy( &wbuf[4],(char const *)IEEEAddress,8 );
     NPI_WriteTransport( (unsigned char *)wbuf , 12 );
@@ -24,7 +24,7 @@ void ackChangeNodeType(void)
     wbuf[0] = 'C';
     wbuf[1] = 'F';
     wbuf[2] = 'G';
-    wbuf[3] = 0x03;//cmd
+    wbuf[3] = cmdAckChangeNodeType;//cmd
     
     NPI_WriteTransport( (unsigned char *)wbuf , 4 );
 }
@@ -35,7 +35,7 @@ void ackLinkTest(void)
     wbuf[0] = 'C';
     wbuf[1] = 'F';
     wbuf[2] = 'G';
-    wbuf[3] = 0x07;//cmd
+    wbuf[3] = cmdAckLinkTest;//cmd
     
     NPI_WriteTransport( (unsigned char *)wbuf , 4 );
 }
