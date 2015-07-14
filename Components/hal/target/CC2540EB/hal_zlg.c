@@ -102,7 +102,14 @@ void HalZlgInit (void)
   //GPIO_ZM516X_KEY1_DDR &= ~GPIO_ZM516X_KEY1_BV;
   //GPIO_ZM516X_KEY2_DDR &= ~GPIO_ZM516X_KEY2_BV;
   
-  //HalGpioSet(HAL_GPIO_ZM516X_ALL,1);
+//  HalGpioSet(GPIO_ZM516X_RESET_SBIT,0);
+//  HalGpioSet(GPIO_ZM516X_DEF_SBIT,0);
+//  HalGpioSet(GPIO_ZM516X_SLEEP_SBIT,0);
+//  HalGpioSet(GPIO_ZM516X_WAKEUP_SBIT,0);
+//  HalGpioSet(GPIO_ZM516X_MOTOR1_SBIT,0);
+//  HalGpioSet(GPIO_ZM516X_MOTOR2_SBIT,0);
+//  HalGpioSet(GPIO_ZM516X_MO_EN_SBIT,0);
+//  HalGpioSet(GPIO_ZM516X_PHASE_A_SBIT,0);
 }
 
 /***************************************************************************************************
