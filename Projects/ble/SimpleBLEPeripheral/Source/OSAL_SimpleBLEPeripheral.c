@@ -106,9 +106,10 @@ const pTaskEventHandlerFn tasksArr[] =
   GAPBondMgr_ProcessEvent,                                          // task 9
   GATTServApp_ProcessEvent,                                         // task 10
 #if defined ( ZIGBEE_APP )
-  Zigbee_ProcessEvent,                                              // task 11
-#endif 
+  Zigbee_ProcessEvent                                              // task 11
+#else 
   SimpleBLEPeripheral_ProcessEvent                                  // task 12
+#endif
 };
 
 const uint8 tasksCnt = sizeof( tasksArr ) / sizeof( tasksArr[0] );
@@ -169,9 +170,10 @@ void osalInitTasks( void )
 
   /* Application */
 #if defined ( ZIGBEE_APP )
-  Zigbee_Init( taskID++ );
-#endif
+  Zigbee_Init( taskID );
+#else
   SimpleBLEPeripheral_Init( taskID ); 
+#endif
 }
 
 /*********************************************************************
