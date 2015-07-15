@@ -466,11 +466,13 @@ uint8 receive_data( uint8 *buf, uint16 len )
       case 0x00:
         if( rbuf[4] == 0x00)
         {
-          setMotorForward();
+//          setMotorForward();
+          state = stateMotorForward;
         }
         else if( rbuf[4] == 0x01)
         {
-          setMotorReverse();//test run to here
+//          setMotorReverse();//test run to here
+          state = stateMotorReverse;
         }
         else
         {

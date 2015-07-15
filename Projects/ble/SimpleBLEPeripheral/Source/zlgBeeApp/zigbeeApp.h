@@ -44,6 +44,8 @@ typedef enum{
     stateResetOver = 0x11,
     stateReadCfgAgain = 0x12,
     stateApplyNetwork = 0x13,
+    stateMotorForward = 0x14,
+    stateMotorReverse = 0x15,
     stateTest = 0x99,
     stateNoWork = 0xff
 }state_t;

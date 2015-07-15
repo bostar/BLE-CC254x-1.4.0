@@ -191,6 +191,20 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
      case 3:
        setLedBit(uartReturnFlag.ledBitState);
        break;
+     case 4:
+       setMotorForward();
+       test_state = 6;       
+       osal_start_timerEx( zigbee_TaskID, BOARD_TEST_EVT, 1000 );
+       break;
+     case 5:
+       setMotorReverse();
+       test_state = 6;
+       osal_start_timerEx( zigbee_TaskID, BOARD_TEST_EVT, 1000 );
+       break;
+     case 6:
+       setMotorStop();
+       test_state = 7;
+       break;
      default:
        break;
      }
@@ -239,6 +253,14 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
           break;
         case stateGpioSet:
           test_state = 0;
+          osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
+          break;
+        case stateMotorForward:
+          test_state = 4;
+          osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
+          break;
+        case stateMotorReverse:
+          test_state = 5;
           osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
           break;
         default:
