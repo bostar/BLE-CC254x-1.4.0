@@ -12,17 +12,6 @@
 #include "zlg_protocol.h"
 #include "zlg_bsp.h"
 
-/*
-const uint8 temp[cmd][len] = {{0,12}{1,11}};
-
-void check_pkg_head(uint8 * head,uint8 len)
-{
-  if(ch=='C')
-  return TURE;
-}
-check_pkg_head("CFG",3);
-const uint8 CFG_CMD_NONVOLATILE[3] = {0XAB,0XBC,0XCD};
-*/
 /*********************************************************************
  * LOCAL VARIABLES
  */
@@ -211,6 +200,12 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
      return ( events ^ BOARD_TEST_EVT );
   }
   
+  if(events & ZIGBEE_LINK_TEST_EVT)
+  {
+     ackLinkTest( &stDevInfo->devLoacalIEEEAddr[0] );
+     return ( events ^ ZIGBEE_LINK_TEST_EVT );
+  }
+  
   if(events & UART_RECEIVE_EVT)
   {
 //    uint16 numBytes;
@@ -238,6 +233,9 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
           break;
         case stateApplyNetwork:
           osal_set_event( zigbee_TaskID, ZIGBEE_APPLY_NETWORK_EVT );
+          break;
+        case stateAckLinkTest:
+          osal_set_event( zigbee_TaskID, ZIGBEE_LINK_TEST_EVT );
           break;
         case stateBeepOn:
           test_state = 1;
@@ -454,13 +452,16 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
      switch(cmd)
      {
      case cmdAckCheckIn:
-       cmd_len = 11;
+       cmd_len = 14;
        break;
-     case cmdAckChangeNodeType:
+/*     case cmdAckChangeNodeType:
        cmd_len = 9;
        break;
      case cmdChangePanidChannel:
        cmd_len = 3;     
+       break;*/
+     case cmdLinkTest:
+       cmd_len = 8;
        break;
      default:
        break;

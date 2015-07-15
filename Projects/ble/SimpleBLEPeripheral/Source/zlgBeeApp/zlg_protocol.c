@@ -18,26 +18,27 @@ void applicateForNetwork(unsigned char *IEEEAddress)
     //set_temporary_cast_mode(unicast); 
 }
 
-void ackChangeNodeType(void)
-{
-    char wbuf[4];
-    wbuf[0] = 'C';
-    wbuf[1] = 'F';
-    wbuf[2] = 'G';
-    wbuf[3] = cmdAckChangeNodeType;//cmd
-    
-    NPI_WriteTransport( (unsigned char *)wbuf , 4 );
-}
+//void ackChangeNodeType(void)
+//{
+//    char wbuf[4];
+//    wbuf[0] = 'C';
+//    wbuf[1] = 'F';
+//    wbuf[2] = 'G';
+//    wbuf[3] = cmdAckChangeNodeType;//cmd
+//    
+//    NPI_WriteTransport( (unsigned char *)wbuf , 4 );
+//}
 
-void ackLinkTest(void)
+void ackLinkTest(unsigned char *IEEEAddress)
 {
-    char wbuf[4];
+    char wbuf[11];
     wbuf[0] = 'C';
     wbuf[1] = 'F';
     wbuf[2] = 'G';
-    wbuf[3] = cmdAckLinkTest;//cmd
+    wbuf[3] = cmdAckLinkTest;//cmd    
+    osal_memcpy( &wbuf[4],(char const *)IEEEAddress,8 );
     
-    NPI_WriteTransport( (unsigned char *)wbuf , 4 );
+    NPI_WriteTransport( (unsigned char *)wbuf , 11 );
 }
 
 void switchLockControl(LockSW_t cmd)

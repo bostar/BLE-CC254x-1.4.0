@@ -24,6 +24,7 @@ extern "C"
 #define READ_UART_BUFFER_EVT                                 0x0020
 #define ZIGBEE_APPLY_NETWORK_EVT                             0x0040
 #define ZIGBEE_WRITE_ZM516X_INFO_EVT                         0x0080
+#define ZIGBEE_LINK_TEST_EVT                                 0x0100
 /*********************************************************************
  * MACROS
  */
@@ -46,6 +47,7 @@ typedef enum{
     stateApplyNetwork = 0x13,
     stateMotorForward = 0x14,
     stateMotorReverse = 0x15,
+    stateAckLinkTest = 0x16,
     stateTest = 0x99,
     stateNoWork = 0xff
 }state_t;

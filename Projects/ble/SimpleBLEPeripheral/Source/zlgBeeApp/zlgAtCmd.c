@@ -402,11 +402,14 @@ uint8 receive_data( uint8 *buf, uint16 len )
         {
           stDevInfo->devLoacalNetAddr[0] = rbuf[13];
           stDevInfo->devLoacalNetAddr[1] = rbuf[14];
+          stDevInfo->devPanid[0] = rbuf[15];
+          stDevInfo->devPanid[1] = rbuf[16];
+          stDevInfo->devChannel = rbuf[17];
           state = stateApplyNetwork;
           uartReturnFlag.applyNetWork_SUCCESS = 1;
         }
         break;
-      case cmdChangeNodeType:
+/*      case cmdChangeNodeType:
         ackChangeNodeType();
         break;
       case cmdChangePanidChannel:
@@ -417,9 +420,12 @@ uint8 receive_data( uint8 *buf, uint16 len )
         break;
       case cmdAllNodeReset:
         state = stateReset;
-        break;
+        break;*/
       case cmdLinkTest:
-        ackLinkTest();
+        if(!memcmp(&stDevInfo->devLoacalIEEEAddr[0],&rbuf[4],8))
+        {
+            state = stateAckLinkTest;//ackLinkTest();
+        }
         break;
       }
   }

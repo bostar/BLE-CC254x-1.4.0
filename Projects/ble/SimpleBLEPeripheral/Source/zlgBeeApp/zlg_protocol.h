@@ -9,10 +9,10 @@ typedef enum _cmdLockControl {
 enum cfg_cmd {
 	cmdCheckIn = 0x00,
 	cmdAckCheckIn = 0x01,
-	cmdChangeNodeType = 0x02,
-	cmdAckChangeNodeType = 0x03,
-	cmdChangePanidChannel = 0x04,
-	cmdAllNodeReset = 0x05,
+//	cmdChangeNodeType = 0x02,
+//	cmdAckChangeNodeType = 0x03,
+//	cmdChangePanidChannel = 0x04,
+//	cmdAllNodeReset = 0x05,
 	cmdLinkTest = 0x06,
 	cmdAckLinkTest = 0x07
 };
@@ -39,8 +39,8 @@ enum motor_cmd {
 };
 
 void applicateForNetwork(unsigned char *IEEEAddress);
-void ackChangeNodeType(void);
-void ackLinkTest(void);
+//void ackChangeNodeType(void);
+void ackLinkTest(unsigned char *IEEEAddress);
 void switchLockControl(LockSW_t cmd);
 
 #endif
