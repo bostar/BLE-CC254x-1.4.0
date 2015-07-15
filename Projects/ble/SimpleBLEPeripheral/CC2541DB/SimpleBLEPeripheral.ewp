@@ -270,11 +270,17 @@
           <state>OSAL_CBTIMER_NUM_TASKS=1</state>
           <state>HAL_AES_DMA=TRUE</state>
           <state>HAL_DMA=TRUE</state>
-          <state>POWER_SAVING</state>
+          <state>xPOWER_SAVING</state>
           <state>xPLUS_BROADCASTER</state>
           <state>HAL_LCD=FALSE</state>
-          <state>HAL_LED=TRUE</state>
-          <state>CC2540_MINIDK</state>
+          <state>HAL_LED=FALSE</state>
+          <state>HAL_ZLG_ZIGBEE=TRUE</state>
+          <state>ZIGBEE_APP</state>
+          <state>HAL_UART=TRUE</state>
+          <state>HAL_UART_DMA=1</state>
+          <state>HAL_UART_ISR=0</state>
+          <state>HAL_I2C=TRUE</state>
+          <state>HAL_KEY=TRUE</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -453,6 +459,7 @@
           <state>$PROJ_DIR$\..\..\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\hal\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB</state>
+          <state>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2541ST</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\osal\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\services\saddr</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\ble\include</state>
@@ -466,6 +473,7 @@
           <state>$PROJ_DIR$\..\..\Profiles\SimpleProfile</state>
           <state>$PROJ_DIR$\..\..\Profiles\Keys</state>
           <state>$PROJ_DIR$\..\..\Profiles\DevInfo</state>
+          <state>$PROJ_DIR$\..\Source\zlgBeeApp</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -6446,39 +6454,6 @@
   </configuration>
   <group>
     <name>APP</name>
-    <group>
-      <name>xBeeApp</name>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAPI.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAPI.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAtCmd.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAtCmd.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeBsp.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeBsp.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.h</name>
-      </file>
-    </group>
     <group>
       <name>zlgBeeApp</name>
       <file>
