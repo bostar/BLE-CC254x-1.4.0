@@ -25,6 +25,9 @@ extern "C"
 #define ZIGBEE_APPLY_NETWORK_EVT                             0x0040
 #define ZIGBEE_WRITE_ZM516X_INFO_EVT                         0x0080
 #define ZIGBEE_LINK_TEST_EVT                                 0x0100
+#define ZIGBEE_RESTORE_FACTORY_EVT                           0x0200
+#define ZIGBEE_SLEEP_ZM516X_EVT                              0x0400
+#define ZIGBEE_WAKE_ZM516X_EVT                               0x0800
 /*********************************************************************
  * MACROS
  */
@@ -48,6 +51,7 @@ typedef enum{
     stateMotorForward = 0x14,
     stateMotorReverse = 0x15,
     stateAckLinkTest = 0x16,
+    stateRestoreFactoryConfig = 0x17,
     stateTest = 0x99,
     stateNoWork = 0xff
 }state_t;
