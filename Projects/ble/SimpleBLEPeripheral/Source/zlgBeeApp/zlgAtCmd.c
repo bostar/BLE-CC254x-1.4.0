@@ -6,9 +6,6 @@
 #include "zigbeeApp.h"
 #include "zlg_bsp.h"
 #include "string.h"
-#include "OnBoard.h"
-
-#if defined ZIGBEE_APP
 
 const unsigned short broadcastAddr = 0xffff;
 
@@ -503,5 +500,3 @@ void send_data_to_remote_node(uint16 destAddr,unsigned char *data,int len)
     
     NPI_WriteTransport(data, len);
 }
-
-#endif

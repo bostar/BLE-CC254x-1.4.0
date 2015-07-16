@@ -3,9 +3,6 @@
 #include <string.h>
 #include "zlgAtCmd.h"
 #include "OSAL.h"
-#include "OnBoard.h"
-
-#if defined ZIGBEE_APP
 
 void applicateForNetwork(unsigned char *IEEEAddress)
 {
@@ -54,5 +51,3 @@ void switchLockControl(LockSW_t cmd)
     
     NPI_WriteTransport( (unsigned char *)wbuf , 5 );
 }
-
-#endif

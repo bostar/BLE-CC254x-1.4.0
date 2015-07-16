@@ -17,21 +17,13 @@ extern "C"
 
 // Simple BLE Peripheral Task Events
 #define XBEE_START_DEVICE_EVT                              0x0001
-#define XBEE_IO_TEST                                     0x0002
-#define XBEE_CLOSE_LED                                 0x0004
-#define XBEE_UART_RECEIVE_EVT                              0x0008
-#define XBEE_BOARD_TEST_EVT                                0x0010
-#define XBEE_READ_UART_BUFFER_EVT                          0x0020
+#define XBEE_RESET_ZM516X_EVT                              0x0002
+#define XBEE_READ_ZM516X_INFO_EVT                          0x0004
+#define UART_RECEIVE_EVT                                   0x0008
+#define BOARD_TEST_EVT                                     0x0010
+#define READ_UART_BUFFER_EVT                               0x0020
 #define XBEE_APPLY_NETWORK_EVT                             0x0040
 #define XBEE_WRITE_ZM516X_INFO_EVT                         0x0080
-#define z1                         0x0100
-#define z2                         0x0200
-#define z3                         0x0400
-#define z4                         0x0800
-#define z5                         0x1000
-#define z6                         0x2000
-#define z8                         0x4000
-#define z7                         0x8000
 /*********************************************************************
  * MACROS
  */
@@ -87,15 +79,15 @@ typedef struct {
 /*
  * Task Initialization for the BLE Application
  */
-void XBeeInit( uint8 task_id );
+extern void XBeeInit( uint8 task_id );
 
 /*
  * Task Event Processor for the BLE Application
  */
-uint16 XBeeProcessEvent( uint8 task_id, uint16 events );
+extern uint16 XBeeProcessEvent( uint8 task_id, uint16 events );
 
-static void npiCBack_uart( uint8 port, uint8 events );
-static unsigned char referenceCmdLength(unsigned char * const command,unsigned char cmd);
+extern static void npiCBack_uart( uint8 port, uint8 events );
+extern static unsigned char referenceCmdLength(unsigned char * const command,unsigned char cmd);
 
 /*********************************************************************
 *********************************************************************/

@@ -23,9 +23,84 @@
 #endif
 
 
+typedef enum
+{
+  Disable       =       0,
+  RSSIPWM       =       1,
+  DigInput      =       3,
+  DigOutLow     =       4,
+  DigOutHigh    =       5,
+}P0Mode;
 
+typedef enum
+{
+  DigInputM     =       0,
+  DigInputUnm   =       3,
+  DigOutLow     =       4,
+  DigOutHigh    =       5,
+}P1P2Mode;
 
-void XBeeOpenBuzzer();      //´ò¿ª·äÃùÆ÷
+typedef enum
+{
+  StarButton    =       1,
+  AnalogInput   =       2,
+  DigInput      =       3,
+  DigOutLow     =       4,
+  DigOutHigh    =       5,
+}D0Mode;
+
+typedef enum
+{
+  Disable       =       0,
+  AnalogInput   =       2,
+  DigInput      =       3,
+  DigOutLow     =       4,
+  DigOutHigh    =       5,
+}D1D2D3Mode;
+
+typedef enum
+{
+  Disable       =       0,
+  AnalogInput   =       2,
+  DigInput      =       3,
+  DigOutLow     =       4,
+  DigOutHigh    =       5,
+}D2Mode;
+
+typedef enum
+{
+  Disable       =       0,
+  AnalogInput   =       2,
+  DigInput      =       3,
+  DigOutLow     =       4,
+  DigOutHigh    =       5,
+}D3Mode;
+
+typedef enum
+{
+  Disable       =       0,
+  DigInput      =       3,
+  DigOutLow     =       4,
+  DigOutHigh    =       5,
+}D4Mode;
+
+typedef enum
+{
+  Disable       =       0,
+  LED           =       1,
+  DigInput      =       3,
+  DigOutLow     =       4,
+  DigOutHigh    =       5,
+}D5Mode;
+
+typedef enum
+{
+  Disable       =       0,
+  DigInput      =       3,
+  DigOutLow     =       4,
+  DigOutHigh    =       5,
+}D8Mode;
+
 
 /*typedef enum
 {

@@ -1345,9 +1345,7 @@
           <state>xHAL_LCD=TRUE</state>
           <state>xHAL_LED=FALSE</state>
           <state>HAL_ZLG_ZIGBEE=TRUE</state>
-          <state>xHAL_XBEE_ZIGBEE=TRUE</state>
           <state>ZIGBEE_APP</state>
-          <state>x_XBEE_APP_</state>
           <state>HAL_UART=TRUE</state>
           <state>HAL_UART_DMA=1</state>
           <state>HAL_UART_ISR=0</state>
@@ -1433,7 +1431,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>00000</state>
+          <state>11111</state>
         </option>
         <option>
           <name>CCObjUseModuleName</name>
@@ -1570,7 +1568,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>0</state>
+          <state>3</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -1579,7 +1577,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>0</state>
+          <state>3</state>
         </option>
         <option>
           <name>CompilerMisraRules04</name>
@@ -6450,6 +6448,12 @@
     <name>APP</name>
     <group>
       <name>xBeeApp</name>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAPI.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAPI.h</name>
+      </file>
       <file>
         <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c</name>
       </file>

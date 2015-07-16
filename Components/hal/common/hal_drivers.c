@@ -55,9 +55,9 @@
 #include "hal_key.h"
 #include "hal_lcd.h"
 #include "hal_led.h"
-//#if (defined HAL_ZLG_ZIGBEE) && ( HAL_ZLG_ZIGBEE == TRUE)
+#if (defined HAL_ZLG_ZIGBEE) && ( HAL_ZLG_ZIGBEE == TRUE)
 #include "hal_zlg.h"
-//#endif
+#endif
 #include "hal_sleep.h"
 #include "hal_timer.h"
 #include "hal_types.h"
@@ -147,9 +147,7 @@ void HalDriverInit (void)
 #if (defined HAL_ZLG_ZIGBEE) && (HAL_ZLG_ZIGBEE == TRUE)
   HalZlgInit();
 #endif
-#if (defined HAL_XBEE_ZIGBEE) && (HAL_XBEE_ZIGBEE == TRUE)
-  HalXbeeInit();
-#endif
+
   /* UART */
 #if (defined HAL_UART) && (HAL_UART == TRUE)
   HalUARTInit();
