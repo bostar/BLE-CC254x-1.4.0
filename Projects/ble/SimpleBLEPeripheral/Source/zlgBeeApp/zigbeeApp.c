@@ -4,7 +4,7 @@
 #include "npi.h"
 #include "OnBoard.h"
 
-#if defined _USE_ZM516X_
+#if defined HAL_ZLG_ZIGBEE
 
 #include "zigbeeApp.h"
 #include "hal_zlg.h"

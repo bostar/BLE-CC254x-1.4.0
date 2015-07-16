@@ -78,13 +78,14 @@
 #include "simpleBLEPeripheral.h"
 #include "OnBoard.h"
 #if defined ( ZIGBEE_APP )
-#if defined (_USE_ZM516X_)
   #include "zigbeeApp.h"
 #else
   #include "XBeeApp.h"
 #endif
-#endif
 
+#if defined _XBEE_APP_
+  #include "XBeeApp.h"
+#endif
 /*********************************************************************
  * GLOBAL VARIABLES
  */
@@ -106,10 +107,12 @@ const pTaskEventHandlerFn tasksArr[] =
   GAPBondMgr_ProcessEvent,                                          // task 9
   GATTServApp_ProcessEvent,                                         // task 10
 #if defined ( ZIGBEE_APP )
-  Zigbee_ProcessEvent                                              // task 11
-#else 
-  SimpleBLEPeripheral_ProcessEvent                                  // task 12
+  Zigbee_ProcessEvent,                                              // task 11
+#endif 
+#if defined _XBEE_APP_
+  XBeeProcessEvent,
 #endif
+  SimpleBLEPeripheral_ProcessEvent                                  // task 12
 };
 
 const uint8 tasksCnt = sizeof( tasksArr ) / sizeof( tasksArr[0] );
@@ -170,10 +173,12 @@ void osalInitTasks( void )
 
   /* Application */
 #if defined ( ZIGBEE_APP )
-  Zigbee_Init( taskID );
-#else
-  SimpleBLEPeripheral_Init( taskID ); 
+  Zigbee_Init( taskID++ );
 #endif
+#if defined _XBEE_APP_
+  XBeeInit(taskID++);
+#endif
+  SimpleBLEPeripheral_Init( taskID ); 
 }
 
 /*********************************************************************
