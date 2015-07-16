@@ -82,14 +82,14 @@
  ***************************************************************************************************/
 void HalZlgInit (void)
 {
-  GPIO_ZM516X_RESET_TURN_HIGH();
-  GPIO_ZM516X_DEF_TURN_HIGH();
-  GPIO_ZM516X_WAKEUP_TURN_HIGH();
-  GPIO_ZM516X_SLEEP_TURN_HIGH();
-  GPIO_ZM516X_MOTOR1_TURN_LOW();
-  GPIO_ZM516X_MOTOR2_TURN_LOW();
-  GPIO_ZM516X_MO_EN_TURN_LOW();
-  GPIO_ZM516X_PHASE_A_TURN_LOW();
+  HalGpioSet(GPIO_ZM516X_RESET_SBIT,0);
+  HalGpioSet(GPIO_ZM516X_DEF_SBIT,0);
+  HalGpioSet(GPIO_ZM516X_SLEEP_SBIT,0);
+  HalGpioSet(GPIO_ZM516X_WAKEUP_SBIT,0);
+  HalGpioSet(GPIO_ZM516X_MOTOR1_SBIT,0);
+  HalGpioSet(GPIO_ZM516X_MOTOR2_SBIT,0);
+  HalGpioSet(GPIO_ZM516X_MO_EN_SBIT,0);
+  HalGpioSet(GPIO_ZM516X_PHASE_A_SBIT,0);
   
   GPIO_ZM516X_RESET_DDR |= GPIO_ZM516X_RESET_BV;
   GPIO_ZM516X_DEF_DDR |= GPIO_ZM516X_DEF_BV;
@@ -102,7 +102,15 @@ void HalZlgInit (void)
   //GPIO_ZM516X_KEY1_DDR &= ~GPIO_ZM516X_KEY1_BV;
   //GPIO_ZM516X_KEY2_DDR &= ~GPIO_ZM516X_KEY2_BV;
   
-  //HalGpioSet(HAL_GPIO_ZM516X_ALL,1);
+  
+  GPIO_ZM516X_RESET_TURN_HIGH();
+  GPIO_ZM516X_DEF_TURN_HIGH();
+  GPIO_ZM516X_WAKEUP_TURN_HIGH();
+  GPIO_ZM516X_SLEEP_TURN_HIGH();
+  GPIO_ZM516X_MOTOR1_TURN_LOW();
+  GPIO_ZM516X_MOTOR2_TURN_LOW();
+  GPIO_ZM516X_MO_EN_TURN_LOW();
+  GPIO_ZM516X_PHASE_A_TURN_LOW();
 }
 
 /***************************************************************************************************
@@ -119,36 +127,36 @@ uint8 HalGpioSet (uint8 pin, uint8 level)
   switch(pin)
   {
     case HAL_GPIO_ZM516X_RESET:
-      GPIO_ZM516X_RESET_SBIT = level;
+      GPIO_ZM516X_RESET_SBIT = ACTIVE_HIGH( level );
       break;
     case HAL_GPIO_ZM516X_DEF:
-      GPIO_ZM516X_DEF_SBIT = level;
+      GPIO_ZM516X_DEF_SBIT = ACTIVE_HIGH( level );
       break;
     case HAL_GPIO_ZM516X_SLEEP:
-      GPIO_ZM516X_SLEEP_SBIT = level;
+      GPIO_ZM516X_SLEEP_SBIT = ACTIVE_HIGH( level );
       break;
     case HAL_GPIO_ZM516X_WAKEUP:
-      GPIO_ZM516X_WAKEUP_SBIT = level;
+      GPIO_ZM516X_WAKEUP_SBIT = ACTIVE_HIGH( level );
       break;
     case HAL_GPIO_ZM516X_MOTOR1:
-      GPIO_ZM516X_MOTOR1_SBIT = level;
+      GPIO_ZM516X_MOTOR1_SBIT = ACTIVE_HIGH( level );
       break;
     case HAL_GPIO_ZM516X_MOTOR2:
-      GPIO_ZM516X_MOTOR2_SBIT = level;
+      GPIO_ZM516X_MOTOR2_SBIT = ACTIVE_HIGH( level );
       break;
     case HAL_GPIO_ZM516X_MO_EN:
-      GPIO_ZM516X_MO_EN_SBIT = level;
+      GPIO_ZM516X_MO_EN_SBIT = ACTIVE_HIGH( level );
       break;
     case HAL_GPIO_ZM516X_PHASE_A:
-      GPIO_ZM516X_PHASE_A_SBIT = level;
+      GPIO_ZM516X_PHASE_A_SBIT = ACTIVE_HIGH( level );
       break;
     case HAL_GPIO_ZM516X_ALL:
-      GPIO_ZM516X_RESET_SBIT = level;
-      GPIO_ZM516X_DEF_SBIT = level;
-      GPIO_ZM516X_SLEEP_SBIT = level;
-      GPIO_ZM516X_WAKEUP_SBIT = level;
-      GPIO_ZM516X_MOTOR1_SBIT = level;
-      GPIO_ZM516X_MOTOR2_SBIT = level;
+      GPIO_ZM516X_RESET_SBIT = ACTIVE_HIGH( level );
+      GPIO_ZM516X_DEF_SBIT = ACTIVE_HIGH( level );
+      GPIO_ZM516X_SLEEP_SBIT = ACTIVE_HIGH( level );
+      GPIO_ZM516X_WAKEUP_SBIT = ACTIVE_HIGH( level );
+      GPIO_ZM516X_MOTOR1_SBIT = ACTIVE_HIGH( level );
+      GPIO_ZM516X_MOTOR2_SBIT = ACTIVE_HIGH( level );
       //GPIO_ZM516X_MO_EN_SBIT = level;
       //GPIO_ZM516X_PHASE_A_SBIT = level;
       break;

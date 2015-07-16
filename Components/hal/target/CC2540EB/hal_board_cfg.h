@@ -25,7 +25,7 @@
   its documentation for any purpose.
 
   YOU FURTHER ACKNOWLEDGE AND AGREE THAT THE SOFTWARE AND DOCUMENTATION ARE
-  PROVIDED “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+  PROVIDED “AS IS?WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
   INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, TITLE,
   NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL
   TEXAS INSTRUMENTS OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER CONTRACT,
@@ -89,6 +89,61 @@ extern "C"
 #define HAL_LCD_MAX_CHARS   16
 #define HAL_LCD_MAX_BUFF    25
 
+/* ZLG Zigbee Gpio defines */
+
+#ifdef HAL_ZLG_ZIGBEE
+  #define GPIO_ZM516X_RESET_BV    BV(3)
+  #define GPIO_ZM516X_DEF_BV      BV(6)
+  #define GPIO_ZM516X_WAKEUP_BV   BV(2)
+  #define GPIO_ZM516X_SLEEP_BV    BV(7)
+  #define GPIO_ZM516X_MOTOR1_BV   BV(6)
+  #define GPIO_ZM516X_MOTOR2_BV   BV(7)
+  #define GPIO_ZM516X_MO_EN_BV    BV(5)
+  #define GPIO_ZM516X_PHASE_A_BV  BV(4)
+  #define GPIO_ZM516X_KEY1_BV     BV(0)
+  #define GPIO_ZM516X_KEY2_BV     BV(1)
+
+  #define GPIO_ZM516X_RESET_SBIT     P1_3
+  #define GPIO_ZM516X_DEF_SBIT       P0_6
+  #define GPIO_ZM516X_WAKEUP_SBIT    P1_2
+  #define GPIO_ZM516X_SLEEP_SBIT     P0_7
+  #define GPIO_ZM516X_MOTOR1_SBIT    P1_6
+  #define GPIO_ZM516X_MOTOR2_SBIT    P1_7
+  #define GPIO_ZM516X_MO_EN_SBIT     P1_5
+  #define GPIO_ZM516X_PHASE_A_SBIT   P1_4
+  #define GPIO_ZM516X_KEY1_SBIT      P1_0
+  #define GPIO_ZM516X_KEY2_SBIT      P1_1
+
+  #define GPIO_ZM516X_RESET_DDR                        P1DIR
+  #define GPIO_ZM516X_DEF_DDR                          P0DIR
+  #define GPIO_ZM516X_WAKEUP_DDR                       P1DIR
+  #define GPIO_ZM516X_SLEEP_DDR                        P0DIR
+  #define GPIO_ZM516X_MOTOR1_DDR                       P1DIR
+  #define GPIO_ZM516X_MOTOR2_DDR                       P1DIR
+  #define GPIO_ZM516X_MO_EN_DDR                        P1DIR
+  #define GPIO_ZM516X_PHASE_A_DDR                      P1DIR
+  #define GPIO_ZM516X_KEY1_DDR                         P1DIR
+  #define GPIO_ZM516X_KEY2_DDR                         P1DIR
+
+  #define GPIO_ZM516X_RESET_TURN_HIGH()    st( GPIO_ZM516X_RESET_SBIT  = ACTIVE_HIGH(1); )
+  #define GPIO_ZM516X_DEF_TURN_HIGH()      st( GPIO_ZM516X_DEF_SBIT    = ACTIVE_HIGH(1); )
+  #define GPIO_ZM516X_WAKEUP_TURN_HIGH()   st( GPIO_ZM516X_WAKEUP_SBIT = ACTIVE_HIGH(1); )
+  #define GPIO_ZM516X_SLEEP_TURN_HIGH()    st( GPIO_ZM516X_SLEEP_SBIT  = ACTIVE_HIGH(1); )
+  #define GPIO_ZM516X_MOTOR1_TURN_HIGH()   st( GPIO_ZM516X_MOTOR1_SBIT = ACTIVE_HIGH(1); )
+  #define GPIO_ZM516X_MOTOR2_TURN_HIGH()   st( GPIO_ZM516X_MOTOR2_SBIT = ACTIVE_HIGH(1); )
+  #define GPIO_ZM516X_MO_EN_TURN_HIGH()    st( GPIO_ZM516X_MO_EN_SBIT  = ACTIVE_HIGH(1); )
+  #define GPIO_ZM516X_PHASE_A_TURN_HIGH()  st( GPIO_ZM516X_PHASE_A_SBIT= ACTIVE_HIGH(1); )
+
+  #define GPIO_ZM516X_RESET_TURN_LOW()     st( GPIO_ZM516X_RESET_SBIT  = ACTIVE_HIGH(0); )
+  #define GPIO_ZM516X_DEF_TURN_LOW()       st( GPIO_ZM516X_DEF_SBIT    = ACTIVE_HIGH(0); )
+  #define GPIO_ZM516X_WAKEUP_TURN_LOW()    st( GPIO_ZM516X_WAKEUP_SBIT = ACTIVE_HIGH(0); )
+  #define GPIO_ZM516X_SLEEP_TURN_LOW()     st( GPIO_ZM516X_SLEEP_SBIT  = ACTIVE_HIGH(0); )
+  #define GPIO_ZM516X_MOTOR1_TURN_LOW()    st( GPIO_ZM516X_MOTOR1_SBIT = ACTIVE_HIGH(0); )
+  #define GPIO_ZM516X_MOTOR2_TURN_LOW()    st( GPIO_ZM516X_MOTOR2_SBIT = ACTIVE_HIGH(0); )
+  #define GPIO_ZM516X_MO_EN_TURN_LOW()     st( GPIO_ZM516X_MO_EN_SBIT  = ACTIVE_HIGH(0); )
+  #define GPIO_ZM516X_PHASE_A_TURN_LOW()   st( GPIO_ZM516X_PHASE_A_SBIT= ACTIVE_HIGH(0); )
+#endif
+
 /* LED Configuration */
 
 #if defined (HAL_BOARD_CC2530EB_REV17) && !defined (HAL_PA_LNA) && !defined (HAL_PA_LNA_CC2590)
@@ -100,62 +155,6 @@ extern "C"
 #endif
 
 #define HAL_LED_BLINK_DELAY()   st( { volatile uint32 i; for (i=0; i<0x5800; i++) { }; } )
-
-#ifdef HAL_ZLG_ZIGBEE
-	#define GPIO_ZM516X_RESET_BV    BV(3)
-	#define GPIO_ZM516X_DEF_BV    BV(6)
-	#define GPIO_ZM516X_WAKEUP_BV    BV(2)
-	#define GPIO_ZM516X_SLEEP_BV    BV(7)
-	#define GPIO_ZM516X_MOTOR1_BV    BV(6)
-	#define GPIO_ZM516X_MOTOR2_BV    BV(7)
-	#define GPIO_ZM516X_MO_EN_BV    BV(5)
-	#define GPIO_ZM516X_PHASE_A_BV    BV(4)
-	#define GPIO_ZM516X_KEY1_BV    BV(0)
-	#define GPIO_ZM516X_KEY2_BV    BV(1)
-
-	   
-	#define GPIO_ZM516X_RESET_SBIT    P1_3
-	#define GPIO_ZM516X_DEF_SBIT    P0_6
-	#define GPIO_ZM516X_WAKEUP_SBIT    P1_2
-	#define GPIO_ZM516X_SLEEP_SBIT    P0_7
-	#define GPIO_ZM516X_MOTOR1_SBIT    P1_6
-	#define GPIO_ZM516X_MOTOR2_SBIT    P1_7
-	#define GPIO_ZM516X_MO_EN_SBIT    P1_5
-	#define GPIO_ZM516X_PHASE_A_SBIT    P1_4
-	#define GPIO_ZM516X_KEY1_SBIT    P1_0
-	#define GPIO_ZM516X_KEY2_SBIT    P1_1
-
-
-	#define GPIO_ZM516X_RESET_DDR                       P1DIR
-	#define GPIO_ZM516X_DEF_DDR                       P0DIR
-	#define GPIO_ZM516X_WAKEUP_DDR                       P1DIR
-	#define GPIO_ZM516X_SLEEP_DDR                       P0DIR
-	#define GPIO_ZM516X_MOTOR1_DDR                       P1DIR
-	#define GPIO_ZM516X_MOTOR2_DDR                       P1DIR
-	#define GPIO_ZM516X_MO_EN_DDR                       P1DIR
-	#define GPIO_ZM516X_PHASE_A_DDR                       P1DIR
-	#define GPIO_ZM516X_KEY1_DDR                       P1DIR
-	#define GPIO_ZM516X_KEY2_DDR                       P1DIR
-
-
-	#define GPIO_ZM516X_RESET_TURN_HIGH()    GPIO_ZM516X_RESET_SBIT = 1;
-	#define GPIO_ZM516X_DEF_TURN_HIGH()    GPIO_ZM516X_DEF_SBIT = 1;
-	#define GPIO_ZM516X_WAKEUP_TURN_HIGH()    GPIO_ZM516X_WAKEUP_SBIT = 1;
-	#define GPIO_ZM516X_SLEEP_TURN_HIGH()    GPIO_ZM516X_SLEEP_SBIT = 1;
-	#define GPIO_ZM516X_MOTOR1_TURN_HIGH()    GPIO_ZM516X_MOTOR1_SBIT = 1;
-	#define GPIO_ZM516X_MOTOR2_TURN_HIGH()    GPIO_ZM516X_MOTOR2_SBIT = 1;
-	#define GPIO_ZM516X_MO_EN_TURN_HIGH()    GPIO_ZM516X_MO_EN_SBIT = 1;
-	#define GPIO_ZM516X_PHASE_A_TURN_HIGH()    GPIO_ZM516X_PHASE_A_SBIT = 1;
-	  
-	#define GPIO_ZM516X_RESET_TURN_LOW()    GPIO_ZM516X_RESET_SBIT = 0;
-	#define GPIO_ZM516X_DEF_TURN_LOW()    GPIO_ZM516X_DEF_SBIT = 0;
-	#define GPIO_ZM516X_WAKEUP_TURN_LOW()    GPIO_ZM516X_WAKEUP_SBIT = 0;
-	#define GPIO_ZM516X_SLEEP_TURN_LOW()    GPIO_ZM516X_SLEEP_SBIT = 0;
-	#define GPIO_ZM516X_MOTOR1_TURN_LOW()    GPIO_ZM516X_MOTOR1_SBIT = 0;
-	#define GPIO_ZM516X_MOTOR2_TURN_LOW()    GPIO_ZM516X_MOTOR2_SBIT = 0;
-	#define GPIO_ZM516X_MO_EN_TURN_LOW()    GPIO_ZM516X_MO_EN_SBIT = 0;
-	#define GPIO_ZM516X_PHASE_A_TURN_LOW()    GPIO_ZM516X_PHASE_A_SBIT = 0;
-#endif
 
 /* 1 - Green */
 #define LED1_BV                        BV(0)
@@ -445,12 +444,12 @@ st( \
 
 /* Set to TRUE enable LCD usage, FALSE disable it */
 #ifndef HAL_LCD
-#define HAL_LCD TRUE
+#define HAL_LCD FALSE
 #endif
 
 /* Set to TRUE enable LED usage, FALSE disable it */
 #ifndef HAL_LED
-#define HAL_LED TRUE
+#define HAL_LED FALSE
 #endif
 #if (!defined BLINK_LEDS) && (HAL_LED == TRUE)
 #define BLINK_LEDS
@@ -458,7 +457,7 @@ st( \
 
 /* Set to TRUE enable KEY usage, FALSE disable it */
 #ifndef HAL_KEY
-#define HAL_KEY TRUE
+#define HAL_KEY FALSE
 #endif
 
 /* Set to TRUE enable UART usage, FALSE disable it */
@@ -521,6 +520,3 @@ st( \
 #endif
 
 #endif /* HAL_BOARD_CFG_H */
-
-/*******************************************************************************
-*/

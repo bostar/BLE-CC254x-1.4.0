@@ -48,11 +48,12 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
 {
   VOID  task_id;
   static unsigned char test_state = 0;
-  
+  static unsigned char justOnPower = 0;
   if ( events & ZIGBEE_START_DEVICE_EVT )
   {
-    osal_set_event( zigbee_TaskID, ZIGBEE_RESET_ZM516X_EVT );
-   
+    setMotorStop();
+    justOnPower = 1;
+    osal_set_event( zigbee_TaskID, ZIGBEE_RESET_ZM516X_EVT );   
     return ( events ^ ZIGBEE_START_DEVICE_EVT );
   }
   
@@ -89,12 +90,20 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
      }
      uartReturnFlag.readLocalCfg_SUCCESS = 0;
      osal_stop_timerEx( zigbee_TaskID, ZIGBEE_READ_ZM516X_INFO_EVT);
-     if((stDevInfo->devDestNetAddr[0] != 0x00) || (stDevInfo->devDestNetAddr[1] != 0x00))
+     if(justOnPower)
      {
-       osal_start_timerEx( zigbee_TaskID, ZIGBEE_WRITE_ZM516X_INFO_EVT,10);
-       return ( events ^ ZIGBEE_READ_ZM516X_INFO_EVT );
+      if((stDevInfo->devDestNetAddr[0] != 0x00) || (stDevInfo->devDestNetAddr[1] != 0x00)\
+       || (stDevInfo->devChannel != 15) || (stDevInfo->devLoacalNetAddr[0] != 0xFF) || \
+         (stDevInfo->devLoacalNetAddr[1] != 0xFE) || (stDevInfo->devPanid[0] != 0x00) || \
+           (stDevInfo->devPanid[1] != 0x00) )
+      {
+          osal_start_timerEx( zigbee_TaskID, ZIGBEE_WRITE_ZM516X_INFO_EVT,10);
+          return ( events ^ ZIGBEE_READ_ZM516X_INFO_EVT );
+      }
+      else
+        justOnPower = 0;
      }
-     else
+     if(!justOnPower)
      {
        if(!uartReturnFlag.applyNetWork_SUCCESS)
        {
@@ -134,8 +143,16 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   {
      if( !uartReturnFlag.writeLocalCfg_SUCCESS )
      {
-        stDevInfo->devDestNetAddr[0] = 0x00;
-        stDevInfo->devDestNetAddr[1] = 0x00;
+        if(justOnPower)
+        {
+          stDevInfo->devDestNetAddr[0] = 0x00;
+          stDevInfo->devDestNetAddr[1] = 0x00;
+          stDevInfo->devChannel = 15;
+          stDevInfo->devLoacalNetAddr[0] = 0xFF;
+          stDevInfo->devLoacalNetAddr[1] = 0xFE;
+          stDevInfo->devPanid[0] = 0x00;
+          stDevInfo->devPanid[1] = 0x00;
+        }
         write_local_cfg(localAddress, stDevInfo);
         osal_start_timerEx( zigbee_TaskID, ZIGBEE_WRITE_ZM516X_INFO_EVT ,1000 );
         return ( events ^ ZIGBEE_WRITE_ZM516X_INFO_EVT );
@@ -173,6 +190,20 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
        break;
      case 3:
        setLedBit(uartReturnFlag.ledBitState);
+       break;
+     case 4:
+       setMotorForward();
+       test_state = 6;       
+       osal_start_timerEx( zigbee_TaskID, BOARD_TEST_EVT, 1000 );
+       break;
+     case 5:
+       setMotorReverse();
+       test_state = 6;
+       osal_start_timerEx( zigbee_TaskID, BOARD_TEST_EVT, 1000 );
+       break;
+     case 6:
+       setMotorStop();
+       test_state = 7;
        break;
      default:
        break;
@@ -222,6 +253,14 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
           break;
         case stateGpioSet:
           test_state = 0;
+          osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
+          break;
+        case stateMotorForward:
+          test_state = 4;
+          osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
+          break;
+        case stateMotorReverse:
+          test_state = 5;
           osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
           break;
         default:

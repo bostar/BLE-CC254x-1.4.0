@@ -89,6 +89,8 @@ build/
 *.dep
 *.ewp
 *.sfr
+*.dni
+*/settings/*
 
 # Visual C++ cache files
 ipch/
