@@ -91,6 +91,7 @@ extern "C"
 
 /* ZLG Zigbee Gpio defines */
 
+#define HAL_GPIO_CHANGE_DELAY()   st( { volatile uint32 i; for (i=0; i<0x320; i++) { }; } )
 #ifdef HAL_ZLG_ZIGBEE
   #define GPIO_ZM516X_RESET_BV    BV(3)
   #define GPIO_ZM516X_DEF_BV      BV(6)
@@ -142,6 +143,26 @@ extern "C"
   #define GPIO_ZM516X_MOTOR2_TURN_LOW()    st( GPIO_ZM516X_MOTOR2_SBIT = ACTIVE_HIGH(0); )
   #define GPIO_ZM516X_MO_EN_TURN_LOW()     st( GPIO_ZM516X_MO_EN_SBIT  = ACTIVE_HIGH(0); )
   #define GPIO_ZM516X_PHASE_A_TURN_LOW()   st( GPIO_ZM516X_PHASE_A_SBIT= ACTIVE_HIGH(0); )
+   
+  #define SET_ZM516X_SLEEP() {GPIO_ZM516X_SLEEP_TURN_HIGH();\
+                              HAL_GPIO_CHANGE_DELAY();\
+                              GPIO_ZM516X_SLEEP_TURN_LOW();\
+                              HAL_GPIO_CHANGE_DELAY();\
+                              GPIO_ZM516X_SLEEP_TURN_HIGH();}
+  #define SET_ZM516X_WAKEUP() {GPIO_ZM516X_WAKEUP_TURN_HIGH();\
+                                HAL_GPIO_CHANGE_DELAY();\
+                                GPIO_ZM516X_WAKEUP_TURN_LOW();\
+                                  HAL_GPIO_CHANGE_DELAY();}
+  #define SET_ZM516X_RESET() {GPIO_ZM516X_RESET_TURN_LOW();\
+                                HAL_GPIO_CHANGE_DELAY();\
+                                GPIO_ZM516X_RESET_TURN_HIGH();\
+                                  HAL_GPIO_CHANGE_DELAY();}
+  #define RESTORE_ZM516X_FACTORY() { GPIO_ZM516X_DEF_TURN_LOW();\
+                                    GPIO_ZM516X_RESET_TURN_LOW();\
+                                    HAL_GPIO_CHANGE_DELAY();\
+                                    GPIO_ZM516X_RESET_TURN_HIGH();\
+                                    HAL_GPIO_CHANGE_DELAY();\
+                                    GPIO_ZM516X_DEF_TURN_HIGH();}
 #endif
 
 /* LED Configuration */
