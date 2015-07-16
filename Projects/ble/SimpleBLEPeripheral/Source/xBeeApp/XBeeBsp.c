@@ -1,24 +1,29 @@
 #include "XBeeBsp.h"
 #include "XBeeAtCmd.h"
 #include "hal_zlg.h"
+#include "OnBoard.h"
+
+#if defined _XBEE_APP_
 
 void initXBeeBsp(void)
 {
-    set_temporary_io_dir(localAddress,ZLG_GPIO_DIR);
+   
 }
 
 void setBeepOn(void)
 {
-    set_temporary_io_level(localAddress,BEEPON);
+    
 }
 
 void setBeepOff(void)
 {
-    //zlgIOLevel &= ~BEEPON;
-    set_temporary_io_level(localAddress,BEEPOFF);
+    
 }
 
 void setLedBit(unsigned char bits)
 {
-    set_temporary_io_level(localAddress,bits);
+   
 }
+
+  
+#endif

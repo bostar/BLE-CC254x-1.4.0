@@ -5,35 +5,35 @@
 **
 **
 ********************************************************************/
-
-
 #include "XBeeAPI.h"
 #include "hal_types.h"
 #include "npi.h"
 #include "XBeeAtCmd.h"
+#include "OnBoard.h"
 
+#if defined _USE_XBEE_
 
 /*******************************************************************
-**brief 实现对XBee的D0脚的设置
-**param ATParam 设置参数        
+**brief 打开蜂鸣器
+**param none        
 **reval none
 *******************************************************************/
-void XBeeSetD0(D0Mode ATParam)
+void XBeeOpenBuzzer()
 {
-  uint8 *cmd=0;
-  *cmd = ATParam;
-  API_AtCmd(Response,D0,0x81,cmd);
+  uint8 cmd=0;
+  cmd = 5;
+  API_AtCmd(Response,P2,0x81,&cmd);
 }
 /*******************************************************************
-**brief 实现对XBee的D1脚的设置
-**param ATParam 设置参数        
+**brief 关闭蜂鸣器
+**param none       
 **reval none
 *******************************************************************/
-void XBeeSetD1(D1Mode ATParam)
+void XBeeSetD1()
 {
   uint8 *cmd=0;
-  *cmd = ATParam;
-  API_AtCmd(Response,D1,0x81,cmd);
+  *cmd = 4;
+  API_AtCmd(Response,P2,0x81,cmd);
 }
 
 
@@ -41,6 +41,7 @@ void XBeeSetD1(D1Mode ATParam)
 
 
 
+#endif
 
 
 

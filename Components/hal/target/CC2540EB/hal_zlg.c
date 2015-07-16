@@ -48,7 +48,7 @@
 #include "hal_zlg.h"
 #include "osal.h"
 #include "hal_board.h"
-
+#include "OnBoard.h"
 /***************************************************************************************************
  *                                              TYPEDEFS
  ***************************************************************************************************/
@@ -80,6 +80,7 @@
  *
  * @return  None
  ***************************************************************************************************/
+#if defined(HAL_ZLG_ZIGBEE)&& (HAL_ZLG_ZIGBEE == TRUE)
 void HalZlgInit (void)
 {
   GPIO_ZM516X_RESET_TURN_HIGH();
@@ -104,6 +105,17 @@ void HalZlgInit (void)
   
   //HalGpioSet(HAL_GPIO_ZM516X_ALL,1);
 }
+#endif
+#if defined(HAL_XBEE_ZIGBEE)&& (HAL_XBEE_ZIGBEE == TRUE)
+void HalXbeeInit (void)
+{
+  GPIO_XBEE_RESET_TURN_HIGH();
+  GPIO_XBEE_RTS_TURN_HIGH();
+  P2SEL &= 0xFE;
+  GPIO_XBEE_RESET_DDR |= GPIO_XBEE_RESET_BV;
+  GPIO_XBEE_RTS_DDR |= GPIO_XBEE_RTS_BV;
+}
+#endif
 
 /***************************************************************************************************
  * @fn      HalGpioSet
@@ -114,6 +126,7 @@ void HalZlgInit (void)
  *          mode - BLINK, FLASH, TOGGLE, ON, OFF
  * @return  None
  ***************************************************************************************************/
+#if defined(HAL_ZLG_ZIGBEE)&& (HAL_ZLG_ZIGBEE == TRUE)
 uint8 HalGpioSet (uint8 pin, uint8 level)
 {
   switch(pin)
@@ -173,7 +186,30 @@ uint8 HalGpioGet (uint8 pin)
     return 0;
   }
 }
+#endif
 
+#if defined(HAL_XBEE_ZIGBEE)&& (HAL_XBEE_ZIGBEE == TRUE)
+uint8 HalGpioSet (uint8 pin, uint8 level)
+{
+  switch(pin)
+  {
+    case HAL_GPIO_XBEE_RESET:
+      GPIO_XBEE_RESET_SBIT = level;
+      break;
+    case HAL_GPIO_XBEE_RTS:
+      GPIO_XBEE_RTS_SBIT = level;
+      break;
+    default:
+      break;
+  }
+  return 0;
+}
+
+uint8 HalGpioGet (uint8 pin)
+{
+  return 0;
+}
+#endif
 /***************************************************************************************************
 ***************************************************************************************************/
 

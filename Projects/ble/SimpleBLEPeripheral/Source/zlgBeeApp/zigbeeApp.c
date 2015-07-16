@@ -4,13 +4,14 @@
 #include "npi.h"
 #include "OnBoard.h"
 
-#if defined _USE_ZM516X_
+#if defined ZIGBEE_APP
 
 #include "zigbeeApp.h"
 #include "hal_zlg.h"
 #include "zlgAtCmd.h"
 #include "zlg_protocol.h"
 #include "zlg_bsp.h"
+
 
 /*
 const uint8 temp[cmd][len] = {{0,12}{1,11}};

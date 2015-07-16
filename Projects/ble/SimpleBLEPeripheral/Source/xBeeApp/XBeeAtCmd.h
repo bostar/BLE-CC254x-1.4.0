@@ -54,9 +54,27 @@ typedef struct
   uint8 a;     //无意义 调试用
 }TypeAPIEsCmd;  //API转义命令帧
 
+typedef struct       //IO口API没命令帧
+{
+  uint8 start_delimiter;
+  uint8 len_msb;
+  uint8 len_lsb;
+  uint8 frame_type;
+  uint8 frame_id;
+  uint8 atCmd[2];
+  uint8 param;
+  uint8 checksum;
+}XBeeApiIOCmd;
 
-extern void API_AtCmd(IsResp FramID,ATCommand InATCmd,uint8 status,uint8 *CmdData);     //发送AT命令帧，配置&读取XBee信息
-extern void xbee_api_checksum(uint8 *begin,uint16 length);
+
+
+
+
+
+void XBeeOpenBuzzer();      //打开蜂鸣器
+void XBeeCloseBuzzer();     //关闭蜂鸣器
+void API_AtCmd(IsResp FramID,ATCommand InATCmd,uint8 status,uint8 *CmdData);     //发送AT命令帧，配置&读取XBee信息
+uint8 XBeeApiChecksum(uint8 *begin,uint16 length);
 
 
 

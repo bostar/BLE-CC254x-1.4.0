@@ -95,7 +95,12 @@ extern "C"
 #define NPI_UART_INT_ENABLE            TRUE
 
 #if !defined( NPI_UART_BR )
+#if defined ( ZIGBEE_APP )
 #define NPI_UART_BR                    HAL_UART_BR_115200
+#endif
+#if defined  _XBEE_APP_ 
+#define NPI_UART_BR                    HAL_UART_BR_9600 
+#endif
 #endif // !NPI_UART_BR
 
 /*******************************************************************************

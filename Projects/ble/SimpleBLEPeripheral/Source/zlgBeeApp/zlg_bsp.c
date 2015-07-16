@@ -1,6 +1,9 @@
 #include "zlg_bsp.h"
 #include "zlgAtCmd.h"
 #include "hal_zlg.h"
+#include "OnBoard.h"
+
+#if defined ZIGBEE_APP
 
 void initZlgBsp(void)
 {
@@ -40,3 +43,5 @@ void setMotorReverse(void)
     HalGpioSet( HAL_GPIO_ZM516X_MOTOR1, 1 );
     HalGpioSet( HAL_GPIO_ZM516X_MOTOR2, 0 );
 }
+
+#endif

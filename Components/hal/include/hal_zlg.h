@@ -57,7 +57,7 @@ extern "C"
 /*********************************************************************
  * CONSTANTS
  */
-
+#if defined(HAL_ZLG_ZIGBEE)&& (HAL_ZLG_ZIGBEE == TRUE)
 /* LEDS - The LED number is the same as the bit position */
 #define HAL_GPIO_ZM516X_RESET     0x01
 #define HAL_GPIO_ZM516X_DEF     0x02
@@ -97,8 +97,17 @@ extern void HalZlgInit( void );
  * Set the LED ON/OFF/TOGGLE.
  */
 extern uint8 HalGpioSet( uint8 led, uint8 mode );
+#endif
+#if defined(HAL_XBEE_ZIGBEE)&& (HAL_XBEE_ZIGBEE == TRUE)
+#define HAL_GPIO_XBEE_RESET     0x01
+#define HAL_GPIO_XBEE_RTS     0x02
+extern void HalXbeeInit( void );
 
-
+/*
+ * Set the LED ON/OFF/TOGGLE.
+ */
+extern uint8 HalGpioSet( uint8 led, uint8 mode );
+#endif
 /*********************************************************************
 *********************************************************************/
 
