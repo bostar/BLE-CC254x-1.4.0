@@ -14,7 +14,10 @@ enum cfg_cmd {
 //	cmdChangePanidChannel = 0x04,
 //	cmdAllNodeReset = 0x05,
 	cmdLinkTest = 0x06,
-	cmdAckLinkTest = 0x07
+	cmdAckLinkTest = 0x07,
+        cmdRestoreFactoryConfig = 0x08,
+        cmdHeartBeatPkg = 0x09,
+        cmdDateRequest = 0x0A
 };
 
 enum sen_cmd {

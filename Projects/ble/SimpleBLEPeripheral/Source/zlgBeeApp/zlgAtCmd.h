@@ -76,6 +76,7 @@ typedef struct _uartReturnStatus_t {
     unsigned char writeLocalCfg_SUCCESS;
     unsigned char applyNetWork_SUCCESS;
     unsigned char gpioDirectionSet_SUCCESS;
+    unsigned char restoreSuccessFlag;
     unsigned char ledBitState;
 }uartReturnStatus_t;
 

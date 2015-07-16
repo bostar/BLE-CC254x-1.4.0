@@ -341,10 +341,16 @@ uint8 receive_data( uint8 *buf, uint16 len )
       osal_memcpy(stDevInfo,&rbuf[4],sizeof(dev_info_t));
       break;
     case enModifyCfg:
-    //rbuf[4-5]:网络地址 rbuf[6]:00成功
+      //rbuf[4-5]:网络地址 rbuf[6]:00成功
       if(rbuf[6] == 0x00)
         uartReturnFlag.writeLocalCfg_SUCCESS = 1;
       state = stateWriteCfg;
+      break;
+    case enResetCfg:
+      //rbuf[4-5]:网络地址 rbuf[6-7]:设备类型 rbuf[8]:00成功
+      if(rbuf[8] == 0x00)
+        uartReturnFlag.restoreSuccessFlag = 1;
+      state = stateRestoreFactoryConfig;
       break;
     default:      
       break;
@@ -426,6 +432,14 @@ uint8 receive_data( uint8 *buf, uint16 len )
         {
             state = stateAckLinkTest;//ackLinkTest();
         }
+        break;
+      case cmdRestoreFactoryConfig:
+        {
+          //
+          state = stateRestoreFactoryConfig;
+        }
+        break;
+      default:
         break;
       }
   }
