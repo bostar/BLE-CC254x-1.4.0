@@ -41,6 +41,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   if ( events & ZIGBEE_START_DEVICE_EVT )
   {
     setMotorStop();
+//    setMotorForward();
     justOnPower = 1;
 //    GPIO_ZM516X_DEF_TURN_LOW();
 //    HAL_GPIO_CHANGE_DELAY();
@@ -194,7 +195,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   if(events & ZIGBEE_LINK_TEST_EVT)
   {
      ackLinkTest( &stDevInfo->devLoacalIEEEAddr[0] );
-     osal_start_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT,10);
+ //    osal_start_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT,10);
      return ( events ^ ZIGBEE_LINK_TEST_EVT );
   }
   
@@ -215,87 +216,77 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   if( events & ZIGBEE_SLEEP_ZM516X_EVT )
   {
      SET_ZM516X_SLEEP();
-     osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,3000 );
+     osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,1000 );
      return ( events ^ ZIGBEE_SLEEP_ZM516X_EVT );
   }
   
   if( events & ZIGBEE_WAKE_ZM516X_EVT )
   {
      SET_ZM516X_WAKEUP();
-     osal_start_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT ,1000 );
+//     osal_start_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT ,1000 );
      return ( events ^ ZIGBEE_WAKE_ZM516X_EVT );
   }
   
   if(events & UART_RECEIVE_EVT)
   {
-//    uint16 numBytes;
-//    static unsigned char numBytes_old = 0;
-    unsigned char state_back;
-//    numBytes = NPI_RxBufLen();
-//    if( numBytes > 0 )
-//    {
-//      if(numBytes_old == numBytes)
-//      {
-//        
+        unsigned char state_back;
+ 
         state_back = receive_data( rbuf, idx+1 ); 
         osal_memset(rbuf,0,idx++);
         idx = 0;
-        switch(state_back)
+        switch( state_back )
         {
-        case stateReadCfg:
-          osal_set_event( zigbee_TaskID, ZIGBEE_READ_ZM516X_INFO_EVT );
-          break;
-        case stateWriteCfg:
-          osal_set_event( zigbee_TaskID, ZIGBEE_WRITE_ZM516X_INFO_EVT );
-          break;
-        case stateReset:
-          osal_set_event( zigbee_TaskID, ZIGBEE_RESET_ZM516X_EVT );
-          break;
-        case stateApplyNetwork:
-          osal_set_event( zigbee_TaskID, ZIGBEE_APPLY_NETWORK_EVT );
-          break;
-        case stateAckLinkTest:
-          osal_set_event( zigbee_TaskID, ZIGBEE_LINK_TEST_EVT );
-          break;
-        case stateRestoreFactoryConfig:
-          osal_set_event( zigbee_TaskID, ZIGBEE_RESTORE_FACTORY_EVT );
-          break;
-        case stateBeepOn:
-          test_state = 1;
-          osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
-          break;
-        case stateBeepOff:
-          test_state = 2;
-          osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
-          break;
-        case stateLedTest:
-          test_state = 3;
-          osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
-          break;
-        case stateGpioSet:
-          test_state = 0;
-          osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
-          break;
-        case stateMotorForward:
-          test_state = 4;
-          osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
-          break;
-        case stateMotorReverse:
-          test_state = 5;
-          osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
-          break;
-        default:
-          break;
+            case stateReadCfg:
+              osal_set_event( zigbee_TaskID, ZIGBEE_READ_ZM516X_INFO_EVT );
+              break;
+            case stateWriteCfg:
+              osal_set_event( zigbee_TaskID, ZIGBEE_WRITE_ZM516X_INFO_EVT );
+              break;
+            case stateReset:
+              osal_set_event( zigbee_TaskID, ZIGBEE_RESET_ZM516X_EVT );
+              break;
+            case stateApplyNetwork:
+              osal_set_event( zigbee_TaskID, ZIGBEE_APPLY_NETWORK_EVT );
+              break;
+            case stateAckLinkTest:
+              osal_set_event( zigbee_TaskID, ZIGBEE_LINK_TEST_EVT );
+              break;
+            case stateRestoreFactoryConfig:
+              osal_set_event( zigbee_TaskID, ZIGBEE_RESTORE_FACTORY_EVT );
+              break;
+            case stateHeartBeat:
+              osal_set_event( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT );
+              break;
+            case stateDataRequset:
+              dateRequset();
+              break;
+            case stateBeepOn:
+              test_state = 1;
+              osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
+              break;
+            case stateBeepOff:
+              test_state = 2;
+              osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
+              break;
+            case stateLedTest:
+              test_state = 3;
+              osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
+              break;
+            case stateGpioSet:
+              test_state = 0;
+              osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
+              break;
+            case stateMotorForward:
+              test_state = 4;
+              osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
+              break;
+            case stateMotorReverse:
+              test_state = 5;
+              osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
+              break;
+            default:
+              break;
         }
-//        numBytes_old = 0;
-//      }
-//      else
-//      {
-//        numBytes_old = numBytes;
-//        osal_stop_timerEx( zigbee_TaskID, UART_RECEIVE_EVT );
-//        osal_start_timerEx( zigbee_TaskID, UART_RECEIVE_EVT, 3 );
-//      }
-//    }
     return ( events ^ UART_RECEIVE_EVT );
   }
   // Discard unknown events
@@ -384,7 +375,36 @@ static void npiCBack_uart( uint8 port, uint8 events )
           NPI_ReadTransport(&revPara.cmd,1);
           numBytes -= 1;
           rbuf[idx++] = revPara.cmd;
+          //to get heart beat pkg len
+          if((revPara.header[0] == 'C') && (revPara.header[1] == 'F') && \
+              (revPara.header[2] == 'G') && (revPara.cmd == cmdHeartBeatPkg))
+          {
+              pktState = NPI_SERIAL_PACK_HEARTBEAT_LEN;
+              break;
+          }
           revPara.len = referenceCmdLength(revPara.header,revPara.cmd);
+          if(revPara.len == 0)
+          {
+            pktState = NPI_SERIAL_PACK_HEAD;
+            done = TRUE;
+            osal_set_event( zigbee_TaskID, UART_RECEIVE_EVT );
+          }
+          else
+            pktState = NPI_SERIAL_PACK_DATA;
+        }
+        break;
+      case NPI_SERIAL_PACK_HEARTBEAT_LEN:
+        {
+          if (numBytes < 1)
+          {
+            // not enough data to progress, so leave it in driver buffer
+            done = TRUE;
+            break;
+          }
+          NPI_ReadTransport(&revPara.len,1);
+          numBytes -= 1;
+          rbuf[idx++] = revPara.len;
+          revPara.len = revPara.len*2;
           if(revPara.len == 0)
           {
             pktState = NPI_SERIAL_PACK_HEAD;
@@ -486,6 +506,12 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
        break;*/
      case cmdLinkTest:
        cmd_len = 8;
+       break;
+     case cmdRestoreFactoryConfig:
+       cmd_len = 0;
+       break;
+     case cmdHeartBeatPkg:
+       cmd_len = 2;
        break;
      default:
        break;

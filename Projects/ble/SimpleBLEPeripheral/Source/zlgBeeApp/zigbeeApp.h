@@ -52,6 +52,8 @@ typedef enum{
     stateMotorReverse = 0x15,
     stateAckLinkTest = 0x16,
     stateRestoreFactoryConfig = 0x17,
+    stateHeartBeat = 0x18,
+    stateDataRequset = 0x19,
     stateTest = 0x99,
     stateNoWork = 0xff
 }state_t;
@@ -62,6 +64,7 @@ typedef enum {
     NPI_SERIAL_PACK_CMD,
     NPI_SERIAL_PACK_LEN,
     NPI_SERIAL_PACK_DATA,
+    NPI_SERIAL_PACK_HEARTBEAT_LEN,
 } npi_serial_parse_state_t;
 
 typedef enum {

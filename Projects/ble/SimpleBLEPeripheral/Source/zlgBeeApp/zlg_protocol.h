@@ -15,9 +15,9 @@ enum cfg_cmd {
 //	cmdAllNodeReset = 0x05,
 	cmdLinkTest = 0x06,
 	cmdAckLinkTest = 0x07,
-        cmdRestoreFactoryConfig = 0x08,
-        cmdHeartBeatPkg = 0x09,
-        cmdDateRequest = 0x0A
+    cmdRestoreFactoryConfig = 0x08,
+    cmdHeartBeatPkg = 0x09,
+    cmdDateRequest = 0x0A
 };
 
 enum sen_cmd {
@@ -44,6 +44,7 @@ enum motor_cmd {
 void applicateForNetwork(unsigned char *IEEEAddress);
 //void ackChangeNodeType(void);
 void ackLinkTest(unsigned char *IEEEAddress);
+void dateRequset(void);
 void switchLockControl(LockSW_t cmd);
 
 #endif

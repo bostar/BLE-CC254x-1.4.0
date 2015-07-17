@@ -41,6 +41,17 @@ void ackLinkTest(unsigned char *IEEEAddress)
     NPI_WriteTransport( (unsigned char *)wbuf , 11 );
 }
 
+void dateRequset(void)
+{
+    char wbuf[4];
+    wbuf[0] = 'C';
+    wbuf[1] = 'F';
+    wbuf[2] = 'G';
+    wbuf[3] = cmdDateRequest;//cmd  
+    
+    NPI_WriteTransport( (unsigned char *)wbuf , 4 );
+}
+
 void switchLockControl(LockSW_t cmd)
 {
     char wbuf[5];
