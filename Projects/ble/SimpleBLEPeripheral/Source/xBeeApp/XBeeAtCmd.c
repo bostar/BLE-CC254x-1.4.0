@@ -14,19 +14,6 @@
 
 #if defined _XBEE_APP_
 
-/************************************************
-**brief 发送API格式的AT命令帧
-**param FramID  命令帧是否需要应答，参数在IsResp内取值
-**      ATCmd   要发送的AT命令
-**      status  最高位是否发送命令内容，1有命令参数，0查询该命令的值
-                低7位为发送命令参数的长度
-**      CmdData 指向发送命令参数的指针 数据长度在0-0x7f个字节之间
-**reval none
-************************************************/
-void API_AtCmd(IsResp FramID,ATCommand InATCmd,uint8 status,uint8 *CmdData)     //发送AT命令帧，配置&读取XBee信息
-{
-
-}
 /************************************************************
 **brief 搜寻节点
 **
@@ -57,51 +44,81 @@ void API_AtCmd(IsResp FramID,ATCommand InATCmd,uint8 status,uint8 *CmdData)     
 **
 ************************************************************/
 
-
-static uint8 wbuf[255];
-/*******************************************************************
-**brief 打开蜂鸣器
-**param none        
-**reval none
-*******************************************************************/
-void XBeeOpenBuzzer()
+/***********************************************************
+**brief 设置IO口状态
+**param
+**reval
+***********************************************************/
+void XBeeSetIO(XBeeIOParam ioparam,IOStatus state)
 {
-  uint8 i;
+  uint8 wbuf[9];
   XBeeApiIOCmd *cmd = (XBeeApiIOCmd*)wbuf;
   cmd->start_delimiter  = 0x7E;
   cmd->len_msb          = 0x00;
   cmd->len_lsb          = 0x05;
   cmd->frame_type       = 0x08;
   cmd->frame_id         = 0x52;
-  cmd->atCmd[0]         = 'P';
-  cmd->atCmd[1]         = '1';
-  cmd->param            = 0x05;
-  i = cmd->frame_type + cmd->frame_id + cmd->atCmd[0] + cmd->atCmd[1] + cmd->param;
-  cmd->checksum = 0xff- i;
+  switch(ioparam)
+  {
+    case IO_P0:
+      cmd->atCmd[0]         = 'P';
+      cmd->atCmd[1]         = '0';
+      break;
+    case IO_P1:
+      cmd->atCmd[0]         = 'P';
+      cmd->atCmd[1]         = '1';
+      break;
+    case IO_P2:
+      cmd->atCmd[0]         = 'P';
+      cmd->atCmd[1]         = '2';
+      break;
+    case IO_P3:
+      cmd->atCmd[0]         = 'P';
+      cmd->atCmd[1]         = '3';
+      break;
+    case IO_D0:
+      cmd->atCmd[0]         = 'D';
+      cmd->atCmd[1]         = '0';
+      break;
+    case IO_D1:
+      cmd->atCmd[0]         = 'D';
+      cmd->atCmd[1]         = '1';
+      break;
+    case IO_D2:
+      cmd->atCmd[0]         = 'D';
+      cmd->atCmd[1]         = '2';
+      break;
+    case IO_D3:
+      cmd->atCmd[0]         = 'D';
+      cmd->atCmd[1]         = '3';
+      break;
+    case IO_D4:
+      cmd->atCmd[0]         = 'D';
+      cmd->atCmd[1]         = '4';
+      break;
+    case IO_D5:
+      cmd->atCmd[0]         = 'D';
+      cmd->atCmd[1]         = '5';
+      break;
+    case IO_D6:
+      cmd->atCmd[0]         = 'D';
+      cmd->atCmd[1]         = '6';
+      break;
+    case IO_D7:
+      cmd->atCmd[0]         = 'D';
+      cmd->atCmd[1]         = '7';
+      break;
+    case IO_D8:
+      cmd->atCmd[0]         = 'D';
+      cmd->atCmd[1]         = '8';
+      break;
+  }
+  
+  cmd->param   = (state == Low)?4:5;
+  //cmd->checksum = 0xff- i;
+  cmd->checksum = XBeeApiChecksum(((uint8*)cmd)+3,5);
   NPI_WriteTransport((uint8*)cmd,9);
 }
-/*******************************************************************
-**brief 关闭蜂鸣器
-**param none       
-**reval none
-*******************************************************************/
-void XBeeCloseBuzzer()
-{
-  uint8 i;
-  XBeeApiIOCmd *cmd = (XBeeApiIOCmd*)wbuf;
-  cmd->start_delimiter  = 0x7E;
-  cmd->len_msb          = 0x00;
-  cmd->len_lsb          = 0x05;
-  cmd->frame_type       = 0x08;
-  cmd->frame_id         = 0x52;
-  cmd->atCmd[0]         = 'P';
-  cmd->atCmd[1]         = '1';
-  cmd->param            = 0x04;
-  i = cmd->frame_type + cmd->frame_id + cmd->atCmd[0] + cmd->atCmd[1] + cmd->param;
-  cmd->checksum = 0xff- i;
-  NPI_WriteTransport((uint8*)cmd,9);
-}
-
 
 
 

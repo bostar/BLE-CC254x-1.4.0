@@ -15,7 +15,6 @@
 #include "XBeeProtocol.h"
 #include "XBeeBsp.h"
 #include "hal_types.h"
-#include "XBeeAPI.h"
 #include "OnBoard.h"
 #include "xbee_api_opt.h"
 
@@ -60,14 +59,14 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
   if( events & XBEE_IO_TEST )
   {
     //xbee_api_atcmd_set_led(XBEE_LED1,LED_ON);
-    XBeeCloseBuzzer();
+    XBeeOpenBuzzer;
     osal_start_timerEx( XBeeTaskID, XBEE_CLOSE_LED, 1000 );
     return ( events ^ XBEE_IO_TEST );
   }
   if( events & XBEE_CLOSE_LED )
   {   
     //xbee_api_atcmd_set_led(XBEE_LED1,LED_OFF);
-    XBeeOpenBuzzer();
+    XBeeCloseBuzzer;
     return ( events ^ XBEE_CLOSE_LED );
   }
 

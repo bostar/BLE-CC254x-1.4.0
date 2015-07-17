@@ -17,8 +17,8 @@ extern "C"
 
 // Simple BLE Peripheral Task Events
 #define XBEE_START_DEVICE_EVT                              0x0001
-#define XBEE_IO_TEST                                     0x0002
-#define XBEE_CLOSE_LED                                 0x0004
+#define XBEE_IO_TEST                                       0x0002
+#define XBEE_CLOSE_LED                                     0x0004
 #define XBEE_UART_RECEIVE_EVT                              0x0008
 #define XBEE_BOARD_TEST_EVT                                0x0010
 #define XBEE_READ_UART_BUFFER_EVT                          0x0020
@@ -32,6 +32,20 @@ extern "C"
 #define z6                         0x2000
 #define z8                         0x4000
 #define z7                         0x8000
+  
+#define XBeeOpenBuzzer   XBeeSetIO(IO_P2,High)
+#define XBeeCloseBuzzer  XBeeSetIO(IO_P2,Low)
+#define XBeeOpenLED1     XBeeSetIO(IO_P1,High)
+#define XBeeCloseLED1    XBeeSetIO(IO_P1,Low)
+#define XBeeOpenLED2     XBeeSetIO(IO_D4,High)
+#define XBeeCloseLED2    XBeeSetIO(IO_D4,Low)
+#define XBeeOpenLED3     XBeeSetIO(IO_D5,High)
+#define XBeeCloseLED3    XBeeSetIO(IO_D5,Low)
+#define XBeeOpenLED4     XBeeSetIO(IO_D3,High)
+#define XBeeCloseLED4    XBeeSetIO(IO_D3,Low)
+#define XBeeOpenRDDILED  XBeeSetIO(IO_P2,High)
+#define XBeeCloseRSSILED XBeeSetIO(IO_P2,Low)
+
 /*********************************************************************
  * MACROS
  */

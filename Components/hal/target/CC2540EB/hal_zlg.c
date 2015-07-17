@@ -48,6 +48,7 @@
 #include "hal_zlg.h"
 #include "osal.h"
 #include "hal_board.h"
+#include "XBeeAtCmd.h"
 
 /***************************************************************************************************
  *                                              TYPEDEFS

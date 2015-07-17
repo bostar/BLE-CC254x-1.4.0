@@ -65,17 +65,34 @@ typedef struct       //IO口API没命令帧
   uint8 param;
   uint8 checksum;
 }XBeeApiIOCmd;
+typedef enum    
+{
+  IO_P0    =       1,
+  IO_P1    =       2,
+  IO_P2    =       3,
+  IO_P3    =       4,
+  IO_D0    =       5,
+  IO_D1    =       6,
+  IO_D2    =       7,
+  IO_D3    =       8,
+  IO_D4    =       9,
+  IO_D5    =      10,
+  IO_D6    =      11,
+  IO_D7    =      12,
+  IO_D8    =      13 
+}XBeeIOParam;
+
+typedef enum
+{
+  High  =  1,
+  Low   =  2
+}IOStatus;
 
 
 
-
-
-
-void XBeeOpenBuzzer();      //打开蜂鸣器
-void XBeeCloseBuzzer();     //关闭蜂鸣器
 void API_AtCmd(IsResp FramID,ATCommand InATCmd,uint8 status,uint8 *CmdData);     //发送AT命令帧，配置&读取XBee信息
 uint8 XBeeApiChecksum(uint8 *begin,uint16 length);
-
+void XBeeSetIO(XBeeIOParam ioparam,IOStatus state);
 
 
 
