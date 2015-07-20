@@ -80,17 +80,11 @@ build/
 *.map
 *.hex
 *.d51
-*.bat
-*.wsdt
-*.dbgdt
 *.r51
 *.exe
 *.pdf
-*.dep
-*.ewp
-*.sfr
-*.dni
-*/settings/*
+
+
 
 # Visual C++ cache files
 ipch/
