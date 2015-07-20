@@ -370,5 +370,53 @@ void HalUARTIsrDMA(void)
 #endif
 }
 
+#include "ioCC2541.h"
+
+void InitUart1(void)
+{
+ /*CLKCONCMD &= ~0x40; // 设置系统时钟源为 32MHZ晶振
+ while(CLKCONSTA & 0x40); // 等待晶振稳定 
+CLKCONCMD &= ~0x47; // 设置系统主时钟频率为 32MHZ
+ */
+PERCFG |= 0x02;     // Set UART1 I/O to Alt. 2 location on P1.
+P1SEL  |= 0xC0;         // Enable Peripheral control of Rx/Tx on Px.
+U1UCR |= 0X02;                 // Flush it.
+ 
+U1CSR |= 0xC0; 
+U1GCR |= 11;
+U1BAUD |= 216;
+UTX1IF = 0; 
+IEN0 |= 0x08; // 开总中断，接收中断 
+}
+ 
+/**************************************************************** 
+串口发送字符串函数 
+****************************************************************/ 
+void Uart1_Send_Byte(char *Data,int len) 
+{
+  int j; 
+  for(j=0;j<len;j++) 
+  { 
+    U1DBUF = *Data++; 
+    while(UTX1IF == 0); //发送完成标志位
+    UTX1IF = 0; 
+  } 
+}
+ 
+
+static  uint8 temp[5] = {0};
+HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
+{ 
+  static uint8 index = 0;
+  HAL_ENTER_ISR();
+  URX1IF = 0; // 清中断标志 
+  temp[index ++] = U1DBUF; 
+  if(index >= 5)
+  {
+    index = 1;
+  }
+  HAL_EXIT_ISR();
+}
+
 /******************************************************************************
 ******************************************************************************/

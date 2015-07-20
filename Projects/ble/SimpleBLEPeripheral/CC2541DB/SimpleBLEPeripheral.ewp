@@ -1344,10 +1344,10 @@
           <state>xPLUS_BROADCASTER</state>
           <state>xHAL_LCD=TRUE</state>
           <state>xHAL_LED=FALSE</state>
-          <state>xHAL_ZLG_ZIGBEE=TRUE</state>
-          <state>HAL_XBEE_ZIGBEE=TRUE</state>
-          <state>xZIGBEE_APP</state>
-          <state>_XBEE_APP_</state>
+          <state>HAL_ZLG_ZIGBEE=TRUE</state>
+          <state>xHAL_XBEE_ZIGBEE=TRUE</state>
+          <state>ZIGBEE_APP</state>
+          <state>x_XBEE_APP_</state>
           <state>HAL_UART=TRUE</state>
           <state>HAL_UART_DMA=1</state>
           <state>HAL_UART_ISR=0</state>

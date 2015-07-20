@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=810974094
+Checksum=-286477252
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -60,9 +60,7 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.59.5" 1 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.53.4" 1 0 0 0 "" 0 ""
-Count=2
+Count=0
 [ChipconEmu]
 Stop timers on halt=0
 Leave target running=1
