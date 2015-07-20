@@ -412,18 +412,6 @@ uint8 receive_data( uint8 *buf, uint16 len )
                   uartReturnFlag.applyNetWork_SUCCESS = 1;
                 }
                 break;
-                /*      case cmdChangeNodeType:
-                ackChangeNodeType();
-                break;
-                case cmdChangePanidChannel:
-                stDevInfo->devPanid[0] = rbuf[4];
-                stDevInfo->devPanid[1] = rbuf[5];
-                stDevInfo->devChannel = rbuf[6];
-                state = stateWriteCfg;
-                break;
-                case cmdAllNodeReset:
-                state = stateReset;
-                break;*/
             case cmdLinkTest:
                 if(!memcmp(&stDevInfo->devLoacalIEEEAddr[0],&rbuf[4],8))
                 {
@@ -512,6 +500,17 @@ uint8 receive_data( uint8 *buf, uint16 len )
                 break;
             default:
                 break;
+        }
+    }
+    if((rbuf[0] == 'S')&&(rbuf[1] == 'E')&&(rbuf[2] == 'N'))
+    {
+        switch( rbuf[3] )
+        {
+        case cmdSensorCalibration:
+            //开始标定
+            break;
+        default:
+            break;
         }
     }
     return state;

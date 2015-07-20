@@ -331,7 +331,7 @@ static void npiCBack_uart( uint8 port, uint8 events )
               if(!numBytes)
                   return;
           }while( !(revPara.header[0] == 0xab || revPara.header[0] == 0xde || revPara.header[0] == 'C' \
-                || revPara.header[0] == 'T') );
+                || revPara.header[0] == 'T' || revPara.header[0] == 'S') );
           NPI_ReadTransport( &revPara.header[1], 2 );
           numBytes -= 2;
           rbuf[idx++] = revPara.header[0];

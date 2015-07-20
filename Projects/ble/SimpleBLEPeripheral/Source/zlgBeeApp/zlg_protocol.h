@@ -1,10 +1,16 @@
 #ifndef __ZLG_PROTOCOL_H__
 #define __ZLG_PROTOCOL_H__
 
-typedef enum _cmdLockControl {
-    UNLOCK = 0x00,
-    LOCK = 0x01
-}LockSW_t;
+typedef enum _cmdLockReturnState {
+    cmdLockOrUnlockSUCCESS = 0x01,
+    cmdunLockFailed = 0x02,
+    cmdLockFailed = 0x03
+}lockRS_t;
+
+typedef enum _cmdCarState {
+        cmdCarArrive = 0x01,
+        cmdCarLeave = 0x02
+} carState_t;
 
 enum cfg_cmd {
 	cmdCheckIn = 0x00,
@@ -21,7 +27,9 @@ enum cfg_cmd {
 };
 
 enum sen_cmd {
-	cmdSensorCal = 0x00,
+	cmdSensorCalibration = 0x00,
+    cmdEventReport = 0x01,
+    cmdBatteryRemainReport = 0x02
 };
 
 enum tst_cmd {
@@ -42,9 +50,9 @@ enum motor_cmd {
 };
 
 void applicateForNetwork(unsigned char *IEEEAddress);
-//void ackChangeNodeType(void);
 void ackLinkTest(unsigned char *IEEEAddress);
 void dateRequset(void);
-void switchLockControl(LockSW_t cmd);
-
+void ackSwitchLockControl(lockRS_t cmd);
+void eventReport(carState_t carState);
+void batteryRemainingReport(unsigned char voltage);
 #endif

@@ -14,20 +14,8 @@ void applicateForNetwork(unsigned char *IEEEAddress)
     wbuf[3] = cmdCheckIn;//cmd
 
     osal_memcpy( &wbuf[4],(char const *)IEEEAddress,8 );
-    NPI_WriteTransport( (unsigned char *)wbuf , 12 );
-    //set_temporary_cast_mode(unicast); 
+    NPI_WriteTransport( (unsigned char *)wbuf , 12 ); 
 }
-
-//void ackChangeNodeType(void)
-//{
-//    char wbuf[4];
-//    wbuf[0] = 'C';
-//    wbuf[1] = 'F';
-//    wbuf[2] = 'G';
-//    wbuf[3] = cmdAckChangeNodeType;//cmd
-//    
-//    NPI_WriteTransport( (unsigned char *)wbuf , 4 );
-//}
 
 void ackLinkTest(unsigned char *IEEEAddress)
 {
@@ -52,14 +40,39 @@ void dateRequset(void)
     NPI_WriteTransport( (unsigned char *)wbuf , 4 );
 }
 
-void switchLockControl(LockSW_t cmd)
+void ackSwitchLockControl(lockRS_t cmd)
 {
     char wbuf[5];
     wbuf[0] = 'C';
     wbuf[1] = 'T';
     wbuf[2] = 'L';
-    wbuf[3] = 0x00;//cmd
+    wbuf[3] = 0x01;//cmd
     wbuf[4] = cmd;
+    
+    NPI_WriteTransport( (unsigned char *)wbuf , 5 );
+}
+
+void eventReport(carState_t carState)
+{
+    char wbuf[5];
+    wbuf[0] = 'S';
+    wbuf[1] = 'E';
+    wbuf[2] = 'N';
+    wbuf[3] = cmdEventReport;
+    wbuf[4] = carState;
+    
+    NPI_WriteTransport( (unsigned char *)wbuf , 5 );
+}
+
+void batteryRemainingReport(unsigned char voltage)
+{
+    char wbuf[5];
+    
+    wbuf[0] = 'S';
+    wbuf[1] = 'E';
+    wbuf[2] = 'N';
+    wbuf[3] = cmdBatteryRemainReport;
+    wbuf[4] = voltage;
     
     NPI_WriteTransport( (unsigned char *)wbuf , 5 );
 }
