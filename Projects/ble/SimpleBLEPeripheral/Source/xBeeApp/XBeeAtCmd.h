@@ -45,6 +45,17 @@ typedef struct
   uint8 frame_type;
   uint8 frame_id;
   uint8 atCmd[2];
+}XBeeApiATCmdType; 
+
+  
+typedef struct
+{
+  uint8 start_delimiter;
+  uint8 len_msb;
+  uint8 len_lsb;
+  uint8 frame_type;
+  uint8 frame_id;
+  uint8 atCmd[2];
   uint8 atPara;
 //  uint8 CheckSum;
 }TypeAPICmd;    //API透传命令帧
@@ -90,11 +101,19 @@ typedef enum
 
 
 
-void API_AtCmd(IsResp FramID,ATCommand InATCmd,uint8 status,uint8 *CmdData);     //发送AT命令帧，配置&读取XBee信息
 uint8 XBeeApiChecksum(uint8 *begin,uint16 length);
-void XBeeSetIO(XBeeIOParam ioparam,IOStatus state);
-
-
+void XBeeSetIO(XBeeIOParam ioparam,IOStatus state);       //设置IO口状态
+int XBeeSendATCmd(int8* atcmd,uint8* pparam,uint8 len);   //发送zt指令
+int XBeeSetPanID(void);   //设置ID的值
+int XBeeReadPanID(void);  //读取ID
+int XBeeSetChannel(void); //设置信道
+int xbeeFR(void);  //
+int XBeeReadAI(void);
+int XBeeSendWR(void);
+int XBeeSendMY(void);
+int XBeeSetLT(uint8 time);
+int XBeeReadCH(void);
+int XbeeSendAC(void);                                    //发送AI命令
 
 
 

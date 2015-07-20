@@ -49,17 +49,22 @@ void XBeeInit( uint8 task_id )
 
 uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
 {
-  VOID  task_id;
+  VOID  task_id;    
+  uint8 ReBufLen=10;
+  uint8 ReBuf[100];
+  XBeeCloseLED1;   
   if ( events & XBEE_START_DEVICE_EVT )
   {
-    osal_set_event( XBeeTaskID, XBEE_IO_TEST );
-   
+    XBeeReadAI();
+  //  osal_start_timerEx( XBeeTaskID, XBEE_IO_TEST, 1000 );
+    while(ReBufLen==10)
+      ReBufLen = NPI_ReadTransport( ReBuf, 10 );
+    osal_set_event( XBeeTaskID, XBEE_IO_TEST );   
     return ( events ^ XBEE_START_DEVICE_EVT );
   }
   if( events & XBEE_IO_TEST )
   {
-    //xbee_api_atcmd_set_led(XBEE_LED1,LED_ON);
-    XBeeOpenBuzzer;
+    
     osal_start_timerEx( XBeeTaskID, XBEE_CLOSE_LED, 1000 );
     return ( events ^ XBEE_IO_TEST );
   }

@@ -49,6 +49,9 @@ extern "C"
 /*********************************************************************
  * MACROS
  */
+
+
+
 typedef enum{
     stateInit = 0x00,
     stateStart = 0x01,
