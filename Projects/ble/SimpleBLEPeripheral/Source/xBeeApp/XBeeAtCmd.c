@@ -186,7 +186,7 @@ int XBeeSetChannel(void)
   uint8 paramer[8],i=1;
   int8 *cmd = "SC";
   for(i=0;i<8;i++)
-     *(paramer+i) = 0x11;
+     *(paramer+i) = 0x0B;
   return XBeeSendATCmd(cmd,paramer,2);
 }
 /*************************************************************

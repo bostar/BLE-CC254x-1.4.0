@@ -18,9 +18,9 @@ extern "C"
 // Simple BLE Peripheral Task Events
 #define XBEE_START_DEVICE_EVT                              0x0001
 #define XBEE_IO_TEST                                       0x0002
-#define XBEE_CLOSE_LED                                     0x0004
-#define XBEE_UART_RECEIVE_EVT                              0x0008
-#define XBEE_BOARD_TEST_EVT                                0x0010
+#define XBEE_MCU_UART_RECEIVE_EVT                          0x0004 //串口标志位占用
+#define XBEE_CLOSE_LED                                     0x0008
+#define XBEE_REC_DATA_PROCESS_EVT                          0x0010
 #define XBEE_READ_UART_BUFFER_EVT                          0x0020
 #define XBEE_APPLY_NETWORK_EVT                             0x0040
 #define XBEE_WRITE_ZM516X_INFO_EVT                         0x0080
@@ -75,7 +75,7 @@ typedef enum{
 
 /* States for CRC parser */
 typedef enum {
-    NPI_SERIAL_PACK_HEAD,
+  NPI_SERIAL_PACK_HEAD,
     NPI_SERIAL_PACK_CMD,
     NPI_SERIAL_PACK_LEN,
     NPI_SERIAL_PACK_DATA,
@@ -97,6 +97,12 @@ typedef struct {
     unsigned char cmd;
     unsigned char len;
 }ptk_t;
+
+typedef struct
+{
+  uint8 data[255];
+  uint8 num;
+}XBeeUartRecDataDef;
 /*********************************************************************
  * FUNCTIONS
  */
