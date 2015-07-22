@@ -3,34 +3,20 @@
 
 #include "hal_types.h"
 
-typedef enum
-{
-  ATComd        =       0x08,           //发送AT指令
-  ATQueueComd   =       0x09,          //AT队列参数值
-  ZBTransReq    =       0x10,          //ZB发送请求
-  ZBAdrFram     =       0x11,           //显示寻址的ZB命令帧         
-  RenotATComdReq=       0x17,           //远程AT命令请求
-  CreateSourceRoute=    0x21,           //创建源路由
-  ATComdResponse=       0x88,           //AT命令应答
-  RFModemStatus =       0x8A,           //RF模块状态
-  ZBTransStats  =       0x8B,           //ZB发送结果状态标志
-  ZBReceivePacket=      0x90,           //ZB接收到RF数据包后，通过UAR转发
-  ZBExpRxInd    =       0x91,           //收到信息后，信息发送到UART
-  ZBIODataRxInd =       0X92,           //收到IO状态数据后发送到串口
-  XBReadInd     =       0x94,           //收到传感器数据后发送到串口
-  NodeIdenInd   =       0x95,           //节点识别标识
-  RemoteComdResp=       0x97,           //远程命令应答
-  OnAirUpdataFirmware=  0xA0,           //无线升级固件
-  RouteRecordInd=       0xA1,           //路由记录指示器       
-  MTORouteReqInd=       0xA3,           //多对一路由请求标示符
-}TypeXBeeAPIFram;
-
 
 typedef enum
 {
-  Response      =       0x52,
-  NoResponse    =       0x00,
+  RES       =       0x52,
+  NO_RES    =       0x00,
 }IsResp;        //应答模式
+
+typedef enum
+{
+  Default       =  0,
+  DisableACK    =  0x01,
+  EnableAPS     =  0x20,
+  ExtTimeout    =  0x40,
+}SetOptions;
 
 typedef enum
 {
@@ -45,8 +31,20 @@ typedef struct
   uint8 frame_type;
   uint8 frame_id;
   uint8 atCmd[2];
-}XBeeApiATCmdType; 
+}XBeeApiATCmdType;  //AT指令帧
 
+typedef struct
+{
+  uint8 start_delimiter;
+  uint8 len_msb;
+  uint8 len_lsb;
+  uint8 frame_type;
+  uint8 frame_id;
+  uint8 adr[8];
+  uint8 net_adr[2];
+  uint8 readius;
+  uint8 options;
+}XBeeTransReqType;  //zb发送请求帧
   
 typedef struct
 {
@@ -103,20 +101,20 @@ typedef enum
 
 uint8 XBeeApiChecksum(uint8 *begin,uint16 length);
 void XBeeSetIO(XBeeIOParam ioparam,IOStatus state);       //设置IO口状态
-int XBeeSendATCmd(int8* atcmd,uint8* pparam,uint8 len);   //发送zt指令
-int XBeeSetPanID(void);   //设置ID的值
-int XBeeReadPanID(void);  //读取ID
-int XBeeSetChannel(void); //设置信道
-int xbeeFR(void);  //
-int XBeeReadAI(void);
-int XBeeSendWR(void);
-int XBeeSendMY(void);
-int XBeeSetLT(uint8 time);
-int XBeeReadCH(void);
-int XbeeSendAC(void);                                    //发送AI命令
-
-
-
+uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes);   //发送zt指令
+uint16 XBeeSetPanID(IsResp IsRes);   //设置ID的值
+uint16 XBeeReadPanID(IsResp IsRes);  //读取ID
+uint16 XBeeSetChannel(IsResp IsRes); //设置信道
+uint16 XbeeFR(IsResp IsRes);  //
+uint16 XBeeReadAI(IsResp IsRes);
+uint16 XBeeSendWR(IsResp IsRes);
+uint16 XBeeSendMY(IsResp IsRes);
+uint16 XBeeReadCH(IsResp IsRes);
+uint16 XbeeSendAC(IsResp IsRes);                        
+uint16 XBeeSetLT(uint8 time,IsResp IsRes);
+uint16 XBeeSetZS(IsResp IsRes);
+uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len, IsResp IsRes); //xbee发送数据请求
+uint16 XBeeSendToCoor(uint8 *data,uint16 len,IsResp IsRes);  //向coordinator发送数据
 
 
 

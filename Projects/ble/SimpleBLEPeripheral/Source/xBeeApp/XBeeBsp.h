@@ -11,4 +11,5 @@ void setBeepOn(void);
 void setBeepOff(void);
 void setLedBit(unsigned char bits);
 uint16 XBeeUartRead(uint8* buff);
+void XBeeRourerJoinNet(void);  //¼ÓÈëÍøÂç
 #endif

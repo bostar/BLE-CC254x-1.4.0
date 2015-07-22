@@ -19,7 +19,7 @@ extern "C"
 #define XBEE_START_DEVICE_EVT                              0x0001
 #define XBEE_IO_TEST                                       0x0002
 #define XBEE_MCU_UART_RECEIVE_EVT                          0x0004 //串口标志位占用
-#define XBEE_CLOSE_LED                                     0x0008
+#define XBEE_MCU_UART_SEND_EVT                             0x0008
 #define XBEE_REC_DATA_PROCESS_EVT                          0x0010
 #define XBEE_READ_UART_BUFFER_EVT                          0x0020
 #define XBEE_APPLY_NETWORK_EVT                             0x0040
@@ -46,6 +46,8 @@ extern "C"
 #define XBeeOpenRDDILED  XBeeSetIO(IO_P2,High)
 #define XBeeCloseRSSILED XBeeSetIO(IO_P2,Low)
 
+#define XBEE_JN       13
+#define XBEE_NOT_JN   15
 /*********************************************************************
  * MACROS
  */

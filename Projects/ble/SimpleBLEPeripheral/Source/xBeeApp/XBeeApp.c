@@ -36,7 +36,8 @@ const uint8 CFG_CMD_NONVOLATILE[3] = {0XAB,0XBC,0XCD};
  * LOCAL VARIABLES
  */
 static uint8 XBeeTaskID;               // Task ID for internal task/event processing       
-static XBeeUartRecDataDef XBeeUartRec; //串口接收缓存数据   
+static XBeeUartRecDataDef XBeeUartRec; //串口接收缓存数据  
+//static uint8 IsXBeeJN=0;
 
 void XBeeInit( uint8 task_id )
 {
@@ -54,20 +55,28 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
   static uint8 i=0;
   if ( events & XBEE_START_DEVICE_EVT )
   {   
-    osal_set_event( XBeeTaskID, XBEE_IO_TEST );   
+    osal_set_event( XBeeTaskID, XBEE_MCU_UART_SEND_EVT );   
     return ( events ^ XBEE_START_DEVICE_EVT );
   }
-  if( events & XBEE_IO_TEST )
+  if( events & XBEE_MCU_UART_SEND_EVT )
   {
+    uint8 data[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
     if(i==0){
-      XBeeReadAI();
+      //XBeeReadAI();
+      //XBeeRourerJoinNet();
+      XBeeSendToCoor(data,3,RES);
       i++;
     }
-    osal_start_timerEx( XBeeTaskID, XBEE_IO_TEST, 100 );
-    return ( events ^ XBEE_IO_TEST );
+    osal_start_timerEx( XBeeTaskID, XBEE_START_DEVICE_EVT, 100 );
+    return ( events ^ XBEE_MCU_UART_SEND_EVT );
   }
   if( events & XBEE_REC_DATA_PROCESS_EVT )  //处理串口收到数据
   { 
+    
+    
     osal_start_timerEx( XBeeTaskID, XBEE_IO_TEST, 100 );  
     return ( events ^ XBEE_REC_DATA_PROCESS_EVT );
   }
@@ -83,7 +92,7 @@ static void npiCBack_uart( uint8 port, uint8 events )
   uint8 cnt,checksum=0;
   uint16 numBytes=0,RecLen=0;
   static uint16 APICmdLen=0;
-  if(events & HAL_UART_RX_TIMEOUT)
+  if(events & XBEE_MCU_UART_RECEIVE_EVT)
   {
     numBytes = NPI_RxBufLen();
     if(numBytes==0)
