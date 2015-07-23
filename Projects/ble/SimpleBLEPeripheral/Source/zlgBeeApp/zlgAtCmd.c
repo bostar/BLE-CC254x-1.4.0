@@ -316,6 +316,7 @@ uint8 receive_data( uint8 *buf, uint16 len )
 {
     uint8 state = stateNoWork;
 
+    osal_memset( rbuf, 0xff, UART_READ_BUF_LEN );
     osal_memcpy( rbuf, buf, len );
     if((rbuf[0] == 0xab)&&(rbuf[1] == 0xbc)&&(rbuf[2] == 0xcd))
     {
@@ -384,6 +385,8 @@ uint8 receive_data( uint8 *buf, uint16 len )
               break;
             case enReadAdcValue:
               //buf[4-5]:addr;buf[6-7]:adc_value
+              uartReturnFlag.readAdcSuccessFlag = 1;
+              uartReturnFlag.adc_value = (uint16)rbuf[6] << 8 | rbuf[7];
               break;
             case enSetUnicastOrBroadcast:
               if(rbuf[4] == 0x00)

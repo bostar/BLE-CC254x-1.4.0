@@ -28,6 +28,7 @@ extern "C"
 #define ZIGBEE_RESTORE_FACTORY_EVT                           0x0200
 #define ZIGBEE_SLEEP_ZM516X_EVT                              0x0400
 #define ZIGBEE_WAKE_ZM516X_EVT                               0x0800
+#define READ_ZIGBEE_ADC_EVT                                  0x1000
 /*********************************************************************
  * MACROS
  */

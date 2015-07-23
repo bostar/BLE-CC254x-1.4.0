@@ -42,3 +42,8 @@ void setMotorReverse(void)
     HalGpioSet( HAL_GPIO_ZM516X_MOTOR1, 1 );
     HalGpioSet( HAL_GPIO_ZM516X_MOTOR2, 0 );
 }
+
+void update_adc_value(void)
+{
+    read_temporary_adc_value(localAddress);
+}

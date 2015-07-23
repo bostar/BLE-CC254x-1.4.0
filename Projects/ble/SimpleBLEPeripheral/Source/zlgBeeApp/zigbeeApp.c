@@ -41,15 +41,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   if ( events & ZIGBEE_START_DEVICE_EVT )
   {
     setMotorStop();
-//    setMotorForward();
-    justOnPower = 1;
-//    GPIO_ZM516X_DEF_TURN_LOW();
-//    HAL_GPIO_CHANGE_DELAY();
-//    SET_ZM516X_RESET();
-//    GPIO_ZM516X_DEF_TURN_HIGH();
-////    RESTORE_ZM516X_FACTORY();
-//    osal_start_timerEx( zigbee_TaskID, ZIGBEE_READ_ZM516X_INFO_EVT, 1000 ); 
-    
+    justOnPower = 1;   
     osal_set_event( zigbee_TaskID, ZIGBEE_RESET_ZM516X_EVT );   
     return ( events ^ ZIGBEE_START_DEVICE_EVT );
   }
@@ -89,6 +81,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
        if(!uartReturnFlag.applyNetWork_SUCCESS)
        {
          osal_start_timerEx( zigbee_TaskID, ZIGBEE_APPLY_NETWORK_EVT ,10);
+         osal_start_timerEx( zigbee_TaskID, READ_ZIGBEE_ADC_EVT,20);//add to test
          return ( events ^ ZIGBEE_READ_ZM516X_INFO_EVT );
        }
        else
@@ -199,6 +192,13 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
      return ( events ^ ZIGBEE_LINK_TEST_EVT );
   }
   
+  if(events & READ_ZIGBEE_ADC_EVT)
+  {
+      read_temporary_adc_value(localAddress);
+      osal_start_reload_timer( zigbee_TaskID, READ_ZIGBEE_ADC_EVT,1000);
+      return ( events ^ READ_ZIGBEE_ADC_EVT );
+  }
+  
   if(events & ZIGBEE_RESTORE_FACTORY_EVT)
   {
      if(!uartReturnFlag.restoreSuccessFlag)
@@ -231,8 +231,8 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   {
         unsigned char state_back;
  
-        state_back = receive_data( rbuf, idx+1 ); 
-        osal_memset(rbuf,0,idx++);
+        state_back = receive_data( rbuf, idx ); 
+        osal_memset(rbuf,0,idx);
         idx = 0;
         switch( state_back )
         {

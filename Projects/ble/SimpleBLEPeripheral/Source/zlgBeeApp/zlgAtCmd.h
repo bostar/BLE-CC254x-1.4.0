@@ -3,10 +3,6 @@
 
 #include "hal_types.h"
 
-extern const uint8 CFG_CMD_NONVOLATILE[];
-//#define CFG_CMD_NONVOLATILE     {0XAB,0XBC,0XCD}
-//#define CFG_CMD_VOLATILE        {0XDE,0XDF,0XEF}
-//unsigned char CFG_CMD_NONVOLATILE[3] = {0XAB,0XBC,0XCD};
 typedef enum {
     show_enable = 0x01,
     show_disable = 0x00
@@ -77,7 +73,9 @@ typedef struct _uartReturnStatus_t {
     unsigned char applyNetWork_SUCCESS;
     unsigned char gpioDirectionSet_SUCCESS;
     unsigned char restoreSuccessFlag;
+    unsigned char readAdcSuccessFlag;
     unsigned char ledBitState;
+    unsigned short adc_value;
 }uartReturnStatus_t;
 
 typedef struct _zlgContext_t {
