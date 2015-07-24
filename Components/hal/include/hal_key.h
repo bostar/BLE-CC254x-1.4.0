@@ -89,6 +89,11 @@ extern "C"
 #define HAL_KEY_BUTTON_UP      0x40  // Button up
 #define HAL_KEY_BUTTON_DOWN    0x80  // Button down
 
+/* StarboLimitSwitches */
+#define HAL_LIMIT_SW_UP      0x01  // Limit Switch up
+#define HAL_LIMIT_SW_M       0x02  // Limit Switch medium
+#define HAL_LIMIT_SW_DOWN    0x04  // Limit Switch down
+    
 /**************************************************************************************************
  * TYPEDEFS
  **************************************************************************************************/
