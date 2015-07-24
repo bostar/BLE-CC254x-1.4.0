@@ -1,10 +1,22 @@
+#include "bcomdef.h"
 #include "OSAL.h"
 #include "hal_uart.h"
 #include "hal_sensor.h"
 #include "npi.h"
 #include "OnBoard.h"
+#include "hal_key.h"
+
+#include "gatt.h"
+//#include "gapgattserver.h"
+#include "gattservapp.h"
+//#include "devinfoservice.h"
+//#include "simpleGATTprofile.h"
 
 #if defined _USE_ZM516X_
+
+#if defined ( STARBO_BOARD )
+    #include "simplekeys.h"
+#endif
 
 #include "zigbeeApp.h"
 #include "hal_zlg.h"
@@ -22,11 +34,25 @@ static uint8 idx = 0;
 static void npiCBack_uart( uint8 port, uint8 events );
 static unsigned char referenceCmdLength(unsigned char * const command,unsigned char cmd);
 
+#if defined ( STARBO_BOARD )
+static void zigBee_ProcessOSALMsg( osal_event_hdr_t *pMsg );
+static void zigBee_HandleKeys( uint8 shift, uint8 keys );
+#endif
+
 void Zigbee_Init( uint8 task_id )
 {
   zigbee_TaskID = task_id;
 
   NPI_InitTransport(npiCBack_uart);
+  InitUart1();
+#if defined( STARBO_BOARD )
+
+  SK_AddService( GATT_ALL_SERVICES ); // Simple Keys Profile
+
+  // Register for all key events - This app will handle all key events
+  RegisterForKeys( zigbee_TaskID );
+
+#endif // !STARBO_BOARD
   // Setup a delayed profile startup
   osal_set_event( zigbee_TaskID, ZIGBEE_START_DEVICE_EVT );
   //HalSensorReadReg(0x0a,NULL,3);
@@ -82,13 +108,14 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
        {
          osal_start_timerEx( zigbee_TaskID, ZIGBEE_APPLY_NETWORK_EVT ,10);
          osal_start_timerEx( zigbee_TaskID, READ_ZIGBEE_ADC_EVT,20);//add to test
-         return ( events ^ ZIGBEE_READ_ZM516X_INFO_EVT );
+//         return ( events ^ ZIGBEE_READ_ZM516X_INFO_EVT );
        }
        else
        {
          test_state = 0;
          uartReturnFlag.applyNetWork_SUCCESS = 0;
          osal_start_timerEx( zigbee_TaskID, BOARD_TEST_EVT ,10 );
+         osal_start_timerEx( zigbee_TaskID, UART1_READ_HMC5983_EVT ,20 );
 //         return ( events ^ ZIGBEE_READ_ZM516X_INFO_EVT );
        }
      }
@@ -96,6 +123,20 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
      return ( events ^ ZIGBEE_READ_ZM516X_INFO_EVT );
   }
   
+  if( events & UART1_READ_HMC5983_EVT )
+  {
+      Uart1_Send_Byte("get",osal_strlen("get"));
+      if(!mag_xyz.checked)
+      {
+          mag_xyz.checked = 1;
+          if( mag_xyz.x > mag_xyz.y )//just judge for future code
+                eventReport(cmdVehicleComming);
+          else
+                eventReport(cmdVehicleLeave);
+      }
+      osal_start_reload_timer( zigbee_TaskID, UART1_READ_HMC5983_EVT,1000);
+      return ( events ^ UART1_READ_HMC5983_EVT );
+  }
   
   if(events & ZIGBEE_APPLY_NETWORK_EVT)
   {
@@ -168,12 +209,12 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
      case 4:
        setMotorForward();
        test_state = 6;       
-       osal_start_timerEx( zigbee_TaskID, BOARD_TEST_EVT, 1000 );
+//       osal_start_timerEx( zigbee_TaskID, BOARD_TEST_EVT, 1000 );
        break;
      case 5:
        setMotorReverse();
        test_state = 6;
-       osal_start_timerEx( zigbee_TaskID, BOARD_TEST_EVT, 1000 );
+//       osal_start_timerEx( zigbee_TaskID, BOARD_TEST_EVT, 1000 );
        break;
      case 6:
        setMotorStop();
@@ -203,7 +244,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   {
      if(!uartReturnFlag.restoreSuccessFlag)
      {
-        restore_factory_settings( stDevInfo->devLoacalNetAddr[0]<<8 | stDevInfo->devLoacalNetAddr[1] );
+        restore_factory_settings( localAddress );
         osal_start_timerEx( zigbee_TaskID, ZIGBEE_RESTORE_FACTORY_EVT, 1000 );
         return ( events ^ ZIGBEE_RESTORE_FACTORY_EVT );
      }
@@ -227,7 +268,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
      return ( events ^ ZIGBEE_WAKE_ZM516X_EVT );
   }
   
-  if(events & UART_RECEIVE_EVT)
+  if( events & UART_RECEIVE_EVT )
   {
         unsigned char state_back;
  
@@ -289,6 +330,24 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
         }
     return ( events ^ UART_RECEIVE_EVT );
   }
+
+#if defined ( STARBO_BOARD )
+  if ( events & SYS_EVENT_MSG )
+  {
+    uint8 *pMsg;
+
+    if ( (pMsg = osal_msg_receive( zigbee_TaskID )) != NULL )
+    {
+      zigBee_ProcessOSALMsg( (osal_event_hdr_t *)pMsg );
+
+      // Release the OSAL message
+      VOID osal_msg_deallocate( pMsg );
+    }
+
+    // return unprocessed events
+    return (events ^ SYS_EVENT_MSG);
+  }
+#endif
   // Discard unknown events
   return 0;
 }
@@ -543,5 +602,48 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
    }
    return cmd_len;
 }
+
+#if defined ( STARBO_BOARD )
+static void zigBee_ProcessOSALMsg( osal_event_hdr_t *pMsg )
+{
+  switch ( pMsg->event )
+  {
+    case KEY_CHANGE:
+      zigBee_HandleKeys( ((keyChange_t *)pMsg)->state, ((keyChange_t *)pMsg)->keys );
+      break;
+
+  default:
+    break;
+  }
+}
+
+static void zigBee_HandleKeys( uint8 shift, uint8 keys )
+{
+  uint8 SK_Keys = 0;
+
+  VOID shift;  // Intentionally unreferenced parameter
+
+  if ( keys & HAL_LIMIT_SW_UP )
+  {
+    SK_Keys |= SK_LIMIT_UP;   
+    setMotorStop();
+  }
+
+  if ( keys & HAL_LIMIT_SW_M )
+  {
+    SK_Keys |= SK_LIMIT_M;    
+    setMotorStop();    
+  }
+
+  if ( keys & HAL_LIMIT_SW_DOWN )
+  {
+    SK_Keys |= SK_LIMIT_DOWN;    
+    setMotorStop();
+  }
+  // Set the value of the keys state to the Simple Keys Profile;
+  // This will send out a notification of the keys state if enabled
+  SK_SetParameter( SK_KEY_ATTR, sizeof ( uint8 ), &SK_Keys );
+}
+#endif // !STARBO_BOARD
 
 #endif

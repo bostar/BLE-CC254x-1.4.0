@@ -21,7 +21,7 @@ extern "C"
 #define ZIGBEE_READ_ZM516X_INFO_EVT                          0x0004
 #define UART_RECEIVE_EVT                                     0x0008
 #define BOARD_TEST_EVT                                       0x0010
-#define READ_UART_BUFFER_EVT                                 0x0020
+//#define READ_UART_BUFFER_EVT                                 0x0020
 #define ZIGBEE_APPLY_NETWORK_EVT                             0x0040
 #define ZIGBEE_WRITE_ZM516X_INFO_EVT                         0x0080
 #define ZIGBEE_LINK_TEST_EVT                                 0x0100
@@ -29,6 +29,7 @@ extern "C"
 #define ZIGBEE_SLEEP_ZM516X_EVT                              0x0400
 #define ZIGBEE_WAKE_ZM516X_EVT                               0x0800
 #define READ_ZIGBEE_ADC_EVT                                  0x1000
+#define UART1_READ_HMC5983_EVT                               0x2000
 /*********************************************************************
  * MACROS
  */
@@ -77,7 +78,6 @@ typedef enum {
     BASE_STATION_OTA,
     BASE_STATION_TST
 }command_word_t;
-
 
 typedef struct {
     unsigned char header[3];
