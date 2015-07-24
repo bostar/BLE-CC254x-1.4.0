@@ -402,20 +402,35 @@ void Uart1_Send_Byte(char *Data,int len)
     UTX1IF = 0; 
   } 
 }
- 
 
-static  uint8 temp[5] = {0};
+mag_xyz_t mag_xyz;
+static  uint8 temp[10] = {0};
+
 HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
 { 
   static uint8 index = 0;
+  uint8 add_sum,check;
+  
   HAL_ENTER_ISR();
   URX1IF = 0; // 清中断标志 
   temp[index ++] = U1DBUF; 
-  if(index >= 5)
+  
+  if( index >= 9 )
   {
-    index = 1;
+    index = 0;
+    add_sum = 0;
+    for(int i=0;i<9;i++)
+        add_sum += temp[i];
+    check = 0xFF - add_sum;
+    if(temp[0] == 0xAA && temp[1] == 0xBB && temp[2] == 0xCC && temp[9] == check)
+    {
+        mag_xyz.x = temp[3];
+        mag_xyz.y = temp[4];
+        mag_xyz.z = temp[5];
+        mag_xyz.checked = 0;
+    }
   }
-  (void)temp;//remove warning
+  
   HAL_EXIT_ISR();
 }
 
