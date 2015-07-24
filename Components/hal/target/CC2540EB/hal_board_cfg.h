@@ -91,7 +91,16 @@ extern "C"
 
 /* ZLG Zigbee Gpio defines */
 
-#define HAL_GPIO_CHANGE_DELAY()   st( { volatile uint32 i; for (i=0; i<0x320; i++) { }; } )
+//#define HAL_GPIO_CHANGE_DELAY()   st( { volatile uint32 i; for (i=0; i<0x320; i++) { }; } )
+#define HAL_GPIO_CHANGE_DELAY()   st( { volatile uint32 microSecs = 1500; while(microSecs--) {\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop");\
+  };})    // 32 NOPs == 1 usecs 
 #ifdef HAL_ZLG_ZIGBEE
   #define GPIO_ZM516X_RESET_BV    BV(3)
   #define GPIO_ZM516X_DEF_BV      BV(6)
@@ -478,7 +487,7 @@ st( \
 
 /* Set to TRUE enable KEY usage, FALSE disable it */
 #ifndef HAL_KEY
-#define HAL_KEY FALSE
+#define HAL_KEY TRUE
 #endif
 
 /* Set to TRUE enable UART usage, FALSE disable it */

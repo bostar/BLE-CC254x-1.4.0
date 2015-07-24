@@ -44,6 +44,9 @@
 #include "hal_mcu.h"
 #include "hal_sleep.h"
 #include "osal.h"
+
+#define STARBO_BOARD
+
 #define _USE_ZM516X_
 //#define _USE_XBEE_
 
