@@ -281,6 +281,7 @@
           <state>HAL_UART_ISR=0</state>
           <state>HAL_I2C=TRUE</state>
           <state>HAL_KEY=TRUE</state>
+          <state>xSTARBO_BOARD</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
