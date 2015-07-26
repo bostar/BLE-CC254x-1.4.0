@@ -47,7 +47,7 @@ void Zigbee_Init( uint8 task_id )
   InitUart1();
 #if defined( STARBO_BOARD )
 
-  SK_AddService( GATT_ALL_SERVICES ); // Simple Keys Profile
+  //SK_AddService( GATT_ALL_SERVICES ); // Simple Keys Profile
 
   // Register for all key events - This app will handle all key events
   RegisterForKeys( zigbee_TaskID );
@@ -74,6 +74,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   
   if(events & ZIGBEE_RESET_ZM516X_EVT)
   {     
+    setMotorForward();
      SET_ZM516X_RESET();
      osal_start_timerEx( zigbee_TaskID, ZIGBEE_READ_ZM516X_INFO_EVT, 10 );    
      return ( events ^ ZIGBEE_RESET_ZM516X_EVT );
@@ -642,7 +643,7 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
   }
   // Set the value of the keys state to the Simple Keys Profile;
   // This will send out a notification of the keys state if enabled
-  SK_SetParameter( SK_KEY_ATTR, sizeof ( uint8 ), &SK_Keys );
+  //SK_SetParameter( SK_KEY_ATTR, sizeof ( uint8 ), &SK_Keys );
 }
 #endif // !STARBO_BOARD
 

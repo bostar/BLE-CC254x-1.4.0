@@ -70,7 +70,7 @@ extern "C"
 #define HAL_KEY_SW_2 0x02  // Joystick right
 #define HAL_KEY_SW_5 0x04  // Joystick center
 #define HAL_KEY_SW_4 0x08  // Joystick left
-#define HAL_KEY_SW_3 0x10  // Joystick down
+#define HAL_KEY_SW_3 0x04  // Joystick down
 
 #define HAL_KEY_SW_6 0x20  // Button S1 if available
 #define HAL_KEY_SW_7 0x40  // Button S2 if available
