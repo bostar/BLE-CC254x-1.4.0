@@ -121,7 +121,7 @@ void InitBoard( uint8 level )
   else  // !OB_COLD
   {
     /* Initialize Key stuff */
-    OnboardKeyIntEnable = HAL_KEY_INTERRUPT_ENABLE;
+    OnboardKeyIntEnable = HAL_KEY_INTERRUPT_DISABLE;
     HalKeyConfig( OnboardKeyIntEnable, OnBoard_KeyCallback);
   }
 }

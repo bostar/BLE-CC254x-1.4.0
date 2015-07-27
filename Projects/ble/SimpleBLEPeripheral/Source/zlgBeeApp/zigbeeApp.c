@@ -6,9 +6,9 @@
 #include "OnBoard.h"
 #include "hal_key.h"
 
-#include "gatt.h"
+//#include "gatt.h"
 //#include "gapgattserver.h"
-#include "gattservapp.h"
+//#include "gattservapp.h"
 //#include "devinfoservice.h"
 //#include "simpleGATTprofile.h"
 
@@ -74,7 +74,6 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   
   if(events & ZIGBEE_RESET_ZM516X_EVT)
   {     
-    setMotorForward();
      SET_ZM516X_RESET();
      osal_start_timerEx( zigbee_TaskID, ZIGBEE_READ_ZM516X_INFO_EVT, 10 );    
      return ( events ^ ZIGBEE_RESET_ZM516X_EVT );
@@ -620,25 +619,21 @@ static void zigBee_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 
 static void zigBee_HandleKeys( uint8 shift, uint8 keys )
 {
-  uint8 SK_Keys = 0;
 
   VOID shift;  // Intentionally unreferenced parameter
-
-  if ( keys & HAL_LIMIT_SW_UP )
+//unlock
+  if ( keys == 0X06 )
   {
-    SK_Keys |= SK_LIMIT_UP;   
     setMotorStop();
   }
-
-  if ( keys & HAL_LIMIT_SW_M )
-  {
-    SK_Keys |= SK_LIMIT_M;    
+//lock
+  if ( keys == 0 )
+  { 
     setMotorStop();    
   }
-
-  if ( keys & HAL_LIMIT_SW_DOWN )
-  {
-    SK_Keys |= SK_LIMIT_DOWN;    
+//over limit
+  if ( keys == 0x01 )
+  {  
     setMotorStop();
   }
   // Set the value of the keys state to the Simple Keys Profile;
