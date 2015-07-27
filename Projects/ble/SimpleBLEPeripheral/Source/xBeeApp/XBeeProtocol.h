@@ -1,6 +1,9 @@
 #ifndef __XBEE_PROTOCOL_H__
 #define __XBEE_PROTOCOL_H__
 
+#include "hal_types.h"
+#include "XBeeApp.h"
+
 typedef enum _cmdLockControl {
     UNLOCK = 0x00,
     LOCK = 0x01
@@ -42,6 +45,10 @@ void applicateForNetwork(unsigned char *IEEEAddress);
 void ackChangeNodeType(void);
 void ackLinkTest(void);
 void switchLockControl(LockSW_t cmd);
-
+void CFGProcess(uint8 cmd);  //CFG´¦Àíº¯Êý
+void CTLProcess(uint8 cmd);
+void SENProcess(uint8 cmd);
+void OTAProcess(uint8 cmd);
+void TSTProcess(uint8 cmd);
 #endif
 

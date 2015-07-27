@@ -17,13 +17,13 @@ extern "C"
 
 // Simple BLE Peripheral Task Events
 #define XBEE_START_DEVICE_EVT                              0x0001
-#define XBEE_IO_TEST                                       0x0002
-#define XBEE_MCU_UART_RECEIVE_EVT                          0x0004 //串口标志位占用
+#define XBEE_JOIN_NET_EVT                                  0x0002
+#define XBEE_CTL_MCU_UART_READ_EVT                         0x0004    
 #define XBEE_MCU_UART_SEND_EVT                             0x0008
 #define XBEE_REC_DATA_PROCESS_EVT                          0x0010
-#define XBEE_READ_UART_BUFFER_EVT                          0x0020
+#define XBEE_MCU_UART_REA12D_EVT                             0x0020
 #define XBEE_APPLY_NETWORK_EVT                             0x0040
-#define XBEE_WRITE_ZM516X_INFO_EVT                         0x0080
+#define XBEE_IDLE_EVT                                      0x0080
 #define z1                         0x0100
 #define z2                         0x0200
 #define z3                         0x0400
@@ -48,11 +48,47 @@ extern "C"
 
 #define XBEE_JN       13
 #define XBEE_NOT_JN   15
+#define UNKNOW_NET    0
+#define NO_NET        1
+#define IN_NET        2
+#define IN_PARK_NET   3
+#define SUCCESS_TRANS 1
+#define FAIL_TRANS    2
 /*********************************************************************
  * MACROS
  */
 
+typedef enum
+{
+	ReqJion   	=	 0x01,
+	AllowJion	=	 0x02,
+	ReFactory	=	 0x03
 
+}CREprotocolType;
+
+typedef enum
+{
+  task1    =  1,
+}TaskSendType;
+
+typedef enum
+{
+  InNone     =     0,
+  JoinNet      =     1,
+  GetSH      =     2,
+  GetSL      =     3,
+  GetMY      =     4,
+  JoinPark     =     5,
+  NetOK      =     6,
+}FlagJionNetType;
+
+typedef enum
+{
+  ReadHead    =    1,
+  ReadLen     =    2,
+  ReadData    =    3,
+  ReadNone    =    4,
+}ToReadUARTType;
 
 typedef enum{
     stateInit = 0x00,
@@ -93,6 +129,11 @@ typedef enum {
     BASE_STATION_TST
 }command_word_t;
 
+typedef struct
+{
+  uint8 KeyCmdWord[3];
+  uint8 OptionCmdWord;
+}CmdWordType;
 
 typedef struct {
     unsigned char header[3];
@@ -102,9 +143,21 @@ typedef struct {
 
 typedef struct
 {
+  uint8 IEEEadr[8];
+  uint8 netadr[2];
+}XBeeAdrType;
+
+typedef struct
+{
   uint8 data[255];
   uint8 num;
 }XBeeUartRecDataDef;
+/***************************************************************/
+extern XBeeAdrType XBeeAdr;  //IEEE地址和当前的网络地址
+extern XBeeUartRecDataDef XBeeUartRec; //串口接收缓存数据  
+extern __xdata FlagJionNetType FlagJionNet;
+
+
 /*********************************************************************
  * FUNCTIONS
  */

@@ -28,7 +28,7 @@
 ************************************************************/
 uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len, IsResp IsRes)
 {
-  uint8 wbuf[256],cnt=0;
+  static uint8 wbuf[256],cnt=0;
   XBeeTransReqType *frame = (XBeeTransReqType*)wbuf;
   
   frame->start_delimiter = 0x7E;
@@ -152,12 +152,9 @@ void XBeeSetIO(XBeeIOParam ioparam,IOStatus state)
 /*********************************************************
 **biref 设置ID的值
 **********************************************************/
-uint16 XBeeSetPanID(IsResp IsRes)
+uint16 XBeeSetPanID(uint8 *panID,IsResp IsRes)
 {
-  uint8 panID[8],i=0;
   int8 *cmd = "ID";
-  for(i=0;i<8;i++)
-     *(panID+i) = 0x00;
   return XBeeSendATCmd(cmd,panID,8,IsRes);
 }
 /*********************************************************
@@ -170,6 +167,7 @@ uint16 XBeeSetZS(IsResp IsRes)
   *panID = 1;
   return XBeeSendATCmd(cmd,panID,1,IsRes);
 }
+
 /*********************************************************
 **biref 发送读取ID值命令
 **********************************************************/
@@ -191,7 +189,7 @@ uint16 XBeeReadAI(IsResp IsRes)
 /*********************************************************
 **biref 发送MY命令
 **********************************************************/
-uint16 XBeeSendMY(IsResp IsRes)
+uint16 XBeeReadMY(IsResp IsRes)
 {
   uint8 paramer[1];
   int8 *cmd = "MY";
@@ -257,6 +255,37 @@ uint16 XBeeSendWR(IsResp IsRes)
   int8 *cmd = "WR";
   return XBeeSendATCmd(cmd,paramer,0,IsRes);
 }
+/*********************************************************
+**biref 发送NJ命令
+**********************************************************/
+uint16 XBeeSetNJ(uint8 time, IsResp IsRes)
+{
+  uint8 paramer[1];
+  int8 *cmd = "NJ";
+  paramer[0]=time;
+  return XBeeSendATCmd(cmd,paramer,1,IsRes);
+}
+/*********************************************************
+**biref 发送SH命令
+**********************************************************/
+uint16 XBeeReadSH()
+{
+  uint8 paramer[1];
+  int8 *cmd = "SH";
+  paramer[0]=0;
+  return XBeeSendATCmd(cmd,paramer,0,RES);
+}
+/*********************************************************
+**biref 发送SL命令
+**********************************************************/
+uint16 XBeeReadSL()
+{
+  uint8 paramer[1];
+  int8 *cmd = "SL";
+  paramer[0]=0;
+  return XBeeSendATCmd(cmd,paramer,0,RES);
+}
+
 
 /***********************************************************
 **brief 向coordinator发送数据
@@ -268,12 +297,33 @@ uint16 XBeeSendToCoor(uint8 *data,uint16 len,IsResp IsRes)
   for(cnt=0;cnt<8;cnt++)
     adr[cnt] = 0;
   net_adr[0] = 0xFF;
-  net_adr[0] = 0xFE;
+  net_adr[1] = 0xFE;
   
   return XBeeTransReq(adr, net_adr, Default, data, len, IsRes);
 }
 
+/********************************************************
+**brief 单播发送
+********************************************************/
+uint16 XBeeUnicastTrans(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len,IsResp IsRes)
+{
+	return XBeeTransReq(adr,net_adr,options,rf_data,len,IsRes); 
+}
 
+/********************************************************
+**brief 发送广播
+********************************************************/
+uint16 XBeeBoardcastTrans(uint8 *data,uint16 len,IsResp IsRes)
+{
+	uint8 adr[8],net_adr[2],cnt;
+	for(cnt=0;cnt<8;cnt++)
+    	adr[cnt] = 0;
+	adr[6]     = 0xFF;
+	adr[7]     = 0xFF;
+	net_adr[0] = 0xff;
+	net_adr[1] = 0xfe;
+	return XBeeTransReq(adr,net_adr,ExtTimeout,data,len,IsRes);
+}
 
 /************************************************************
 **brief 求chencksum和

@@ -4,56 +4,41 @@
 #include "XBeeAtCmd.h"
 #include "OSAL.h"
 #include "OnBoard.h"
+#include "XBeeApp.h"
+#include "XBeeBsp.h"
 
 #if defined _XBEE_APP_
-#if 0
-void applicateForNetwork(unsigned char *IEEEAddress)
+
+void CFGProcess(uint8 cmd)
 {
-    char wbuf[12];
-
-    wbuf[0] = 'C';
-    wbuf[1] = 'F';
-    wbuf[2] = 'G';
-    wbuf[3] = 0x00;//cmd[5]
-
-    osal_memcpy( &wbuf[4],(char const *)IEEEAddress,8 );
-    NPI_WriteTransport( (unsigned char *)wbuf , 12 );
-    //set_temporary_cast_mode(unicast); 
+  switch(cmd)
+  {
+    case 0x00:
+      XBeeSetNJ(XBeeUartRec.data[19],NO_RES);
+    break;
+    case 0x02:
+      if(*(&cmd+1) == 0x01)
+        FlagJionNet = NetOK;
+      else
+        XBeeLeaveNet();
+        
+      break;
+    case 0x03:
+      break;
+    default:
+    break;
+  }
 }
+void CTLProcess(uint8 cmd)
+{}
+void SENProcess(uint8 cmd)
+{}
+void OTAProcess(uint8 cmd)
+{}
+void TSTProcess(uint8 cmd)
+{}
 
-void ackChangeNodeType(void)
-{
-    char wbuf[4];
-    wbuf[0] = 'C';
-    wbuf[1] = 'F';
-    wbuf[2] = 'G';
-    wbuf[3] = 0x03;//cmd
-    
-    NPI_WriteTransport( (unsigned char *)wbuf , 4 );
-}
 
-void ackLinkTest(void)
-{
-    char wbuf[4];
-    wbuf[0] = 'C';
-    wbuf[1] = 'F';
-    wbuf[2] = 'G';
-    wbuf[3] = 0x07;//cmd
-    
-    NPI_WriteTransport( (unsigned char *)wbuf , 4 );
-}
 
-void switchLockControl(LockSW_t cmd)
-{
-    char wbuf[5];
-    wbuf[0] = 'C';
-    wbuf[1] = 'T';
-    wbuf[2] = 'L';
-    wbuf[3] = 0x00;//cmd
-    wbuf[4] = cmd;
-    
-    NPI_WriteTransport( (unsigned char *)wbuf , 5 );
-}
 
-#endif
 #endif
