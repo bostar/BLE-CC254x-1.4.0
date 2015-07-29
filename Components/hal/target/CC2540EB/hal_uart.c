@@ -395,27 +395,40 @@ IEN0 |= 0x08; // 开总中断，接收中断
 void Uart1_Send_Byte(char *Data,int len) 
 {
   int j; 
+  GPIO_ZM516X_DIR_TURN_HIGH();
+  HAL_GPIO_CHANGE_DELAY();
   for(j=0;j<len;j++) 
   { 
     U1DBUF = *Data++; 
     while(UTX1IF == 0); //发送完成标志位
     UTX1IF = 0; 
   } 
+  HAL_GPIO_CHANGE_DELAY();
+  GPIO_ZM516X_DIR_TURN_LOW();
 }
 
 mag_xyz_t mag_xyz;
+mag_xyz_t old_mag_xyz;
+
 static  uint8 temp[10] = {0};
 
 HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
 { 
   static uint8 index = 0;
+  static int old_flag = 0;
   uint8 add_sum,check;
   
   HAL_ENTER_ISR();
   URX1IF = 0; // 清中断标志 
+  
+  if(temp[0] != 0xAA)
+  {
+    temp[index ++] = U1DBUF; 
+    index = 0;
+  }
   temp[index ++] = U1DBUF; 
   
-  if( index >= 9 )
+  if( index >= 10 )
   {
     index = 0;
     add_sum = 0;
@@ -424,10 +437,18 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
     check = 0xFF - add_sum;
     if(temp[0] == 0xAA && temp[1] == 0xBB && temp[2] == 0xCC && temp[9] == check)
     {
-        mag_xyz.x = temp[3];
-        mag_xyz.y = temp[4];
-        mag_xyz.z = temp[5];
+        mag_xyz.x = (unsigned short)temp[3] << 8 | temp[4];
+        mag_xyz.y = (unsigned short)temp[5] << 8 | temp[6];
+        mag_xyz.z = (unsigned short)temp[7] << 8 | temp[8];
         mag_xyz.checked = 0;
+        
+        if(!old_flag)
+        {
+          old_flag = 1;
+          old_mag_xyz.x = mag_xyz.x;
+          old_mag_xyz.y = mag_xyz.y;
+          old_mag_xyz.z = mag_xyz.z;
+        }
     }
   }
   

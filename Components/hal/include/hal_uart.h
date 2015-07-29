@@ -230,12 +230,13 @@ void InitUart1(void);
 void Uart1_Send_Byte(char *Data,int len) ;
 
 typedef struct _xyz {
-    uint8 x;
-    uint8 y;
-    uint8 z;
+    int16 x;
+    int16 y;
+    int16 z;
     uint8 checked;
 } mag_xyz_t;
 extern mag_xyz_t mag_xyz;
+extern mag_xyz_t old_mag_xyz;
 /***************************************************************************************************
 ***************************************************************************************************/
 

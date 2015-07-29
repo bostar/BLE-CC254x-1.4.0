@@ -87,7 +87,19 @@ typedef struct {
 /*********************************************************************
  * FUNCTIONS
  */
+typedef struct _parking_state_t {
+  unsigned char vehicleState;
+  unsigned char lockState;
+} parkingState_t;
 
+extern parkingState_t parkingState;
+
+enum {
+  sleepState,
+  wakeState
+};
+
+typedef unsigned char sleepOrwake_t;
 /*
  * Task Initialization for the BLE Application
  */

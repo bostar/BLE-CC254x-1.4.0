@@ -112,6 +112,7 @@ extern "C"
   #define GPIO_ZM516X_PHASE_A_BV  BV(4)
   #define GPIO_ZM516X_KEY1_BV     BV(0)
   #define GPIO_ZM516X_KEY2_BV     BV(1)
+  #define GPIO_ZM516X_DIR_BV  BV(1)
 
   #define GPIO_ZM516X_RESET_SBIT     P1_3
   #define GPIO_ZM516X_DEF_SBIT       P0_6
@@ -123,6 +124,7 @@ extern "C"
   #define GPIO_ZM516X_PHASE_A_SBIT   P1_4
   #define GPIO_ZM516X_KEY1_SBIT      P1_0
   #define GPIO_ZM516X_KEY2_SBIT      P1_1
+  #define GPIO_ZM516X_DIR_SBIT   P0_1
 
   #define GPIO_ZM516X_RESET_DDR                        P1DIR
   #define GPIO_ZM516X_DEF_DDR                          P0DIR
@@ -134,6 +136,7 @@ extern "C"
   #define GPIO_ZM516X_PHASE_A_DDR                      P1DIR
   #define GPIO_ZM516X_KEY1_DDR                         P1DIR
   #define GPIO_ZM516X_KEY2_DDR                         P1DIR
+  #define GPIO_ZM516X_DIR_DDR                      P0DIR
 
   #define GPIO_ZM516X_RESET_TURN_HIGH()    st( GPIO_ZM516X_RESET_SBIT  = ACTIVE_HIGH(1); )
   #define GPIO_ZM516X_DEF_TURN_HIGH()      st( GPIO_ZM516X_DEF_SBIT    = ACTIVE_HIGH(1); )
@@ -143,6 +146,7 @@ extern "C"
   #define GPIO_ZM516X_MOTOR2_TURN_HIGH()   st( GPIO_ZM516X_MOTOR2_SBIT = ACTIVE_HIGH(1); )
   #define GPIO_ZM516X_MO_EN_TURN_HIGH()    st( GPIO_ZM516X_MO_EN_SBIT  = ACTIVE_HIGH(1); )
   #define GPIO_ZM516X_PHASE_A_TURN_HIGH()  st( GPIO_ZM516X_PHASE_A_SBIT= ACTIVE_HIGH(1); )
+  #define GPIO_ZM516X_DIR_TURN_HIGH()  GPIO_ZM516X_DIR_SBIT= 1;
 
   #define GPIO_ZM516X_RESET_TURN_LOW()     st( GPIO_ZM516X_RESET_SBIT  = ACTIVE_HIGH(0); )
   #define GPIO_ZM516X_DEF_TURN_LOW()       st( GPIO_ZM516X_DEF_SBIT    = ACTIVE_HIGH(0); )
@@ -152,7 +156,8 @@ extern "C"
   #define GPIO_ZM516X_MOTOR2_TURN_LOW()    st( GPIO_ZM516X_MOTOR2_SBIT = ACTIVE_HIGH(0); )
   #define GPIO_ZM516X_MO_EN_TURN_LOW()     st( GPIO_ZM516X_MO_EN_SBIT  = ACTIVE_HIGH(0); )
   #define GPIO_ZM516X_PHASE_A_TURN_LOW()   st( GPIO_ZM516X_PHASE_A_SBIT= ACTIVE_HIGH(0); )
-   
+  #define GPIO_ZM516X_DIR_TURN_LOW()   GPIO_ZM516X_DIR_SBIT= 0;
+
   #define SET_ZM516X_SLEEP() {GPIO_ZM516X_SLEEP_TURN_HIGH();\
                               HAL_GPIO_CHANGE_DELAY();\
                               GPIO_ZM516X_SLEEP_TURN_LOW();\

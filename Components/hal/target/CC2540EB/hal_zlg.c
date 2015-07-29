@@ -101,7 +101,7 @@ void HalZlgInit (void)
   //GPIO_ZM516X_PHASE_A_DDR |= GPIO_ZM516X_PHASE_A_BV;
   //GPIO_ZM516X_KEY1_DDR &= ~GPIO_ZM516X_KEY1_BV;
   //GPIO_ZM516X_KEY2_DDR &= ~GPIO_ZM516X_KEY2_BV;
-  
+  GPIO_ZM516X_DIR_DDR |= GPIO_ZM516X_DIR_BV;
   
   GPIO_ZM516X_RESET_TURN_HIGH();
   GPIO_ZM516X_DEF_TURN_HIGH();
@@ -111,6 +111,7 @@ void HalZlgInit (void)
   GPIO_ZM516X_MOTOR2_TURN_LOW();
   GPIO_ZM516X_MO_EN_TURN_HIGH();
   //GPIO_ZM516X_PHASE_A_TURN_LOW();
+  GPIO_ZM516X_DIR_TURN_LOW();
 }
 
 /***************************************************************************************************
