@@ -53,4 +53,5 @@ void ackLinkTest(unsigned char *IEEEAddress);
 void dateRequset(void);
 void eventReport(parkingEvent_t event);
 void batteryRemainingReport(unsigned char voltage);
+void motorStopAdcReport(unsigned short voltage);
 #endif

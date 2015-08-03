@@ -70,3 +70,17 @@ void batteryRemainingReport(unsigned char voltage)
     
     NPI_WriteTransport( (unsigned char *)wbuf , 7 );
 }
+
+void motorStopAdcReport(unsigned short voltage)
+{
+    char wbuf[6];
+      
+    wbuf[0] = 'S';
+    wbuf[1] = 'E';
+    wbuf[2] = 'N';
+    wbuf[3] = 0x03;
+    wbuf[4] = voltage >> 8;
+    wbuf[5] = voltage;
+    
+    NPI_WriteTransport( (unsigned char *)wbuf , 6 );
+}

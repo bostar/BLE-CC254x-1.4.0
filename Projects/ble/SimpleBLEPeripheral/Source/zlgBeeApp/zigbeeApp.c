@@ -89,7 +89,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   static unsigned char justOnPower = 0;
   if ( events & ZIGBEE_START_DEVICE_EVT )
   {
-    //RESTORE_ZM516X_FACTORY();
+//    RESTORE_ZM516X_FACTORY();
     setMotorStop();
     parkingState.vehicleState = cmdVehicleLeave;
     parkingState.lockState = cmdUnlockSuccess;
@@ -307,6 +307,12 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
         zlgSleepOrwake = wakeState;
       }
       read_temporary_adc_value(localAddress);
+      HAL_GPIO_CHANGE_DELAY();
+      if(uartReturnFlag.readAdcSuccessFlag)
+      {
+          uartReturnFlag.readAdcSuccessFlag = 0;
+          motorStopAdcReport(uartReturnFlag.adc_value);          
+      }
       osal_start_reload_timer( zigbee_TaskID, READ_ZIGBEE_ADC_EVT,1000);
       return ( events ^ READ_ZIGBEE_ADC_EVT );
   }
