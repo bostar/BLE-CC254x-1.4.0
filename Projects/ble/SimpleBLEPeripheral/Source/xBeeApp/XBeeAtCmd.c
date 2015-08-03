@@ -57,7 +57,7 @@ uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,
 **************************************************/
 uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes)
 {
-  uint8 wbuf[256],i;
+  uint8 wbuf[128],i;
   XBeeApiATCmdType *cmd = (XBeeApiATCmdType*)wbuf;
   cmd->start_delimiter  = 0x7E;
   cmd->len_msb          = (uint8)((4+len)>>8);
@@ -187,6 +187,39 @@ uint16 XBeeReadAI(IsResp IsRes)
   return XBeeSendATCmd(cmd,paramer,0,IsRes);
 }
 /*********************************************************
+**biref 发送SP命令 
+**********************************************************/
+uint16 XBeeSetSP(uint16 num,IsResp IsRes)
+{
+  uint8 paramer[2];
+  int8 *cmd = "SP";
+  paramer[0] =(uint8)(num>>8);
+  paramer[1] = (uint8)num;
+  return XBeeSendATCmd(cmd,paramer,2,IsRes);
+}
+/*********************************************************
+**biref 发送SN命令 
+**********************************************************/
+uint16 XBeeSetSN(uint16 num,IsResp IsRes)
+{
+  uint8 paramer[2];
+  int8 *cmd = "SN";
+  paramer[0] =(uint8)(num>>8);
+  paramer[1] = (uint8)num;
+  return XBeeSendATCmd(cmd,paramer,2,IsRes);
+}
+/*********************************************************
+**biref 发送ST命令 
+**********************************************************/
+uint16 XBeeSetST(uint16 num,IsResp IsRes)
+{
+  uint8 paramer[2];
+  int8 *cmd = "ST";
+  paramer[0] =(uint8)(num>>8);
+  paramer[1] = (uint8)num;
+  return XBeeSendATCmd(cmd,paramer,2,IsRes);
+}
+/*********************************************************
 **biref 发送MY命令
 **********************************************************/
 uint16 XBeeReadMY(IsResp IsRes)
@@ -276,7 +309,7 @@ uint16 XBeeReadSH()
   return XBeeSendATCmd(cmd,paramer,0,RES);
 }
 /*********************************************************
-**biref 发送SL命令
+**biref 发送SL命令  低四位地址
 **********************************************************/
 uint16 XBeeReadSL()
 {
@@ -285,8 +318,26 @@ uint16 XBeeReadSL()
   paramer[0]=0;
   return XBeeSendATCmd(cmd,paramer,0,RES);
 }
-
-
+/*********************************************************
+**biref 发送SM命令 休眠设置
+**********************************************************/
+uint16 XBeeSendSM(SleepType sleep,IsResp IsRes)
+{
+  uint8 paramer[1];
+  int8 *cmd = "SM";
+  paramer[0]=sleep;
+  return XBeeSendATCmd(cmd,paramer,1,IsRes);
+}
+/*********************************************************
+**biref 发送读取SM命令 用以区分当前模块类型
+**********************************************************/
+uint16 XBeeReadSM(void)
+{
+  uint8 paramer[1];
+  int8 *cmd = "SM";
+  paramer[0]=0;
+  return XBeeSendATCmd(cmd,paramer,0,RES);
+}
 /***********************************************************
 **brief 向coordinator发送数据
 **reval 发送的字节数

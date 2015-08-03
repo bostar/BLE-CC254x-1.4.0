@@ -20,4 +20,11 @@ uint16 XBeeUartRead(uint8* buff);
 void XBeeRourerJoinNet(void);  //加入网络
 void XBeeLeaveNet(void);       //离开网络
 uint16 XBeeReqJionPark(void);  // 加入停车场
+void MotorReverse(void);
+void MotorForward(void);
+void MotorStop(void);    
+void XBeeSleepInit(void);
 #endif
+
+
+

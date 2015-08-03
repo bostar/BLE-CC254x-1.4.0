@@ -115,16 +115,7 @@ void HalZlgInit (void)
   GPIO_ZM516X_PHASE_A_TURN_LOW();
 }
 #endif
-#if defined(HAL_XBEE_ZIGBEE)&& (HAL_XBEE_ZIGBEE == TRUE)
-void HalXbeeInit (void)
-{
-  GPIO_XBEE_RESET_TURN_HIGH();
-  GPIO_XBEE_RTS_TURN_HIGH();
-  P2SEL &= 0xFE;
-  GPIO_XBEE_RESET_DDR |= GPIO_XBEE_RESET_BV;
-  GPIO_XBEE_RTS_DDR |= GPIO_XBEE_RTS_BV;
-}
-#endif
+
 /***************************************************************************************************
  * @fn      HalGpioSet
  *
@@ -197,28 +188,7 @@ uint8 HalGpioGet (uint8 pin)
 
 #endif
 
-#if defined(HAL_XBEE_ZIGBEE)&& (HAL_XBEE_ZIGBEE == TRUE)
-uint8 HalGpioSet (uint8 pin, uint8 level)
-{
-  switch(pin)
-  {
-    case HAL_GPIO_XBEE_RESET:
-      GPIO_XBEE_RESET_SBIT = level;
-      break;
-    case HAL_GPIO_XBEE_RTS:
-      GPIO_XBEE_RTS_SBIT = level;
-      break;
-    default:
-      break;
-  }
-  return 0;
-}
 
-uint8 HalGpioGet (uint8 pin)
-{
-  return 0;
-}
-#endif
 
 /***************************************************************************************************
 ***************************************************************************************************/

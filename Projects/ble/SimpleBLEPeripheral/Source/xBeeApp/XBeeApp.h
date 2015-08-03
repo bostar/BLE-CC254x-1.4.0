@@ -21,10 +21,10 @@ extern "C"
 #define XBEE_CTL_MCU_UART_READ_EVT                         0x0004    
 #define XBEE_MCU_UART_SEND_EVT                             0x0008
 #define XBEE_REC_DATA_PROCESS_EVT                          0x0010
-#define XBEE_MCU_UART_REA12D_EVT                             0x0020
-#define XBEE_APPLY_NETWORK_EVT                             0x0040
+#define XBEE_TEST_EVT                                      0x0020
+#define XBEE_SLEEP_EVT                                     0x0040
 #define XBEE_IDLE_EVT                                      0x0080
-#define z1                         0x0100
+#define XBEE_MOTOO_CTL_EVT                                 0x0100
 #define z2                         0x0200
 #define z3                         0x0400
 #define z4                         0x0800
@@ -65,6 +65,12 @@ typedef enum
 	ReFactory	=	 0x03
 
 }CREprotocolType;
+
+typedef enum
+{
+  ROUTOR     =      1,
+  ENDER      =      2,
+}DeviceTypeDef;
 
 typedef enum
 {
@@ -111,36 +117,6 @@ typedef enum{
     stateNoWork = 0xff
 }state_t;
 
-/* States for CRC parser */
-typedef enum {
-  NPI_SERIAL_PACK_HEAD,
-    NPI_SERIAL_PACK_CMD,
-    NPI_SERIAL_PACK_LEN,
-    NPI_SERIAL_PACK_DATA,
-} npi_serial_parse_state_t;
-
-typedef enum {
-    XBee_FLASH_SET,
-    XBee_RAM_SET,
-    BASE_STATION_CFG,
-    BASE_STATION_CTL,
-    BASE_STATION_SEN,
-    BASE_STATION_OTA,
-    BASE_STATION_TST
-}command_word_t;
-
-typedef struct
-{
-  uint8 KeyCmdWord[3];
-  uint8 OptionCmdWord;
-}CmdWordType;
-
-typedef struct {
-    unsigned char header[3];
-    unsigned char cmd;
-    unsigned char len;
-}ptk_t;
-
 typedef struct
 {
   uint8 IEEEadr[8];
@@ -156,6 +132,8 @@ typedef struct
 extern XBeeAdrType XBeeAdr;  //IEEE地址和当前的网络地址
 extern XBeeUartRecDataDef XBeeUartRec; //串口接收缓存数据  
 extern __xdata FlagJionNetType FlagJionNet;
+extern __xdata uint8 XBeeTaskID;
+extern uint8 UartCtl; 
 
 
 /*********************************************************************

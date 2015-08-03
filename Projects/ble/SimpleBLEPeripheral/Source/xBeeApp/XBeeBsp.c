@@ -4,6 +4,14 @@
 #include "OnBoard.h"
 #include "npi.h"
 #include "XBeeApp.h"
+#include "hal_board.h"
+#include "hal_board_cfg.h"
+#include "hal_mcu.h"
+#include "hal_defs.h"
+#include "hal_types.h"
+#include "hal_drivers.h"
+#include "osal.h"
+
 
 #if defined _XBEE_APP_
 /*******************************************
@@ -60,22 +68,87 @@ uint16 XBeeReqJionPark(void)
   for(i=0;i<2;i++)
     data[12+i] = XBeeAdr.netadr[i];
   return XBeeSendToCoor(data,14,NO_RES);  
-  //return XBeeUnicastTrans(data1,data1+8,Default,data,14,RES);  
 }
-
-
-
-void initXBeeBsp(void)
+/***************************************************
+**brief 解锁/锁定OK终端应答
+***************************************************/
+uint16 XBeeEndDeviceLockRepOK(void)
 {
-   
+  uint8 data[5];
+  data[0]  =  'C';	
+  data[0]  =  'T';
+  data[1]  =  'L';
+  data[3]  =  0x01;
+  data[4]  =  0x01;
+  return XBeeSendToCoor(data,5,NO_RES);
+}
+/***************************************************
+**brief 解锁NG终端应答
+***************************************************/
+uint16 XBeeEndDeviceUnlockRepNG(void)
+{
+  uint8 data[5];
+  data[0]  =  'C';	
+  data[0]  =  'T';
+  data[1]  =  'L';
+  data[3]  =  0x01;
+  data[4]  =  0x02;
+  return XBeeSendToCoor(data,5,NO_RES);
+}
+/***************************************************
+**brief 锁定NG终端应答
+***************************************************/
+uint16 XBeeEndDeviceLockRepNG(void)
+{
+  uint8 data[5];
+  data[0]  =  'C';	
+  data[0]  =  'T';
+  data[1]  =  'L';
+  data[3]  =  0x01;
+  data[4]  =  0x03;
+  return XBeeSendToCoor(data,5,NO_RES);
+}
+/**********************************************
+**brief 停止马达
+**********************************************/
+void MotorStop(void)
+{
+    GPIO_XBEE_MOTOR1_TURN_HIGH();
+    GPIO_XBEE_MOTOR2_TURN_HIGH();
+}
+/**********************************************
+**brief 马达正转
+**********************************************/
+void MotorForward(void)
+{
+   GPIO_XBEE_MOTOR1_TURN_LOW();
+   GPIO_XBEE_MOTOR2_TURN_HIGH();
+}
+/**********************************************
+**brief 马达反转
+**********************************************/
+void MotorReverse(void)
+{
+   GPIO_XBEE_MOTOR1_TURN_HIGH();
+   GPIO_XBEE_MOTOR2_TURN_LOW();
 }
 
-void setBeepOn(void)
+
+/**************************************************
+**brief xbee休眠初始化
+**************************************************/
+void XBeeSleepInit(void)
+{
+   XBeeSendSM(PinSleep,NO_RES);
+   //XBeeSetSP(0x64,NO_RES);
+}
+
+void XBeeSleep(void)
 {
     
 }
 
-void setBeepOff(void)
+void XBeeWake(void)
 {
     
 }

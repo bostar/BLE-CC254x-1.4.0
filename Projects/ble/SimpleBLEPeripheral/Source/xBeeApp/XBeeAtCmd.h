@@ -10,8 +10,15 @@ typedef enum
   XBeeRevPacket   =     0x90,
   XBeeTransStatus =     0x8B,
   
-} FrameTypeStateType;
+}FrameTypeStateType;
 
+typedef enum
+{
+  Disable     =     0,
+  PinSleep    =     1,
+  CycSleep    =     4,
+  PinCyc      =     5,
+}SleepType;
 
 typedef enum
 {
@@ -125,6 +132,11 @@ uint16 XBeeSetLT(uint8 time,IsResp IsRes);
 uint16 XBeeSetZS(IsResp IsRes);
 uint16 XBeeReadSH();
 uint16 XBeeReadSL();
+uint16 XBeeSendSM(SleepType sleep,IsResp IsRes);
+uint16 XBeeReadSM(void);
+uint16 XBeeSetSP(uint16 num,IsResp IsRes);
+uint16 XBeeSetSN(uint16 num,IsResp IsRes);
+uint16 XBeeSetST(uint16 num,IsResp IsRes);
 uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len, IsResp IsRes); //xbee发送数据请求
 uint16 XBeeSendToCoor(uint8 *data,uint16 len,IsResp IsRes);  //向coordinator发送数据
 uint16 XBeeUnicastTrans(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len,IsResp IsRes);
