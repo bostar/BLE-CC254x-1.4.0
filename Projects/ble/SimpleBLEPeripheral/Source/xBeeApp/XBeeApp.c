@@ -381,4 +381,9 @@ static void npiCBack_uart( uint8 port, uint8 events )
   return;  
 }
 
+
+
+
+
+
 #endif
