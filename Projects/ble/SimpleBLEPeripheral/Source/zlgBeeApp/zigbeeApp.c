@@ -8,12 +8,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-//#include "gatt.h"
-//#include "gapgattserver.h"
-//#include "gattservapp.h"
-//#include "devinfoservice.h"
-//#include "simpleGATTprofile.h"
-
 #if defined _USE_ZM516X_
 
 #if defined ( STARBO_BOARD )
@@ -55,25 +49,7 @@ void Zigbee_Init( uint8 task_id )
 
   // Register for all key events - This app will handle all key events
   RegisterForKeys( zigbee_TaskID );
- // RESTORE_ZM516X_FACTORY();
-//  GPIO_ZM516X_DEF_TURN_LOW();
-//  HAL_GPIO_CHANGE_DELAY();
-//  HAL_GPIO_CHANGE_DELAY();
-//  HAL_GPIO_CHANGE_DELAY();
-//  HAL_GPIO_CHANGE_DELAY();
-//  GPIO_ZM516X_RESET_TURN_LOW();
-//  HAL_GPIO_CHANGE_DELAY();
-//  GPIO_ZM516X_RESET_TURN_HIGH();
-//  HAL_GPIO_CHANGE_DELAY();
-//  HAL_GPIO_CHANGE_DELAY();
-//  HAL_GPIO_CHANGE_DELAY();
-//  HAL_GPIO_CHANGE_DELAY();
-//  HAL_GPIO_CHANGE_DELAY();
-//  HAL_GPIO_CHANGE_DELAY();
-//  HAL_GPIO_CHANGE_DELAY();
-//  GPIO_ZM516X_DEF_TURN_HIGH();
-//  HalZlgInit();
-  //  Onboard_soft_reset();
+  
 #endif // !STARBO_BOARD
   // Setup a delayed profile startup
 //  osal_set_event( zigbee_TaskID, ZIGBEE_START_DEVICE_EVT );
@@ -89,7 +65,6 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   static unsigned char justOnPower = 0;
   if ( events & ZIGBEE_START_DEVICE_EVT )
   {
-//    RESTORE_ZM516X_FACTORY();
     setMotorStop();
     parkingState.vehicleState = cmdVehicleLeave;
     parkingState.lockState = cmdUnlockSuccess;

@@ -112,6 +112,8 @@ void HalZlgInit (void)
   GPIO_ZM516X_MO_EN_TURN_HIGH();
   //GPIO_ZM516X_PHASE_A_TURN_LOW();
   GPIO_ZM516X_DIR_TURN_LOW();
+  
+  RESTORE_ZM516X_FACTORY();
 }
 
 /***************************************************************************************************
