@@ -8,7 +8,8 @@ typedef enum _parkingEvent_t {
     cmdLockFailed = 0x03,
     cmdUnlockSuccess = 0x04,
     cmdUnlockFailed = 0x05,
-    cmdLockingOrUnlocking = 0x06,
+    cmdLocking = 0x06,
+    cmdUnlocking = 0x07
 } parkingEvent_t;
 
 enum cfg_cmd {

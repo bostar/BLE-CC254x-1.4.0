@@ -273,7 +273,7 @@ void read_temporary_adc_value(uint16 DstAddr)
     wbuf[3] = enReadAdcValue;
     wbuf[4] = DstAddr >> 8;
     wbuf[5] = DstAddr;
-    wbuf[6] = 0x01;
+    wbuf[6] = 0x00;
 
     NPI_WriteTransport( wbuf , 7 );
 }

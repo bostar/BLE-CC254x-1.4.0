@@ -67,7 +67,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   {
     setMotorStop();
     parkingState.vehicleState = cmdVehicleLeave;
-    parkingState.lockState = cmdUnlockSuccess;
+    parkingState.lockState = 0xff;//cmdUnlockSuccess;
     zlgSleepOrwake = wakeState;
     justOnPower = 1;   
     Uart1_Send_Byte("get",osal_strlen("get"));
@@ -241,12 +241,12 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
        break;
      case 4:
        setMotorForward();
-       parkingState.lockState = cmdLockingOrUnlocking;
+       parkingState.lockState = cmdUnlocking;
        test_state = 6;       
        break;
      case 5:
        setMotorReverse();
-       parkingState.lockState = cmdLockingOrUnlocking;
+       parkingState.lockState = cmdLocking;
        test_state = 6;
        break;
      case 6:
@@ -286,7 +286,27 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
       if(uartReturnFlag.readAdcSuccessFlag)
       {
           uartReturnFlag.readAdcSuccessFlag = 0;
-          motorStopAdcReport(uartReturnFlag.adc_value);          
+          motorStopAdcReport(uartReturnFlag.adc_value);   
+          if(uartReturnFlag.adc_value > 0x0030)
+          {
+              if( parkingState.lockState == cmdLocking )  
+              {
+                  parkingState.lockState = cmdLockFailed;
+                  setMotorForward();
+                  eventReport( cmdLockFailed );
+              }
+              else if( parkingState.lockState == cmdUnlocking )  
+              {
+                  parkingState.lockState = cmdUnlockFailed;                 
+                  setMotorReverse();
+                  eventReport( cmdUnlockFailed );
+              }
+              else if(parkingState.lockState != cmdLockFailed && \
+                parkingState.lockState != cmdUnlockFailed)
+              {
+                setMotorStop();
+              }
+          }     
       }
       osal_start_reload_timer( zigbee_TaskID, READ_ZIGBEE_ADC_EVT,1000);
       return ( events ^ READ_ZIGBEE_ADC_EVT );
@@ -688,7 +708,7 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
   if ( keys == 0x06 )
   {
     setMotorStop();
-    if( parkingState.lockState == cmdLockingOrUnlocking )
+    if( parkingState.lockState == cmdUnlocking )
     {
         if(zlgSleepOrwake == sleepState)
         {
@@ -704,7 +724,7 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
   else if ( keys == 0 )
   { 
     setMotorStop();    
-    if( parkingState.lockState == cmdLockingOrUnlocking )
+    if( parkingState.lockState == cmdLocking )
     {
         if(zlgSleepOrwake == sleepState)
         {
@@ -723,7 +743,7 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
   }
   else
   {
-    if( parkingState.lockState != cmdLockingOrUnlocking )
+    if( parkingState.lockState != cmdLocking && parkingState.lockState != cmdUnlocking )
     {
       if(parkingState.lockState == cmdLockSuccess)
       {
