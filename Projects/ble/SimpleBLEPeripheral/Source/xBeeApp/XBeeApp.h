@@ -25,8 +25,8 @@ extern "C"
 #define XBEE_SLEEP_EVT                                     0x0040
 #define XBEE_IDLE_EVT                                      0x0080
 #define XBEE_MOTOO_CTL_EVT                                 0x0100
-#define z2                         0x0200
-#define z3                         0x0400
+#define XBEE_HMC5983_EVT                                   0x0200
+#define XBEE_WAKEUP_EVT                                    0x0400
 #define z4                         0x0800
 #define z5                         0x1000
 #define z6                         0x2000
@@ -54,6 +54,8 @@ extern "C"
 #define IN_PARK_NET   3
 #define SUCCESS_TRANS 1
 #define FAIL_TRANS    2
+#define UAR_TXBEE_EN   XBeeUartEn = 0
+#define UAR_TXBEE_DIS  XBeeUartEn = 1
 /*********************************************************************
  * MACROS
  */
@@ -63,38 +65,53 @@ typedef enum
 	ReqJion   	=	 0x01,
 	AllowJion	=	 0x02,
 	ReFactory	=	 0x03
-
 }CREprotocolType;
 
 typedef enum
 {
-  ROUTOR     =      1,
-  ENDER      =      2,
+    ROUTOR     =      1,
+    ENDER      =      2,
 }DeviceTypeDef;
+
+typedef enum 
+{
+    sleepState,
+    wakeState
+}SleepONState;
 
 typedef enum
 {
-  task1    =  1,
+    task1    =  1,
 }TaskSendType;
 
 typedef enum
 {
-  InNone     =     0,
-  JoinNet      =     1,
-  GetSH      =     2,
-  GetSL      =     3,
-  GetMY      =     4,
-  JoinPark     =     5,
-  NetOK      =     6,
+    InNone      =     0,
+    JoinNet     =     1,
+    GetSH       =     2,
+    GetSL       =     3,
+    GetMY       =     4,
+    JoinPark    =     5,
+    NetOK       =     6,
 }FlagJionNetType;
 
 typedef enum
 {
-  ReadHead    =    1,
-  ReadLen     =    2,
-  ReadData    =    3,
-  ReadNone    =    4,
+    ReadHead    =    1,
+    ReadLen     =    2,
+    ReadData    =    3,
+    ReadNone    =    4,
 }ToReadUARTType;
+
+typedef enum {
+    cmdVehicleComming       =   0x00,
+    cmdVehicleLeave         =   0x01,
+    cmdLockSuccess          =   0x02,
+    cmdLockFailed           =   0x03,
+    cmdUnlockSuccess        =   0x04,
+    cmdUnlockFailed         =   0x05,
+    cmdLockingOrUnlocking   =   0x06,
+} parkingEventType;
 
 typedef enum{
     stateInit = 0x00,
@@ -119,14 +136,20 @@ typedef enum{
 
 typedef struct
 {
-  uint8 IEEEadr[8];
-  uint8 netadr[2];
+    uint8 IEEEadr[8];
+    uint8 netadr[2];
 }XBeeAdrType;
+
+typedef struct 
+{
+    unsigned char vehicleState;
+    unsigned char lockState;
+}ParkingStateType;
 
 typedef struct
 {
-  uint8 data[255];
-  uint8 num;
+    uint8 data[255];
+    uint8 num;
 }XBeeUartRecDataDef;
 /***************************************************************/
 extern XBeeAdrType XBeeAdr;  //IEEE地址和当前的网络地址

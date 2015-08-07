@@ -309,6 +309,16 @@ uint16 XBeeReadSH()
   return XBeeSendATCmd(cmd,paramer,0,RES);
 }
 /*********************************************************
+**biref 发送读取DL命令
+**********************************************************/
+uint16 XBeeReadDL()
+{
+  uint8 paramer[1];
+  int8 *cmd = "DL";
+  paramer[0]=0;
+  return XBeeSendATCmd(cmd,paramer,0,RES);
+}
+/*********************************************************
 **biref 发送SL命令  低四位地址
 **********************************************************/
 uint16 XBeeReadSL()
@@ -337,6 +347,18 @@ uint16 XBeeReadSM(void)
   int8 *cmd = "SM";
   paramer[0]=0;
   return XBeeSendATCmd(cmd,paramer,0,RES);
+}
+/**********************************************************
+**brief 读取寄存器值AT指令
+**********************************************************/
+uint16 XBeeReadRegCmd(int8 *atcmd)
+{
+    uint8 paramer[1];
+    int8 cmd[2];
+    *cmd = *atcmd;
+    *(cmd+1) = *(atcmd+1);
+    paramer[0]=0;
+    return XBeeSendATCmd(cmd,paramer,0,RES);
 }
 /***********************************************************
 **brief 向coordinator发送数据

@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-286477252
+Checksum=1927511270
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -52,6 +52,13 @@ Enabled=0
 ShowSource=1
 [struct_types]
 Fmt0=dev_info_t-devChannel	3	0
+[Breakpoints]
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_uart.c}.419.3" 1 0 0 0 "" 0 ""
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.116.9" 1 0 0 0 "" 0 ""
+Count=2
+[ChipconEmu]
+Stop timers on halt=1
+Leave target running=1
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -59,11 +66,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Breakpoints]
-Count=0
-[ChipconEmu]
-Stop timers on halt=0
-Leave target running=1
 [Aliases]
 Count=0
 SuppressDialog=0

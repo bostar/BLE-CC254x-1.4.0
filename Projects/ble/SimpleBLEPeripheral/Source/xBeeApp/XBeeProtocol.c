@@ -13,35 +13,31 @@
 /*****************************************************
 **
 *****************************************************/
-void CFGProcess(uint8 cmd)
+void CFGProcess(uint8 *cmd)
 {
-  switch(cmd)
-  {
-    case 0x00:   //允许限时加入网络
-      XBeeSetNJ(XBeeUartRec.data[19],NO_RES);
-    break;
-    case 0x02:   //入网响应
-      if(*(&cmd+1) == 0x01)  //允许入网
-        FlagJionNet = NetOK;  //组网成功后，进入正常工作模式
-      else   //禁止入网
-      {
-        XBeeLeaveNet();  
-        FlagJionNet = NetOK;
-        osal_set_event( XBeeTaskID, XBEE_IDLE_EVT ); //进入空闲模式
-        UartCtl = 1;   //关闭串口
-        //zigbee进入休眠
-      } 
-      break;
-    case 0x03:
-      XBeeLeaveNet();
-      XBeeLeaveNet();  
-      FlagJionNet = NetOK;
-      osal_set_event( XBeeTaskID, XBEE_IDLE_EVT ); //进入空闲模式
-      UartCtl = 1;   //关闭串口
-      //zigbee进入休眠
-      break;
-    default:
-    break;
+    switch(*cmd)
+    {
+        case 0x00:   //允许限时加入网络
+            XBeeSetNJ(*(cmd+1),NO_RES);
+            break;
+        case 0x02:   //入网响应
+            if(*(cmd+1) == 0x01)   //允许入网
+              FlagJionNet = NetOK;    //组网成功后，进入正常工作模式
+            else    //禁止入网
+            {
+                XBeeLeaveNet();  
+                FlagJionNet = NetOK;
+                //zigbee进入休眠
+            } 
+            osal_stop_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT);
+            break;
+        case 0x03:  //恢复出厂设置
+            XBeeLeaveNet();  
+            FlagJionNet = NetOK;
+            //zigbee进入休眠
+            break;
+        default:
+            break;
   }
 }
 /*****************************************************
@@ -90,7 +86,7 @@ uint16 XBeeLockState(LockStateType LockState)
 /*********************************************************
 **brief 发送车进场状态
 *********************************************************/
-uint16 XBeeCarState(CarStateType CarState)
+uint16 XBeeParkState(parkingEventType ParkState)
 {
   uint8 data[5];
   
@@ -98,7 +94,7 @@ uint16 XBeeCarState(CarStateType CarState)
   data[1]   =   'E';
   data[2]   =   'N';
   data[3]   =  0x01;
-  data[4]   =  CarState;
+  data[4]   =  ParkState;
   
   return XBeeSendToCoor(data,5,NO_RES);
 }
@@ -116,8 +112,17 @@ uint16 XBeeBatPower(uint8 PowerVal)
   return XBeeSendToCoor(data,5,NO_RES);
 }
 
-
-
+/**********************************************************
+**brief 向网关发送字符串
+**********************************************************/
+uint16 SendString(uint8 in ,uint8 len )
+{
+  uint8 i;
+  uint8 data[10];
+  for(i=0;i<len;i++)
+    data[i] = in;
+  return XBeeSendToCoor(data,len,NO_RES);
+}
 
 
 

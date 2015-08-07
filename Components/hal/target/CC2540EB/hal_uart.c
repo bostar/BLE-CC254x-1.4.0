@@ -403,18 +403,50 @@ void Uart1_Send_Byte(char *Data,int len)
   } 
 }
  
+HMC5983DataType hmc5983Data;
+HMC5983DataType hmc5983DataStandard;
 
-static uint8 temp[5] = {0};
+static uint8 temp[10] = {0};
 HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
 { 
   static uint8 index = 0;
+  static int old_flag = 0;
+  uint8 add_sum,check;
+  
   HAL_ENTER_ISR();
   URX1IF = 0; // 清中断标志 
-  temp[index ++] = U1DBUF; 
-  if(index >= 5)
+  
+  if(temp[0] != 0xAA)
   {
-    index = 1;
+    temp[index ++] = U1DBUF; 
+    index = 0;
   }
+  temp[index ++] = U1DBUF; 
+  
+  if( index >= 10 )
+  {
+    index = 0;
+    add_sum = 0;
+    for(int i=0;i<9;i++)
+        add_sum += temp[i];
+    check = 0xFF - add_sum;
+    if(temp[0] == 0xAA && temp[1] == 0xBB && temp[2] == 0xCC && temp[9] == check)
+    {
+        hmc5983Data.x = (unsigned short)temp[3] << 8 | temp[4];
+        hmc5983Data.y = (unsigned short)temp[5] << 8 | temp[6];
+        hmc5983Data.z = (unsigned short)temp[7] << 8 | temp[8];
+        hmc5983Data.state = 0;
+        
+        if(!old_flag)
+        {
+          old_flag = 1;
+          hmc5983DataStandard.x = hmc5983Data.x;
+          hmc5983DataStandard.y = hmc5983Data.y;
+          hmc5983DataStandard.z = hmc5983Data.z;
+        }
+    }
+  }
+  
   HAL_EXIT_ISR();
 }
 

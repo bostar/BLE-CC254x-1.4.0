@@ -135,22 +135,33 @@ void MotorReverse(void)
 
 
 /**************************************************
-**brief xbee–›√ﬂ≥ı ºªØ
+**brief xbee–›√ﬂ≥ı ºªØ£¨…Ë÷√Œ™mode5
 **************************************************/
-void XBeeSleepInit(void)
+uint16 XBeeSleepMode5(void)
 {
-   XBeeSendSM(PinSleep,NO_RES);
+   return XBeeSendSM(PinSleep,NO_RES);
    //XBeeSetSP(0x64,NO_RES);
 }
-
-void XBeeSleep(void)
+/*************************************************
+**brief …Ë÷√Œ™pinsleep
+*************************************************/
+uint16 XBeeSleepMode1(void)
 {
-    
+    return XBeeSendSM(PinSleep,RES);
 }
-
-void XBeeWake(void)
+/**************************************************
+**brief pinΩ≈ªΩ–—
+**************************************************/
+void XBeePinWake(void)
 {
-    
+    GPIO_XBEE_SLEEP_TURN_LOW();
+}
+/**************************************************
+**brief pinΩ≈–›√ﬂ
+**************************************************/
+void XBeePinSleep(void)
+{
+    GPIO_XBEE_SLEEP_TURN_HIGH();
 }
 
 void setLedBit(unsigned char bits)

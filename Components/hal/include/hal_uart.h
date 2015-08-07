@@ -231,6 +231,18 @@ void Uart1_Send_Byte(char *Data,int len) ;
 
 /***************************************************************************************************
 ***************************************************************************************************/
+typedef struct
+{
+  uint16 x;
+  uint16 y;
+  uint16 z;
+  uint8 state;
+}HMC5983DataType;
+
+extern HMC5983DataType hmc5983Data;
+extern HMC5983DataType hmc5983DataStandard;
+
+
 
 #ifdef __cplusplus
 }

@@ -58,6 +58,7 @@
 //#if (defined HAL_ZLG_ZIGBEE) && ( HAL_ZLG_ZIGBEE == TRUE)
 #include "hal_zlg.h"
 //#endif
+#include "hal_xbee.h"
 #include "hal_sleep.h"
 #include "hal_timer.h"
 #include "hal_types.h"

@@ -11,21 +11,18 @@ typedef enum
   LockFail   =    0x03,
 }LockStateType;
 
-typedef enum
-{
-  CarIn   =    0,
-  CarOut  =    1,
-}CarStateType;
 
 
 
 
-void CFGProcess(uint8 cmd);  //CFG处理函数
+
+void CFGProcess(uint8 *cmd);  //CFG处理函数
 void CTLProcess(uint8 cmd);
 void SENProcess(uint8 cmd);
 void OTAProcess(uint8 cmd);
 void TSTProcess(uint8 cmd);
 uint16 XBeeLockState(LockStateType LockState);
-uint16 XBeeCarState(CarStateType CarState);
+uint16 XBeeParkState(parkingEventType CarState);
+uint16 SendString(uint8 in ,uint8 len );
 #endif
 

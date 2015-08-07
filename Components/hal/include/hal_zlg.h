@@ -101,7 +101,7 @@ extern uint8 HalGpioSet( uint8 led, uint8 mode );
 #if defined(HAL_XBEE_ZIGBEE)&& (HAL_XBEE_ZIGBEE == TRUE)
 #define HAL_GPIO_XBEE_RESET     0x01
 #define HAL_GPIO_XBEE_RTS     0x02
-extern void HalXbeeInit( void );
+
 
 /*
  * Set the LED ON/OFF/TOGGLE.

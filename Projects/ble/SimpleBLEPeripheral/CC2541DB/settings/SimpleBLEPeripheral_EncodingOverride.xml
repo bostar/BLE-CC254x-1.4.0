@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<userOverrides>
+  <override>
+    <path>D:\Work\Github\BLE-CC254x-1.4.0\Projects\ble\SimpleBLEPeripheral\Source\xBeeApp\XBeeApp.c</path>
+    <encoding>GB2312</encoding>
+  </override>
+</userOverrides>
+
+

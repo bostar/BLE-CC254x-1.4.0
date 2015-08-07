@@ -23,7 +23,10 @@ uint16 XBeeReqJionPark(void);  // 加入停车场
 void MotorReverse(void);
 void MotorForward(void);
 void MotorStop(void);    
-void XBeeSleepInit(void);
+uint16 XBeeSleepMode5(void);
+uint16 XBeeSleepMode1(void);
+void XBeePinWake(void);
+void XBeePinSleep(void);
 #endif
 
 

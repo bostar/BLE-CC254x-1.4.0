@@ -41,25 +41,25 @@ typedef enum
 
 typedef struct
 {
-  uint8 start_delimiter;
-  uint8 len_msb;
-  uint8 len_lsb;
-  uint8 frame_type;
-  uint8 frame_id;
-  uint8 atCmd[2];
+    uint8 start_delimiter;
+    uint8 len_msb;
+    uint8 len_lsb;
+    uint8 frame_type;
+    uint8 frame_id;
+    uint8 atCmd[2];
 }XBeeApiATCmdType;  //AT÷∏¡Ó÷°
 
 typedef struct
 {
-  uint8 start_delimiter;
-  uint8 len_msb;
-  uint8 len_lsb;
-  uint8 frame_type;
-  uint8 frame_id;
-  uint8 adr[8];
-  uint8 net_adr[2];
-  uint8 readius;
-  uint8 options;
+    uint8 start_delimiter;
+    uint8 len_msb;
+    uint8 len_lsb;
+    uint8 frame_type;
+    uint8 frame_id;
+    uint8 adr[8];
+    uint8 net_adr[2];
+    uint8 readius;
+    uint8 options;
 }XBeeTransReqType;  //zb∑¢ÀÕ«Î«Û÷°
   
 typedef struct
@@ -132,6 +132,8 @@ uint16 XBeeSetLT(uint8 time,IsResp IsRes);
 uint16 XBeeSetZS(IsResp IsRes);
 uint16 XBeeReadSH();
 uint16 XBeeReadSL();
+uint16 XBeeReadDL();
+uint16 XBeeReadRegCmd(int8 *atcmd);
 uint16 XBeeSendSM(SleepType sleep,IsResp IsRes);
 uint16 XBeeReadSM(void);
 uint16 XBeeSetSP(uint16 num,IsResp IsRes);
