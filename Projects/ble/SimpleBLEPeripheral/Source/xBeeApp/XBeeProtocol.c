@@ -96,7 +96,8 @@ uint16 XBeeParkState(parkingEventType ParkState)
   data[3]   =  0x01;
   data[4]   =  ParkState;
   
-  return XBeeSendToCoor(data,5,NO_RES);
+  return XBeeSendToCoor(data,5,RES);
+  //return XBeeSendToCoor(data,5,NO_RES);
 }
 /*********************************************************
 **brief 发送电池电量

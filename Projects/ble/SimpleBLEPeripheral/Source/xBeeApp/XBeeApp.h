@@ -103,14 +103,15 @@ typedef enum
     ReadNone    =    4,
 }ToReadUARTType;
 
-typedef enum {
-    cmdVehicleComming       =   0x00,
-    cmdVehicleLeave         =   0x01,
-    cmdLockSuccess          =   0x02,
-    cmdLockFailed           =   0x03,
-    cmdUnlockSuccess        =   0x04,
-    cmdUnlockFailed         =   0x05,
-    cmdLockingOrUnlocking   =   0x06,
+typedef enum 
+{
+    ParkingUsed             =   0x00,   //车位被使用
+    ParkingUnUsed           =   0x01,   //车位空
+    ParkLockSuccess         =   0x02,   //锁定成功
+    ParkLockFailed          =   0x03,   //锁定失败
+    ParkUnlockSuccess       =   0x04,   //解锁成功
+    ParkUnlockFailed        =   0x05,   //解锁失败
+    ParkLockingOrUnlocking  =   0x06,   
 } parkingEventType;
 
 typedef enum{
@@ -142,8 +143,8 @@ typedef struct
 
 typedef struct 
 {
-    unsigned char vehicleState;
-    unsigned char lockState;
+    parkingEventType vehicleState;
+    parkingEventType lockState;
 }ParkingStateType;
 
 typedef struct

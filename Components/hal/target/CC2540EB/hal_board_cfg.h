@@ -90,7 +90,16 @@ extern "C"
 #define HAL_LCD_MAX_BUFF    25
 
 /* ZLG Zigbee Gpio defines */
-
+//#define HAL_GPIO_CHANGE_DELAY()   st( { volatile uint32 i; for (i=0; i<0x320; i++) { }; } )
+#define HAL_GPIO_CHANGE_DELAY()   st( { volatile uint32 microSecs = 1500; while(microSecs--) {\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop"); asm("nop"); asm("nop"); asm("nop");\
+    asm("nop"); asm("nop");\
+  };})    // 32 NOPs == 1 usecs 
 #ifdef HAL_ZLG_ZIGBEE
   #define GPIO_ZM516X_RESET_BV    BV(3)
   #define GPIO_ZM516X_DEF_BV      BV(6)
@@ -220,6 +229,7 @@ extern "C"
 	#define GPIO_XBEE_KEY1_BV           BV(0)
 	#define GPIO_XBEE_KEY2_BV           BV(1)
 	#define GPIO_XBEE_KEY3_BV           BV(4)   
+    #define GPIO_XBEE_DIR_BV         BV(1)
   
 	#define GPIO_XBEE_SLEEP_INDER_SBIT  P1_3    //INPUT
     #define GPIO_XBEE_RTS_SBIT          P2_0    //OUTPUT
@@ -232,6 +242,7 @@ extern "C"
 	#define GPIO_XBEE_KEY1_SBIT         P1_0    //INPUT
 	#define GPIO_XBEE_KEY2_SBIT         P1_1    //INPUT
     #define GPIO_XBEE_KEY3_SBIT         P1_4    //INPUT
+    #define GPIO_XBEE_DIR_SBIT       P0_1    //OUTPUT
   
 	#define GPIO_XBEE_SLEEP_INDER_DDR   P1DIR
     #define GPIO_XBEE_RTS_DDR           P2DIR
@@ -244,6 +255,7 @@ extern "C"
 	#define GPIO_XBEE_KEY1_DDR          P1DIR
 	#define GPIO_XBEE_KEY2_DDR          P1DIR
     #define GPIO_XBEE_KEY3_DDR          P1DIR
+    #define GPIO_XBEE_DIR_DDR        P0DIR
 
 	#define GPIO_XBEE_SLEEP_INDER_TURN_HIGH()       GPIO_XBEE_SLEEP_INDER_SBIT = 1;
     #define GPIO_XBEE_RTS_TURN_HIGH()               GPIO_XBEE_RTS_SBIT = 1;
@@ -256,6 +268,7 @@ extern "C"
 	#define GPIO_XBEE_KEY1_TURN_HIGH()              GPIO_XBEE_KEY1_SBIT = 1;
 	#define GPIO_XBEE_KEY2_TURN_HIGH()              GPIO_XBEE_KEY2_SBIT = 1;
     #define GPIO_XBEE_KEY3_TURN_HIGH()              GPIO_XBEE_KEY3_SBIT = 1;
+    #define GPIO_XBEE_DIR_TURN_HIGH()            GPIO_XBEE_DIR_SBIT = 1;
   
 	#define GPIO_XBEE_SLEEP_INDER_TURN_LOW()        GPIO_XBEE_SLEEP_INDER_SBIT = 0;
     #define GPIO_XBEE_RTS_TURN_LOW()                GPIO_XBEE_RTS_SBIT = 0;
@@ -268,6 +281,7 @@ extern "C"
 	#define GPIO_XBEE_KEY1_TURN_LOW()               GPIO_XBEE_KEY1_SBIT = 0;
     #define GPIO_XBEE_KEY2_TURN_LOW()               GPIO_XBEE_KEY2_SBIT = 0;
     #define GPIO_XBEE_KEY3_TURN_LOW()               GPIO_XBEE_KEY3_SBIT = 0;
+    #define GPIO_XBEE_DIR_TURN_LOW()             GPIO_XBEE_DIR_SBIT = 0;
 #endif  
   
 /* LED Configuration */

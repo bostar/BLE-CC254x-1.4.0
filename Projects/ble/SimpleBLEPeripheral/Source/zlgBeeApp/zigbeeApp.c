@@ -1,6 +1,6 @@
 #include "OSAL.h"
 #include "hal_uart.h"
-#include "hal_sensor.h"
+//#include "hal_sensor.h"
 #include "npi.h"
 #include "OnBoard.h"
 

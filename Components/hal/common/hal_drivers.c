@@ -63,7 +63,7 @@
 #include "hal_timer.h"
 #include "hal_types.h"
 #include "hal_uart.h"
-#include "hal_i2c.h"
+//#include "hal_i2c.h"
 #ifdef CC2591_COMPRESSION_WORKAROUND
 #include "mac_rx.h"
 #endif
@@ -165,7 +165,7 @@ void HalDriverInit (void)
 #if (defined HAL_SPI) && (HAL_SPI == TRUE)
   HalSpiInit();
 #endif
-  HalI2CInit(HAL_I2C_SLAVE_ADDR_DEF,i2cClock_123KHZ);
+  //HalI2CInit(HAL_I2C_SLAVE_ADDR_DEF,i2cClock_123KHZ);
   /* HID */
 #if (defined HAL_HID) && (HAL_HID == TRUE)
   usbHidInit();

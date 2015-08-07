@@ -388,25 +388,29 @@ U1BAUD |= 216;
 UTX1IF = 0; 
 IEN0 |= 0x08; // 开总中断，接收中断 
 }
- 
+
 /**************************************************************** 
 串口发送字符串函数 
 ****************************************************************/ 
 void Uart1_Send_Byte(char *Data,int len) 
 {
   int j; 
+  GPIO_XBEE_DIR_TURN_HIGH();
+  HAL_GPIO_CHANGE_DELAY();
   for(j=0;j<len;j++) 
   { 
     U1DBUF = *Data++; 
     while(UTX1IF == 0); //发送完成标志位
     UTX1IF = 0; 
   } 
+  HAL_GPIO_CHANGE_DELAY();
+  GPIO_XBEE_DIR_TURN_LOW();
 }
- 
+
 HMC5983DataType hmc5983Data;
 HMC5983DataType hmc5983DataStandard;
 
-static uint8 temp[10] = {0};
+static  uint8 temp[10] = {0};
 HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
 { 
   static uint8 index = 0;
@@ -415,12 +419,12 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
   
   HAL_ENTER_ISR();
   URX1IF = 0; // 清中断标志 
-  
+
   if(temp[0] != 0xAA)
   {
-    temp[index ++] = U1DBUF; 
+    temp[0] = U1DBUF; 
     index = 0;
-  }
+  } 
   temp[index ++] = U1DBUF; 
   
   if( index >= 10 )
@@ -446,9 +450,7 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
         }
     }
   }
-  
   HAL_EXIT_ISR();
 }
-
 /******************************************************************************
 ******************************************************************************/
