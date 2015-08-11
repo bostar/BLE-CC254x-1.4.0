@@ -512,6 +512,9 @@ uint8 receive_data( uint8 *buf, uint16 len )
         case cmdSensorCalibration:
             //开始标定
             break;
+        case 0x04:
+            eventReportData.reportSuccess = 1;
+            break;
         default:
             break;
         }

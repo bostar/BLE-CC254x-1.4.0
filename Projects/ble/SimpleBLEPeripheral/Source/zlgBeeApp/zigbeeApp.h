@@ -22,6 +22,7 @@ extern "C"
 #define UART_RECEIVE_EVT                                     0x0008
 #define BOARD_TEST_EVT                                       0x0010
 //#define READ_UART_BUFFER_EVT                                 0x0020
+#define EVENT_REPORT_EVT                                     0x0020
 #define ZIGBEE_APPLY_NETWORK_EVT                             0x0040
 #define ZIGBEE_WRITE_ZM516X_INFO_EVT                         0x0080
 #define ZIGBEE_LINK_TEST_EVT                                 0x0100
@@ -100,6 +101,7 @@ enum {
 };
 
 typedef unsigned char sleepOrwake_t;
+
 /*
  * Task Initialization for the BLE Application
  */
@@ -110,6 +112,7 @@ extern void Zigbee_Init( uint8 task_id );
  */
 extern uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events );
 
+extern uint8 zigbee_TaskID;
 /*********************************************************************
 *********************************************************************/
 

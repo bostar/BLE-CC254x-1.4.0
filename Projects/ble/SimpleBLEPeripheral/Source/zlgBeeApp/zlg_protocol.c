@@ -4,6 +4,8 @@
 #include "zlgAtCmd.h"
 #include "OSAL.h"
 
+eventReport_t eventReportData;
+
 void applicateForNetwork(unsigned char *IEEEAddress)
 {
     char wbuf[12];

@@ -23,7 +23,7 @@
 /*********************************************************************
  * LOCAL VARIABLES
  */
-static uint8 zigbee_TaskID;   // Task ID for internal task/event processing
+uint8 zigbee_TaskID;   // Task ID for internal task/event processing
 static uint8 rbuf[255];
 static uint8 idx = 0;
 parkingState_t parkingState;
@@ -137,16 +137,8 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
             if(parkingState.vehicleState == cmdVehicleLeave)
             {                
                 parkingState.vehicleState = cmdVehicleComming;
-                if(zlgSleepOrwake == sleepState)
-                {
-                  osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT);
-                  //osal_set_event( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT );
-                  SET_ZM516X_WAKEUP();
-                  zlgSleepOrwake = wakeState;
-                  eventReport(cmdVehicleComming);  
-                }
-                else
-                  eventReport(cmdVehicleComming); 
+                eventReportData.event =  cmdVehicleComming ;
+                osal_set_event( zigbee_TaskID, EVENT_REPORT_EVT );
             }
           }
           else
@@ -154,16 +146,8 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
             if(parkingState.vehicleState == cmdVehicleComming)
             {
                 parkingState.vehicleState = cmdVehicleLeave;
-                if(zlgSleepOrwake == sleepState)
-                {
-                  osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT);
-                  //osal_set_event( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT );
-                  SET_ZM516X_WAKEUP();
-                  zlgSleepOrwake = wakeState;
-                  eventReport(cmdVehicleLeave);  
-                }
-                else
-                  eventReport(cmdVehicleLeave);
+                eventReportData.event =  cmdVehicleLeave ;
+                osal_set_event( zigbee_TaskID, EVENT_REPORT_EVT );
             }
           }             
       }
@@ -293,13 +277,15 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
               {
                   parkingState.lockState = cmdLockFailed;
                   setMotorForward();
-                  eventReport( cmdLockFailed );
+                  eventReportData.event =  cmdLockFailed ;
+                  osal_set_event( zigbee_TaskID, EVENT_REPORT_EVT );
               }
               else if( parkingState.lockState == cmdUnlocking )  
               {
                   parkingState.lockState = cmdUnlockFailed;                 
                   setMotorReverse();
-                  eventReport( cmdUnlockFailed );
+                  eventReportData.event =  cmdUnlockFailed ;
+                  osal_set_event( zigbee_TaskID, EVENT_REPORT_EVT );
               }
               else if(parkingState.lockState != cmdLockFailed && \
                 parkingState.lockState != cmdUnlockFailed)
@@ -312,6 +298,27 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
       return ( events ^ READ_ZIGBEE_ADC_EVT );
   }
   
+  if( events & EVENT_REPORT_EVT )
+  {
+      if(!eventReportData.reportSuccess)
+      {}
+      else
+      {
+          eventReportData.reportSuccess = 0;
+          osal_stop_timerEx( zigbee_TaskID, EVENT_REPORT_EVT);
+          return ( events ^ EVENT_REPORT_EVT );
+      }
+      if(zlgSleepOrwake == sleepState)
+      {
+        osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT);
+        SET_ZM516X_WAKEUP();
+        zlgSleepOrwake = wakeState;
+      }     
+      eventReport( (parkingEvent_t)eventReportData.event );
+      osal_start_timerEx( zigbee_TaskID, EVENT_REPORT_EVT, 1000 );
+      return ( events ^ EVENT_REPORT_EVT );
+  }
+     
   if(events & ZIGBEE_RESTORE_FACTORY_EVT)
   {
      if(!uartReturnFlag.restoreSuccessFlag)
@@ -393,7 +400,8 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
             case stateMotorForward:
               if( parkingState.lockState == cmdUnlockSuccess )
               {
-                eventReport( cmdUnlockSuccess );
+                eventReportData.event =  cmdUnlockSuccess ;
+                osal_set_event( zigbee_TaskID, EVENT_REPORT_EVT );
                 break;
               }
               test_state = 4;
@@ -402,7 +410,8 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
             case stateMotorReverse:
               if( parkingState.lockState == cmdLockSuccess )
               {
-                eventReport( cmdLockSuccess );
+                eventReportData.event =  cmdLockSuccess ;
+                osal_set_event( zigbee_TaskID, EVENT_REPORT_EVT );
                 break;
               }
               test_state = 5;
@@ -683,6 +692,17 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
        break;
      }
    }
+   if(*command == 'S' && *(command+1) == 'E' && *(command+2) == 'N')
+   {
+     switch(cmd)
+     {
+     case 0x04:
+       cmd_len = 1;
+       break;
+     default:
+       break;
+     }
+   }
    return cmd_len;
 }
 
@@ -710,13 +730,8 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
     setMotorStop();
     if( parkingState.lockState == cmdUnlocking )
     {
-        if(zlgSleepOrwake == sleepState)
-        {
-          osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT);
-          SET_ZM516X_WAKEUP();
-          zlgSleepOrwake = wakeState;
-        }
-        eventReport( cmdUnlockSuccess );
+        eventReportData.event =  cmdUnlockSuccess ;
+        osal_set_event( zigbee_TaskID, EVENT_REPORT_EVT );
     }
     parkingState.lockState = cmdUnlockSuccess;
   }
@@ -726,13 +741,8 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
     setMotorStop();    
     if( parkingState.lockState == cmdLocking )
     {
-        if(zlgSleepOrwake == sleepState)
-        {
-          osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT);
-          SET_ZM516X_WAKEUP();
-          zlgSleepOrwake = wakeState;
-        }
-        eventReport( cmdLockSuccess );
+        eventReportData.event =  cmdLockSuccess ;
+        osal_set_event( zigbee_TaskID, EVENT_REPORT_EVT );
     }
     parkingState.lockState = cmdLockSuccess;
   }
