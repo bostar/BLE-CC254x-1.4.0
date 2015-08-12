@@ -163,6 +163,30 @@ void XBeePinSleep(void)
 {
     GPIO_XBEE_SLEEP_TURN_HIGH();
 }
+/**************************************************
+**brief 获得当前马达状态
+**************************************************/
+LockCurrentStateType GetCurrentMotorState(void)
+{
+    uint8 key1,key2,key3,direction=2;
+    
+    key1 = HalGpioGet(GPIO_XBEE_KEY1);
+    key2 = HalGpioGet(GPIO_XBEE_KEY2);
+    key3 = HalGpioGet(GPIO_XBEE_KEY3);
+    if(HalGpioGet(GPIO_XBEE_MOTOR1)==1 && HalGpioGet(GPIO_XBEE_MOTOR2)==0)
+        direction = 0;  //解锁方向
+    if(HalGpioGet(GPIO_XBEE_MOTOR1)==0 && HalGpioGet(GPIO_XBEE_MOTOR2)==1)
+        direction = 1;  //锁定方向    
+    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 2)
+      return lock;
+    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 2)
+      return unlock;
+    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 0)
+      return lockTounlock;
+    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 1)
+      return unlockTolock;
+    return none;
+}
 
 void setLedBit(unsigned char bits)
 {

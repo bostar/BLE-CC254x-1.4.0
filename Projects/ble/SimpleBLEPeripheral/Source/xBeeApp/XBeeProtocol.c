@@ -43,29 +43,47 @@ void CFGProcess(uint8 *cmd)
 /*****************************************************
 **
 *****************************************************/
-void CTLProcess(uint8 cmd)
+void CTLProcess(uint8 *cmd)
 {
-  switch(cmd)
+  switch(*cmd)
   {
     case 0:
-      if(XBeeUartRec.data[19] == 0)  //解锁
-      {
-        MotorForward();
-      }
-      if(XBeeUartRec.data[19] == 1)  //锁定
-      {
-        MotorReverse();
-      }
-      break;
+        if(*(cmd+1) == 0)  //解锁
+        {
+            MotorForward();
+            LockTargetState = unlock;
+        }
+        if(*(cmd+1) == 1)  //上锁
+        {
+            MotorReverse();
+            LockTargetState = unlock;
+        }
+        osal_set_event( XBeeTaskID, XBEE_MOTOO_CTL_EVT );
+        osal_stop_timerEx( XBeeTaskID,XBEE_HMC5983_EVT);
+        osal_stop_timerEx( XBeeTaskID,XBEE_VBT_CHENCK_EVT);
+        break;
     default:
-      break;
+        break;
   }
 }
-void SENProcess(uint8 cmd)
+/**************************************************
+**brief 处理SEN指令
+**************************************************/
+void SENProcess(uint8 *cmd)
+{
+    switch(*cmd)
+    {
+        case 0x00:
+            SenFlag = 0x88;
+            osal_set_event( XBeeTaskID, XBEE_HMC5983_EVT );
+            break;
+        default:
+            break;
+    }
+}
+void OTAProcess(uint8 *cmd)
 {}
-void OTAProcess(uint8 cmd)
-{}
-void TSTProcess(uint8 cmd)
+void TSTProcess(uint8 *cmd)
 {}
 
 /*********************************************************

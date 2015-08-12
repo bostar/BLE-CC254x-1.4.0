@@ -155,7 +155,8 @@ extern "C"
 
 //#define VER0618    //pcb°æ±¾
 #define VER0721  
-  
+//#define VER0806  
+
 #if(defined HAL_XBEE_ZIGBEE && defined VER0618)
 	//#define GPIO_XBEE_RESET_BV    BV(3)
 	#define GPIO_XBEE_RESET_BV    BV(6)
@@ -217,7 +218,6 @@ extern "C"
 	#define GPIO_XBEE_PHASE_A_TURN_LOW()    GPIO_XBEE_PHASE_A_SBIT = 0;
 #endif
 #if(defined HAL_XBEE_ZIGBEE && defined VER0721)
-
 	#define GPIO_XBEE_SLEEP_INDER_BV    BV(3)
     #define GPIO_XBEE_RTS_BV            BV(0)
 	#define GPIO_XBEE_CTS_BV            BV(2)
@@ -283,7 +283,78 @@ extern "C"
     #define GPIO_XBEE_KEY3_TURN_LOW()               GPIO_XBEE_KEY3_SBIT = 0;
     #define GPIO_XBEE_DIR_TURN_LOW()             GPIO_XBEE_DIR_SBIT = 0;
 #endif  
+#if(defined HAL_XBEE_ZIGBEE && defined VER0806)  
+    #define GPIO_XBEE_SLEEP_INDER_BV    BV(3)
+    #define GPIO_XBEE_RTS_BV            BV(0)
+	#define GPIO_XBEE_CTS_BV            BV(2)
+    #define GPIO_XBEE_RESET_BV          BV(6)
+	#define GPIO_XBEE_SLEEP_BV          BV(7)
+	#define GPIO_XBEE_MOTOR1_BV         BV(4)
+	#define GPIO_XBEE_MOTOR2_BV         BV(5)
+	#define GPIO_XBEE_MO_EN_BV          BV(5)
+	#define GPIO_XBEE_KEY1_BV           BV(0)
+	#define GPIO_XBEE_KEY2_BV           BV(1)
+	#define GPIO_XBEE_KEY3_BV           BV(4)   
+    #define GPIO_XBEE_DIR_BV            BV(5)
+    #define GPIO_XBEE_MOTOR_SENSER_BV   BV(0)
+    #define GPIO_XBEE_VBT_SENSER_BV     BV(1)
   
+	#define GPIO_XBEE_SLEEP_INDER_SBIT  P1_3    //INPUT
+    #define GPIO_XBEE_RTS_SBIT          P2_0    //OUTPUT
+	#define GPIO_XBEE_CTS_SBIT          P1_2    //INPUT
+    #define GPIO_XBEE_RESET_SBIT        P0_6    //OUTPUT
+	#define GPIO_XBEE_SLEEP_SBIT        P0_7    //OUTPUT
+	#define GPIO_XBEE_MOTOR1_SBIT       P0_4    //OUTPUT
+	#define GPIO_XBEE_MOTOR2_SBIT       P0_5    //OUTPUT
+	#define GPIO_XBEE_MO_EN_SBIT        P1_5    //OUTPUT
+	#define GPIO_XBEE_KEY1_SBIT         P1_0    //INPUT
+	#define GPIO_XBEE_KEY2_SBIT         P1_1    //INPUT
+    #define GPIO_XBEE_KEY3_SBIT         P1_4    //INPUT
+    #define GPIO_XBEE_DIR_SBIT          P1_5    //OUTPUT
+    #define GPIO_XBEE_MOTOR_SENSER_SBIT P0_0    //INPUT
+    #define GPIO_XBEE_VBT_SENSER_SBIT   P0_1    //INPUT
+  
+	#define GPIO_XBEE_SLEEP_INDER_DDR   P1DIR
+    #define GPIO_XBEE_RTS_DDR           P2DIR
+	#define GPIO_XBEE_CTS_DDR           P1DIR
+    #define GPIO_XBEE_RESET_DDR         P0DIR
+	#define GPIO_XBEE_SLEEP_DDR         P0DIR
+	#define GPIO_XBEE_MOTOR1_DDR        P0DIR
+	#define GPIO_XBEE_MOTOR2_DDR        P0DIR
+	#define GPIO_XBEE_MO_EN_DDR         P1DIR
+	#define GPIO_XBEE_KEY1_DDR          P1DIR
+	#define GPIO_XBEE_KEY2_DDR          P1DIR
+    #define GPIO_XBEE_KEY3_DDR          P1DIR
+    #define GPIO_XBEE_DIR_DDR           P1DIR
+    #define GPIO_XBEE_MOTOR_SENSER_DDR  P0DIR
+    #define GPIO_XBEE_VBT_SENSER_DDR    P0DIR
+
+	#define GPIO_XBEE_SLEEP_INDER_TURN_HIGH()       GPIO_XBEE_SLEEP_INDER_SBIT = 1;
+    #define GPIO_XBEE_RTS_TURN_HIGH()               GPIO_XBEE_RTS_SBIT = 1;
+	#define GPIO_XBEE_CTS_TURN_HIGH()               GPIO_XBEE_CTS_SBIT = 1;
+    #define GPIO_XBEE_RESET_TURN_HIGH()             GPIO_XBEE_RESET_SBIT = 1;
+	#define GPIO_XBEE_SLEEP_TURN_HIGH()             GPIO_XBEE_SLEEP_SBIT = 1;
+	#define GPIO_XBEE_MOTOR1_TURN_HIGH()            GPIO_XBEE_MOTOR1_SBIT = 1;
+	#define GPIO_XBEE_MOTOR2_TURN_HIGH()            GPIO_XBEE_MOTOR2_SBIT = 1;
+	#define GPIO_XBEE_MO_EN_TURN_HIGH()             GPIO_XBEE_MO_EN_SBIT = 1;
+	#define GPIO_XBEE_KEY1_TURN_HIGH()              GPIO_XBEE_KEY1_SBIT = 1;
+	#define GPIO_XBEE_KEY2_TURN_HIGH()              GPIO_XBEE_KEY2_SBIT = 1;
+    #define GPIO_XBEE_KEY3_TURN_HIGH()              GPIO_XBEE_KEY3_SBIT = 1;
+    #define GPIO_XBEE_DIR_TURN_HIGH()               GPIO_XBEE_DIR_SBIT = 1;
+  
+	#define GPIO_XBEE_SLEEP_INDER_TURN_LOW()        GPIO_XBEE_SLEEP_INDER_SBIT = 0;
+    #define GPIO_XBEE_RTS_TURN_LOW()                GPIO_XBEE_RTS_SBIT = 0;
+	#define GPIO_XBEE_CTS_TURN_LOW()                GPIO_XBEE_CTS_SBIT = 0;
+    #define GPIO_XBEE_RESET_TURN_LOW()              GPIO_XBEE_RESET_SBIT = 0;
+	#define GPIO_XBEE_SLEEP_TURN_LOW()              GPIO_XBEE_SLEEP_SBIT = 0;
+	#define GPIO_XBEE_MOTOR1_TURN_LOW()             GPIO_XBEE_MOTOR1_SBIT = 0;
+	#define GPIO_XBEE_MOTOR2_TURN_LOW()             GPIO_XBEE_MOTOR2_SBIT = 0;
+	#define GPIO_XBEE_MO_EN_TURN_LOW()              GPIO_XBEE_MO_EN_SBIT = 0;
+	#define GPIO_XBEE_KEY1_TURN_LOW()               GPIO_XBEE_KEY1_SBIT = 0;
+    #define GPIO_XBEE_KEY2_TURN_LOW()               GPIO_XBEE_KEY2_SBIT = 0;
+    #define GPIO_XBEE_KEY3_TURN_LOW()               GPIO_XBEE_KEY3_SBIT = 0;
+    #define GPIO_XBEE_DIR_TURN_LOW()                GPIO_XBEE_DIR_SBIT = 0;
+#endif
 /* LED Configuration */
 
 #if defined (HAL_BOARD_CC2530EB_REV17) && !defined (HAL_PA_LNA) && !defined (HAL_PA_LNA_CC2590)

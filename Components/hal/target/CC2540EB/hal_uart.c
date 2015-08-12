@@ -74,6 +74,8 @@ void HalUARTIsrDMA(void);
 #include "_hal_uart_usb.c"
 #endif
 
+#include "XBeeApp.h"
+
 /******************************************************************************
  * @fn      HalUARTInit
  *
@@ -399,7 +401,8 @@ void Uart1_Send_Byte(char *Data,int len)
   HAL_GPIO_CHANGE_DELAY();
   for(j=0;j<len;j++) 
   { 
-    U1DBUF = *Data++; 
+    U1DBUF = *Data++;
+    //U1DBUF = *(Data+j); 
     while(UTX1IF == 0); //发送完成标志位
     UTX1IF = 0; 
   } 
@@ -414,7 +417,6 @@ static  uint8 temp[10] = {0};
 HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
 { 
   static uint8 index = 0;
-  static int old_flag = 0;
   uint8 add_sum,check;
   
   HAL_ENTER_ISR();
@@ -439,11 +441,10 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
         hmc5983Data.x = (unsigned short)temp[3] << 8 | temp[4];
         hmc5983Data.y = (unsigned short)temp[5] << 8 | temp[6];
         hmc5983Data.z = (unsigned short)temp[7] << 8 | temp[8];
-        hmc5983Data.state = 0;
-        
-        if(!old_flag)
+        hmc5983Data.state = 0x88;       
+        if(SenFlag == 0x88)
         {
-          old_flag = 1;
+          SenFlag = 1;
           hmc5983DataStandard.x = hmc5983Data.x;
           hmc5983DataStandard.y = hmc5983Data.y;
           hmc5983DataStandard.z = hmc5983Data.z;

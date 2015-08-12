@@ -2,6 +2,7 @@
 #define __XBSP_H__
 
 #include "XBeeApp.h"
+#include "hal_xbee.h"
 
 #define XBee_GPIO_DIR        0x7C
 #define BEEPON         (unsigned char)(0x01 << 2)
@@ -27,6 +28,7 @@ uint16 XBeeSleepMode5(void);
 uint16 XBeeSleepMode1(void);
 void XBeePinWake(void);
 void XBeePinSleep(void);
+LockCurrentStateType GetCurrentMotorState(void);
 #endif
 
 

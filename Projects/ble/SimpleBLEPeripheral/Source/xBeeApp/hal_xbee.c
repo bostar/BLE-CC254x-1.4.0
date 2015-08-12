@@ -52,12 +52,14 @@ uint8 HalGpioGet(GPIOType pin)
     {
         case GPIO_XBEE_KEY1:
             return GPIO_XBEE_KEY1_SBIT;
-            break;
         case GPIO_XBEE_KEY2:
             return GPIO_XBEE_KEY2_SBIT;
-            break;
         case GPIO_XBEE_SLEEP_INDER:
             return GPIO_XBEE_SLEEP_INDER_SBIT;
+        case GPIO_XBEE_MOTOR1:
+            return GPIO_XBEE_MOTOR1_SBIT;
+        case GPIO_XBEE_MOTOR2:
+            return GPIO_XBEE_MOTOR2_SBIT;
         default:
             break;
     }

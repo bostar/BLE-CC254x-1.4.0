@@ -19,7 +19,7 @@ extern "C"
 #define XBEE_START_DEVICE_EVT                              0x0001
 #define XBEE_JOIN_NET_EVT                                  0x0002
 #define XBEE_CTL_MCU_UART_READ_EVT                         0x0004    
-#define XBEE_MCU_UART_SEND_EVT                             0x0008
+#define XBEE_PARAM_INIT_EVT                                0x0008
 #define XBEE_REC_DATA_PROCESS_EVT                          0x0010
 #define XBEE_TEST_EVT                                      0x0020
 #define XBEE_SLEEP_EVT                                     0x0040
@@ -27,7 +27,7 @@ extern "C"
 #define XBEE_MOTOO_CTL_EVT                                 0x0100
 #define XBEE_HMC5983_EVT                                   0x0200
 #define XBEE_WAKEUP_EVT                                    0x0400
-#define z4                         0x0800
+#define XBEE_VBT_CHENCK_EVT                                0x0800
 #define z5                         0x1000
 #define z6                         0x2000
 #define z8                         0x4000
@@ -54,8 +54,8 @@ extern "C"
 #define IN_PARK_NET   3
 #define SUCCESS_TRANS 1
 #define FAIL_TRANS    2
-#define UAR_TXBEE_EN   XBeeUartEn = 0
-#define UAR_TXBEE_DIS  XBeeUartEn = 1
+#define UART_XBEE_EN   XBeeUartEn = 0
+#define UART_XBEE_DIS  XBeeUartEn = 1
 /*********************************************************************
  * MACROS
  */
@@ -78,6 +78,15 @@ typedef enum
     sleepState,
     wakeState
 }SleepONState;
+
+typedef enum
+{
+    lock            =   0,
+    unlock          =   1,
+    lockTounlock    =   2,
+    unlockTolock    =   3,
+    none            =0x88
+}LockCurrentStateType;
 
 typedef enum
 {
@@ -149,7 +158,7 @@ typedef struct
 
 typedef struct
 {
-    uint8 data[255];
+    uint8 data[256];
     uint8 num;
 }XBeeUartRecDataDef;
 /***************************************************************/
@@ -158,8 +167,9 @@ extern XBeeUartRecDataDef XBeeUartRec; //串口接收缓存数据
 extern __xdata FlagJionNetType FlagJionNet;
 extern __xdata uint8 XBeeTaskID;
 extern uint8 UartCtl; 
-
-
+extern uint8 SenFlag; 
+extern uint8 XBeeUartEn;
+extern LockCurrentStateType LockTargetState;
 /*********************************************************************
  * FUNCTIONS
  */

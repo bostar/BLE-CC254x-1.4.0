@@ -339,6 +339,39 @@ uint16 XBeeSendSM(SleepType sleep,IsResp IsRes)
   return XBeeSendATCmd(cmd,paramer,1,IsRes);
 }
 /*********************************************************
+**biref 发送SP命令 休眠时间
+**********************************************************/
+uint16 XBeeSendSP(uint16 time,IsResp IsRes)
+{
+  uint8 paramer[2];
+  int8 *cmd = "SP";
+  paramer[0]=(uint8)(time>>8);
+  paramer[1]=(uint8)time;
+  return XBeeSendATCmd(cmd,paramer,2,IsRes);
+}
+/*********************************************************
+**biref 发送SN命令 休眠时间个数
+**********************************************************/
+uint16 XBeeSendSN(uint16 time,IsResp IsRes)
+{
+  uint8 paramer[2];
+  int8 *cmd = "SN";
+  paramer[0]=(uint8)(time>>8);
+  paramer[1]=(uint8)time;
+  return XBeeSendATCmd(cmd,paramer,2,IsRes);
+}
+/*********************************************************
+**biref 发送ST命令 唤醒时间
+**********************************************************/
+uint16 XBeeSendST(uint16 time,IsResp IsRes)
+{
+  uint8 paramer[2];
+  int8 *cmd = "ST";
+  paramer[0]=(uint8)(time>>8);
+  paramer[1]=(uint8)time;
+  return XBeeSendATCmd(cmd,paramer,2,IsRes);
+}
+/*********************************************************
 **biref 发送读取SM命令 用以区分当前模块类型
 **********************************************************/
 uint16 XBeeReadSM(void)
