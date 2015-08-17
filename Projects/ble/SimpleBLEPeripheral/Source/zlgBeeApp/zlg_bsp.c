@@ -7,6 +7,11 @@ void initZlgBsp(void)
     set_temporary_io_dir(localAddress,ZLG_GPIO_DIR);
 }
 
+void lowZlgAllIOs(void)
+{
+    set_temporary_io_level(localAddress,0x00);//(~ZLG_GPIO_DIR)&ZLG_GPIO_DIR);
+}
+
 void setBeepOn(void)
 {
     set_temporary_io_level(localAddress,BEEPON);

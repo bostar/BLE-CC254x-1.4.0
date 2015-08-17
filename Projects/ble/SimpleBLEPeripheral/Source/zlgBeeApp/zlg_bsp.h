@@ -7,6 +7,7 @@
 
 
 void initZlgBsp(void);
+void lowZlgAllIOs(void);
 void setBeepOn(void);
 void setBeepOff(void);
 void setLedBit(unsigned char bits);
