@@ -51,13 +51,13 @@ void Zigbee_Init( uint8 task_id )
   HalAdcSetReference ( HAL_ADC_REF_AVDD );
   sen = HalAdcRead (HAL_ADC_CHANNEL_0, HAL_ADC_RESOLUTION_8);
   HAL_GPIO_CHANGE_DELAY();
-  for(int loop = 0;loop < 1000;loop ++)
+//  for(int loop = 0;loop < 1000;loop ++)
   vbt = HalAdcRead (HAL_ADC_CHANNEL_1, HAL_ADC_RESOLUTION_8);
   HAL_GPIO_CHANGE_DELAY();
   sen_v = 3.482 * (float)sen / 0x7f;
   vbt_v = 3.482 * (float)vbt / 0x7f;
   vbt_v = vbt_v;
-  sen_v = sen_v;
+//  sen_v = sen_v;
 
 #if defined( STARBO_BOARD )
 
@@ -144,7 +144,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
          osal_start_timerEx( zigbee_TaskID, BOARD_TEST_EVT ,100 );
          osal_start_timerEx( zigbee_TaskID, UART1_READ_HMC5983_EVT ,500 );
 //         osal_set_event( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT );
-//         osal_start_timerEx( zigbee_TaskID, READ_ZIGBEE_ADC_EVT, 10);//add to test
+         osal_start_timerEx( zigbee_TaskID, READ_ZIGBEE_ADC_EVT, 10);//add to test
 //         setMotorForward();
        }
      }
@@ -292,49 +292,31 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   
   if(events & READ_ZIGBEE_ADC_EVT)
   {
-      if(zlgSleepOrwake == sleepState)
-      {
-        osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT);
-        SET_ZM516X_WAKEUP();
-        zlgSleepOrwake = wakeState;
-        osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,1000 );
-      }
-      else
-      {
-        if(osal_get_timeoutEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT ) > 0)
-        {
-          osal_stop_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT);
-          osal_start_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT ,1000 );
-        }
-      }
-      read_temporary_adc_value(localAddress);
+      sen = HalAdcRead (HAL_ADC_CHANNEL_0, HAL_ADC_RESOLUTION_8);
       HAL_GPIO_CHANGE_DELAY();
-      if(uartReturnFlag->readAdcSuccessFlag)
+      sen_v = 3.482 * (float)sen / 0x7f;
+//          motorStopAdcReport(uartReturnFlag->adc_value);   
+      if(sen_v > 1.0)
       {
-          uartReturnFlag->readAdcSuccessFlag = 0;
-          motorStopAdcReport(uartReturnFlag->adc_value);   
-          if(uartReturnFlag->adc_value > 0x0040)
+          if( parkingState->lockState == cmdLocking )  
           {
-              if( parkingState->lockState == cmdLocking )  
-              {
-                  parkingState->lockState = cmdLockFailed;
-                  setMotorForward();
-                  eventReportToGateway( cmdLockFailed );
-              }
-              else if( parkingState->lockState == cmdUnlocking )  
-              {
-                  parkingState->lockState = cmdUnlockFailed;                 
-                  setMotorReverse();
-                  eventReportToGateway( cmdUnlockFailed );
-              }
-              else if(parkingState->lockState != cmdLockFailed && \
-                parkingState->lockState != cmdUnlockFailed)
-              {
-                setMotorStop();
-              }
-          }     
-      }
-//      osal_start_reload_timer( zigbee_TaskID, READ_ZIGBEE_ADC_EVT,1500 );
+              parkingState->lockState = cmdLockFailed;
+              setMotorForward();
+              eventReportToGateway( cmdLockFailed );
+          }
+          else if( parkingState->lockState == cmdUnlocking )  
+          {
+              parkingState->lockState = cmdUnlockFailed;                 
+              setMotorReverse();
+              eventReportToGateway( cmdUnlockFailed );
+          }
+          else if(parkingState->lockState != cmdLockFailed && \
+            parkingState->lockState != cmdUnlockFailed)
+          {
+            setMotorStop();
+          }
+      }     
+      osal_start_reload_timer( zigbee_TaskID, READ_ZIGBEE_ADC_EVT,1000 );
       return ( events ^ READ_ZIGBEE_ADC_EVT );
   }
   
@@ -395,7 +377,6 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
         zlgSleepOrwake = wakeState;
      }
      dateRequset();
-//     osal_start_timerEx( zigbee_TaskID, READ_ZIGBEE_ADC_EVT, 300 );
      osal_start_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT ,300 );
      return ( events ^ ZIGBEE_WAKE_ZM516X_EVT );
   }
