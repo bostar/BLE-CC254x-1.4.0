@@ -27,8 +27,8 @@ void setMotorStop(void)
 {
 //    HalGpioSet( HAL_GPIO_ZM516X_MOTOR1, 0 );
 //    HalGpioSet( HAL_GPIO_ZM516X_MOTOR2, 0 );
-    GPIO_ZM516X_MOTOR1_TURN_LOW();
-    GPIO_ZM516X_MOTOR2_TURN_LOW();
+    GPIO_ZM516X_MOTOR1_TURN_HIGH();
+    GPIO_ZM516X_MOTOR2_TURN_HIGH();
 }
 
 void setMotorForward(void)

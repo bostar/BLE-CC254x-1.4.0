@@ -98,6 +98,10 @@ void HalAdcInit (void)
 {
 #if (HAL_ADC == TRUE)
   adcRef = HAL_ADC_REF_VOLT;
+  APCFG |= 0x03;
+  P0SEL |= 0x03;
+  P0DIR |= 0x03;
+  P0INP |= 0x03;
 #endif
 }
 
