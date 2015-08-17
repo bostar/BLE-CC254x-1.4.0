@@ -22,19 +22,18 @@ void CFGProcess(uint8 *cmd)
             break;
         case 0x02:   //入网响应
             if(*(cmd+1) == 0x01)   //允许入网
-              FlagJionNet = NetOK;    //组网成功后，进入正常工作模式
+              FlagJionNet = NetOK;    
             else    //禁止入网
             {
                 XBeeLeaveNet();  
-                FlagJionNet = NetOK;
-                //zigbee进入休眠
+                FlagJionNet = JoinNet;
+                return;
             } 
             osal_stop_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT);
             break;
         case 0x03:  //恢复出厂设置
             XBeeLeaveNet();  
             FlagJionNet = NetOK;
-            //zigbee进入休眠
             break;
         default:
             break;
@@ -51,12 +50,12 @@ void CTLProcess(uint8 *cmd)
         if(*(cmd+1) == 0)  //解锁
         {
             MotorForward();
-            LockTargetState = unlock;
+            LockObjState = unlock;
         }
         if(*(cmd+1) == 1)  //上锁
         {
             MotorReverse();
-            LockTargetState = unlock;
+            LockObjState = lock;
         }
         osal_set_event( XBeeTaskID, XBEE_MOTOO_CTL_EVT );
         osal_stop_timerEx( XBeeTaskID,XBEE_HMC5983_EVT);
@@ -102,7 +101,7 @@ uint16 XBeeLockState(LockStateType LockState)
   return XBeeSendToCoor(data,5,NO_RES);
 }
 /*********************************************************
-**brief 发送车进场状态
+**brief 发送车位状态
 *********************************************************/
 uint16 XBeeParkState(parkingEventType ParkState)
 {
@@ -130,7 +129,6 @@ uint16 XBeeBatPower(uint8 PowerVal)
   data[4]   =  PowerVal;
   return XBeeSendToCoor(data,5,NO_RES);
 }
-
 /**********************************************************
 **brief 向网关发送字符串
 **********************************************************/

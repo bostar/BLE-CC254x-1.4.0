@@ -139,7 +139,7 @@ void MotorReverse(void)
 **************************************************/
 uint16 XBeeSleepMode5(void)
 {
-   return XBeeSendSM(PinSleep,NO_RES);
+   return XBeeSendSM(PinSleep,RES);
    //XBeeSetSP(0x64,NO_RES);
 }
 /*************************************************
@@ -147,7 +147,7 @@ uint16 XBeeSleepMode5(void)
 *************************************************/
 uint16 XBeeSleepMode1(void)
 {
-    return XBeeSendSM(PinSleep,RES);
+    return XBeeSendSM(PinSleep,NO_RES);
 }
 /**************************************************
 **brief pin脚唤醒
@@ -164,6 +164,16 @@ void XBeePinSleep(void)
     GPIO_XBEE_SLEEP_TURN_HIGH();
 }
 /**************************************************
+**brief 模式5 唤醒
+**************************************************/
+void XBeeMode5Wake(void)
+{
+    GPIO_XBEE_SLEEP_TURN_LOW();
+    //Delay100us();	
+    GPIO_XBEE_SLEEP_TURN_HIGH();
+    while(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==0);
+}
+/**************************************************
 **brief 获得当前马达状态
 **************************************************/
 LockCurrentStateType GetCurrentMotorState(void)
@@ -174,18 +184,45 @@ LockCurrentStateType GetCurrentMotorState(void)
     key2 = HalGpioGet(GPIO_XBEE_KEY2);
     key3 = HalGpioGet(GPIO_XBEE_KEY3);
     if(HalGpioGet(GPIO_XBEE_MOTOR1)==1 && HalGpioGet(GPIO_XBEE_MOTOR2)==0)
-        direction = 0;  //解锁方向
+        direction = 1;  //解锁方向
     if(HalGpioGet(GPIO_XBEE_MOTOR1)==0 && HalGpioGet(GPIO_XBEE_MOTOR2)==1)
-        direction = 1;  //锁定方向    
-    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 2)
-      return lock;
-    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 2)
-      return unlock;
-    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 0)
-      return lockTounlock;
-    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 1)
-      return unlockTolock;
+        direction = 2;  //锁定方向    
+    if(HalGpioGet(GPIO_XBEE_MOTOR1)==1 && HalGpioGet(GPIO_XBEE_MOTOR2)==1)
+        direction = 3;  //马达停止
+    if(key1 == 0 && key2 == 0 && key3 == 0 && direction == 2)
+        return lock;
+    if(key1 == 0 && key2 == 1 && key3 == 1 && direction == 1)
+        return unlock;
+//    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 2)
+//        return lockTounlock;
+//    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 1)
+//        return unlockTolock;
+    if(key1 == 1 && key2 == 0 && key3 == 0 && direction == 2)
+        return over_lock;
     return none;
+}
+
+void Delay1ms(void)		//@33.000MHz
+{
+	unsigned char i, j;
+
+	i = 33;
+	j = 22;
+	do
+	{
+		while (--j);
+	} while (--i);
+}
+void Delay100us(void)		//@33.000MHz
+{
+	unsigned char i, j;
+
+	i = 4;
+	j = 50;
+	do
+	{
+		while (--j);
+	} while (--i);
 }
 
 void setLedBit(unsigned char bits)

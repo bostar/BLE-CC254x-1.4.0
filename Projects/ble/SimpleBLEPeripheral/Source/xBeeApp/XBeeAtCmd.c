@@ -11,6 +11,7 @@
 #include "string.h"
 #include <stdlib.h>
 #include "OnBoard.h"
+#include "XBeeBsp.h"
 
 #if defined _XBEE_APP_
 
@@ -45,6 +46,7 @@ uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,
   for(cnt=0;cnt<len;cnt++)
     *((uint8*)frame + 17 + cnt) = *(rf_data + cnt);
   *(((uint8*)frame)+17+len) = XBeeApiChecksum(((uint8*)frame)+3,14+len);
+  XBeeMode5Wake();
   return NPI_WriteTransport((uint8*)frame,18+len);
 }
 
@@ -69,6 +71,7 @@ uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes)
   for(i=0;i<len;i++)
    *(((uint8*)cmd)+7+i) = *(pparam+i);
   *(((uint8*)cmd)+7+len) = XBeeApiChecksum(((uint8*)cmd)+3,4+len); 
+  XBeeMode5Wake();
   return NPI_WriteTransport((uint8*)cmd,8+len);
 }
 
@@ -142,10 +145,10 @@ void XBeeSetIO(XBeeIOParam ioparam,IOStatus state)
       cmd->atCmd[1]         = '8';
       break;
   }
-  
   cmd->param   = (state == Low)?4:5;
   //cmd->checksum = 0xff- i;
   cmd->checksum = XBeeApiChecksum(((uint8*)cmd)+3,5);
+  XBeeMode5Wake();
   NPI_WriteTransport((uint8*)cmd,9);
 }
 

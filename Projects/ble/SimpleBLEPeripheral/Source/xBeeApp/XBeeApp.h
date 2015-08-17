@@ -18,15 +18,15 @@ extern "C"
 // Simple BLE Peripheral Task Events
 #define XBEE_START_DEVICE_EVT                              0x0001
 #define XBEE_JOIN_NET_EVT                                  0x0002
-#define XBEE_CTL_MCU_UART_READ_EVT                         0x0004    
-#define XBEE_PARAM_INIT_EVT                                0x0008
+#define XBEE_KEEP_LOCK_STATE_EVT                           0x0004    
+#define z2                         0x0008
 #define XBEE_REC_DATA_PROCESS_EVT                          0x0010
 #define XBEE_TEST_EVT                                      0x0020
-#define XBEE_SLEEP_EVT                                     0x0040
+#define z3                         0x0040
 #define XBEE_IDLE_EVT                                      0x0080
 #define XBEE_MOTOO_CTL_EVT                                 0x0100
 #define XBEE_HMC5983_EVT                                   0x0200
-#define XBEE_WAKEUP_EVT                                    0x0400
+#define ZZ                         0x0400
 #define XBEE_VBT_CHENCK_EVT                                0x0800
 #define z5                         0x1000
 #define z6                         0x2000
@@ -69,6 +69,16 @@ typedef enum
 
 typedef enum
 {
+    SetMode     =   0,
+    SetSP       =   1,
+    SetST       =   2,
+    SetSO       =   3,
+    SetSN       =   4,
+    None        =   5
+}SetSleepModeType;
+
+typedef enum
+{
     ROUTOR     =      1,
     ENDER      =      2,
 }DeviceTypeDef;
@@ -85,6 +95,8 @@ typedef enum
     unlock          =   1,
     lockTounlock    =   2,
     unlockTolock    =   3,
+    over_lock       =   4,
+    over_unlock     =   5,
     none            =0x88
 }LockCurrentStateType;
 
@@ -169,7 +181,7 @@ extern __xdata uint8 XBeeTaskID;
 extern uint8 UartCtl; 
 extern uint8 SenFlag; 
 extern uint8 XBeeUartEn;
-extern LockCurrentStateType LockTargetState;
+extern LockCurrentStateType LockObjState;
 /*********************************************************************
  * FUNCTIONS
  */

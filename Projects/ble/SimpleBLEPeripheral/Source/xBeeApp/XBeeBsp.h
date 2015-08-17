@@ -28,7 +28,10 @@ uint16 XBeeSleepMode5(void);
 uint16 XBeeSleepMode1(void);
 void XBeePinWake(void);
 void XBeePinSleep(void);
+void XBeeMode5Wake(void);
 LockCurrentStateType GetCurrentMotorState(void);
+void Delay1ms(void);		//@33.000MHz
+void Delay100us(void);		//@33.000MHz
 #endif
 
 
