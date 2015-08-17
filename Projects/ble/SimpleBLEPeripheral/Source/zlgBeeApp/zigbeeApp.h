@@ -93,8 +93,6 @@ typedef struct _parking_state_t {
   unsigned char lockState;
 } parkingState_t;
 
-extern parkingState_t parkingState;
-
 enum {
   sleepState,
   wakeState

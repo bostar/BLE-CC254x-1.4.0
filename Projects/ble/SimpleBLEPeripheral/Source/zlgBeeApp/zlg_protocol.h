@@ -54,7 +54,7 @@ typedef struct _eventReport_t {
     unsigned char reportSuccess;
 } eventReport_t;
 
-extern eventReport_t eventReportData;
+extern eventReport_t * eventReportData;
 void applicateForNetwork(unsigned char *IEEEAddress);
 void ackLinkTest(unsigned char *IEEEAddress);
 void dateRequset(void);

@@ -9,8 +9,8 @@
 
 const unsigned short broadcastAddr = 0xffff;
 
-dev_info_t * const stDevInfo;
-uartReturnStatus_t uartReturnFlag;
+dev_info_t * stDevInfo;
+uartReturnStatus_t * uartReturnFlag;
 search_info_t searchInfo;
 unsigned short localAddress;
 unsigned char zlgIOLevel;
@@ -18,13 +18,12 @@ unsigned char zlgIOLevel;
 #define UART_WRITE_BUF_LEN      100
 #define UART_READ_BUF_LEN      100
 
-static unsigned char wbuf[UART_WRITE_BUF_LEN] , rbuf[UART_READ_BUF_LEN] ;
+static unsigned char wbuf[UART_WRITE_BUF_LEN];// , rbuf[UART_READ_BUF_LEN] ;
 
 void read_local_cfg(void)
 {
     unsigned char wbuf[5];
-    //stDevInfo = osal_mem_alloc( sizeof( dev_info_t ) );
-
+    
     wbuf[0] = 0xab;
     wbuf[1] = 0xbc;
     wbuf[2] = 0xcd;
@@ -311,85 +310,294 @@ void read_temporary_node_rssi(uint16 DstAddr)
 
     NPI_WriteTransport( wbuf , 6 );
 }
+//
+//uint8 receive_data( uint8 *rbuf, uint16 len )
+//{
+//    uint8 state = stateNoWork;
+//
+////    osal_memset( rbuf, 0xff, UART_READ_BUF_LEN );
+////    osal_memcpy( rbuf, buf, len );
+//    if((rbuf[0] == 0xab)&&(rbuf[1] == 0xbc)&&(rbuf[2] == 0xcd))
+//    {
+//        switch(rbuf[3])
+//        {
+//            case enReadLoacalCfg:
+//              osal_memcpy( stDevInfo, &rbuf[4], sizeof(dev_info_t) );
+//              localAddress = stDevInfo->devLoacalNetAddr[0]<<8 | stDevInfo->devLoacalNetAddr[1];
+//              uartReturnFlag->readLocalCfg_SUCCESS = 1;
+//              state = stateReadCfg;
+//              break;
+//            case enSetChannelNv:
+//              if(rbuf[4] == 0x00)
+//                return enSetChannelNv;
+//              break;
+//            case enSearchNode:
+//              osal_memcpy(&searchInfo,&rbuf[4],sizeof(search_info_t));
+//              break;
+//            case enGetRemoteInfo:
+//              osal_memcpy(stDevInfo,&rbuf[4],sizeof(dev_info_t));
+//              break;
+//            case enModifyCfg:
+//              //rbuf[4-5]:网络地址 rbuf[6]:00成功
+//              if(rbuf[6] == 0x00)
+//                uartReturnFlag->writeLocalCfg_SUCCESS = 1;
+//              state = stateWriteCfg;
+//              break;
+//            case enResetCfg:
+//              //rbuf[4-5]:网络地址 rbuf[6-7]:设备类型 rbuf[8]:00成功
+//              if(rbuf[8] == 0x00)
+//                uartReturnFlag->restoreSuccessFlag = 1;
+//              state = stateRestoreFactoryConfig;
+//              break;
+//            default:      
+//              break;
+//        }
+//    }
+//    if((rbuf[0] == 0xde)&&(rbuf[1] == 0xdf)&&(rbuf[2] == 0xef))
+//    {
+//        switch(rbuf[3])
+//        {
+//            case enSetChannel:
+//              if(rbuf[4] == 0x00)
+//                return enSetChannel;
+//              break;
+//            case enSetDestAddr:
+//              if(rbuf[4] == 0x00)
+//                return enSetDestAddr;
+//              break;
+//            case enShowSrcAddr:
+//              if(rbuf[4] == 0x00)
+//                return enShowSrcAddr;
+//              break;
+//            case enSetIoDirection:
+//              if(rbuf[6] == 0x00)
+//                uartReturnFlag->gpioDirectionSet_SUCCESS = 1;
+//              state = stateGpioSet;
+//              break;
+//            case enReadIoStatus:
+//              //buf[4-5]:addr;buf[6]:io_level
+//              zlgIOLevel = rbuf[6];
+//              break;
+//            case enSetIoStatus:
+//              if(rbuf[6] == 0x00)
+//                //return enSetIoStatus;
+//              break;
+//            case enReadAdcValue:
+//              //buf[4-5]:addr;buf[6-7]:adc_value
+//              uartReturnFlag->readAdcSuccessFlag = 1;
+//              uartReturnFlag->adc_value = (uint16)rbuf[6] << 8 | rbuf[7];
+//              break;
+//            case enSetUnicastOrBroadcast:
+//              if(rbuf[4] == 0x00)
+//                //return enSetUnicastOrBroadcast;
+//              break;
+//            case enReadNodeRssi:
+//              //buf[4]:rssi
+//              break;
+//            default:
+//              break;
+//        }
+//    }
+//    if((rbuf[0] == 'C')&&(rbuf[1] == 'F')&&(rbuf[2] == 'G'))
+//    {
+//        switch(rbuf[3])
+//        {
+//            case cmdAckCheckIn:
+//                if(!memcmp(&stDevInfo->devLoacalIEEEAddr[0],&rbuf[4],8) && rbuf[12] == 0x01)
+//                {
+//                  stDevInfo->devLoacalNetAddr[0] = rbuf[13];
+//                  stDevInfo->devLoacalNetAddr[1] = rbuf[14];
+//                  stDevInfo->devPanid[0] = rbuf[15];
+//                  stDevInfo->devPanid[1] = rbuf[16];
+//                  stDevInfo->devChannel = rbuf[17];
+//                  state = stateApplyNetwork;
+//                  uartReturnFlag->applyNetWork_SUCCESS = 1;
+//                }
+//                break;
+//            case cmdLinkTest:
+//                if(!memcmp(&stDevInfo->devLoacalIEEEAddr[0],&rbuf[4],8))
+//                {
+//                    state = stateAckLinkTest;//ackLinkTest();
+//                }
+//                break;
+//            case cmdRestoreFactoryConfig:
+//                {
+//                  //
+//                  state = stateRestoreFactoryConfig;
+//                }
+//                break;
+//            case cmdHeartBeatPkg:
+//                for(int i = 0; i < (int)rbuf[4]; i++)
+//                {
+//                    if((stDevInfo->devLoacalNetAddr[0] << 8 | \
+//                      stDevInfo->devLoacalNetAddr[1]) == *(unsigned short *)&rbuf[5+i*2])
+////                    if((stDevInfo->devLoacalNetAddr[0] == rbuf[6+i]) && \
+////                      (stDevInfo->devLoacalNetAddr[1] == rbuf[6+i-1]))
+//                    {
+//                        state = stateDataRequset;
+//                        return state;
+//                    }
+//                }
+//                state = stateHeartBeat;
+//                break;
+//            default:
+//                break;
+//        }
+//    }
+//    if((rbuf[0] == 'T')&&(rbuf[1] == 'S')&&(rbuf[2] == 'T'))
+//    {
+//        switch(rbuf[3])
+//        {
+//            case cmdBeepTest:
+//              if(cmdBuzz == rbuf[4])
+//                state = stateBeepOn;
+//                //setBeepOn();
+//              else if(cmdSilence == rbuf[4])
+//                //setBeepOff();
+//                state = stateBeepOff;
+//              break;
+//            case cmdLedTest:
+//              uartReturnFlag->ledBitState = rbuf[4];
+//              state = stateLedTest;
+//              break;
+//            case cmdMotorTest:
+//              switch(rbuf[4])
+//              {
+//              case cmdStop:
+//                setMotorStop();
+//                break;
+//              case cmdForward:
+//                setMotorForward();
+//                break;
+//              case cmdReverse:
+//                setMotorReverse();
+//                break;
+//              default:
+//                break;
+//              }
+//              break;
+//            default:
+//              break;      
+//        }
+//    }
+//    if((rbuf[0] == 'C')&&(rbuf[1] == 'T')&&(rbuf[2] == 'L'))
+//    {
+//        switch( rbuf[3] )
+//        {
+//            case 0x00:
+//                if( rbuf[4] == 0x00)
+//                {
+//                //          setMotorForward();unlock
+//                  state = stateMotorForward;
+//                }
+//                else if( rbuf[4] == 0x01)
+//                {
+//                //          setMotorReverse();//lock
+//                  state = stateMotorReverse;
+//                }
+//                else
+//                {
+//                  setMotorStop();
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//    }
+//    if((rbuf[0] == 'S')&&(rbuf[1] == 'E')&&(rbuf[2] == 'N'))
+//    {
+//        switch( rbuf[3] )
+//        {
+//        case cmdSensorCalibration:
+//            //开始标定
+//            break;
+//        case 0x04:
+//            eventReportData->reportSuccess = 1;
+//            break;
+//        default:
+//            break;
+//        }
+//    }
+//    return state;
+//}
 
-uint8 receive_data( uint8 *buf, uint16 len )
+
+uint8 receive_data( uint8 *rbuf, uint16 len )
 {
     uint8 state = stateNoWork;
 
-    osal_memset( rbuf, 0xff, UART_READ_BUF_LEN );
-    osal_memcpy( rbuf, buf, len );
-    if((rbuf[0] == 0xab)&&(rbuf[1] == 0xbc)&&(rbuf[2] == 0xcd))
+    if((*rbuf == 0xab)&&(*(rbuf+1) == 0xbc)&&(*(rbuf+2) == 0xcd))
     {
-        switch(rbuf[3])
+        switch(*(rbuf+3))
         {
             case enReadLoacalCfg:
-              osal_memcpy( stDevInfo, &rbuf[4], sizeof(dev_info_t) );
+              osal_memcpy( stDevInfo, rbuf+4, sizeof(dev_info_t) );
               localAddress = stDevInfo->devLoacalNetAddr[0]<<8 | stDevInfo->devLoacalNetAddr[1];
-              uartReturnFlag.readLocalCfg_SUCCESS = 1;
+              uartReturnFlag->readLocalCfg_SUCCESS = 1;
               state = stateReadCfg;
               break;
             case enSetChannelNv:
-              if(rbuf[4] == 0x00)
+              if(*(rbuf+4) == 0x00)
                 return enSetChannelNv;
               break;
             case enSearchNode:
-              osal_memcpy(&searchInfo,&rbuf[4],sizeof(search_info_t));
+              osal_memcpy(&searchInfo,rbuf+4,sizeof(search_info_t));
               break;
             case enGetRemoteInfo:
-              osal_memcpy(stDevInfo,&rbuf[4],sizeof(dev_info_t));
+              osal_memcpy(stDevInfo,rbuf+4,sizeof(dev_info_t));
               break;
             case enModifyCfg:
               //rbuf[4-5]:网络地址 rbuf[6]:00成功
-              if(rbuf[6] == 0x00)
-                uartReturnFlag.writeLocalCfg_SUCCESS = 1;
+              if(*(rbuf+6) == 0x00)
+                uartReturnFlag->writeLocalCfg_SUCCESS = 1;
               state = stateWriteCfg;
               break;
             case enResetCfg:
               //rbuf[4-5]:网络地址 rbuf[6-7]:设备类型 rbuf[8]:00成功
-              if(rbuf[8] == 0x00)
-                uartReturnFlag.restoreSuccessFlag = 1;
+              if(*(rbuf+8) == 0x00)
+                uartReturnFlag->restoreSuccessFlag = 1;
               state = stateRestoreFactoryConfig;
               break;
             default:      
               break;
         }
     }
-    if((rbuf[0] == 0xde)&&(rbuf[1] == 0xdf)&&(rbuf[2] == 0xef))
+    if((*rbuf == 0xde)&& (*(rbuf+1) == 0xdf)&&(*(rbuf+2) == 0xef))
     {
-        switch(rbuf[3])
+        switch(*(rbuf+3))
         {
             case enSetChannel:
-              if(rbuf[4] == 0x00)
+              if(*(rbuf+4) == 0x00)
                 return enSetChannel;
               break;
             case enSetDestAddr:
-              if(rbuf[4] == 0x00)
+              if(*(rbuf+4) == 0x00)
                 return enSetDestAddr;
               break;
             case enShowSrcAddr:
-              if(rbuf[4] == 0x00)
+              if(*(rbuf+4) == 0x00)
                 return enShowSrcAddr;
               break;
             case enSetIoDirection:
-              if(rbuf[6] == 0x00)
-                uartReturnFlag.gpioDirectionSet_SUCCESS = 1;
+              if(*(rbuf+6) == 0x00)
+                uartReturnFlag->gpioDirectionSet_SUCCESS = 1;
               state = stateGpioSet;
               break;
             case enReadIoStatus:
               //buf[4-5]:addr;buf[6]:io_level
-              zlgIOLevel = rbuf[6];
+              zlgIOLevel = *(rbuf+6);
               break;
             case enSetIoStatus:
-              if(rbuf[6] == 0x00)
+              if(*(rbuf+6) == 0x00)
                 //return enSetIoStatus;
               break;
             case enReadAdcValue:
               //buf[4-5]:addr;buf[6-7]:adc_value
-              uartReturnFlag.readAdcSuccessFlag = 1;
-              uartReturnFlag.adc_value = (uint16)rbuf[6] << 8 | rbuf[7];
+              uartReturnFlag->readAdcSuccessFlag = 1;
+              uartReturnFlag->adc_value = (uint16)*(rbuf+6) << 8 | *(rbuf+7);
               break;
             case enSetUnicastOrBroadcast:
-              if(rbuf[4] == 0x00)
+              if(*(rbuf+4) == 0x00)
                 //return enSetUnicastOrBroadcast;
               break;
             case enReadNodeRssi:
@@ -399,24 +607,24 @@ uint8 receive_data( uint8 *buf, uint16 len )
               break;
         }
     }
-    if((rbuf[0] == 'C')&&(rbuf[1] == 'F')&&(rbuf[2] == 'G'))
+    if((*rbuf == 'C')&&(*(rbuf+1) == 'F')&&(*(rbuf+2) == 'G'))
     {
-        switch(rbuf[3])
+        switch(*(rbuf+3))
         {
             case cmdAckCheckIn:
-                if(!memcmp(&stDevInfo->devLoacalIEEEAddr[0],&rbuf[4],8) && rbuf[12] == 0x01)
+                if(!memcmp(&stDevInfo->devLoacalIEEEAddr[0],rbuf+4,8) && *(rbuf+12) == 0x01)
                 {
-                  stDevInfo->devLoacalNetAddr[0] = rbuf[13];
-                  stDevInfo->devLoacalNetAddr[1] = rbuf[14];
-                  stDevInfo->devPanid[0] = rbuf[15];
-                  stDevInfo->devPanid[1] = rbuf[16];
-                  stDevInfo->devChannel = rbuf[17];
+                  stDevInfo->devLoacalNetAddr[0] = *(rbuf+13);
+                  stDevInfo->devLoacalNetAddr[1] = *(rbuf+14);
+                  stDevInfo->devPanid[0] = *(rbuf+15);
+                  stDevInfo->devPanid[1] = *(rbuf+16);
+                  stDevInfo->devChannel = *(rbuf+17);
                   state = stateApplyNetwork;
-                  uartReturnFlag.applyNetWork_SUCCESS = 1;
+                  uartReturnFlag->applyNetWork_SUCCESS = 1;
                 }
                 break;
             case cmdLinkTest:
-                if(!memcmp(&stDevInfo->devLoacalIEEEAddr[0],&rbuf[4],8))
+                if(!memcmp(&stDevInfo->devLoacalIEEEAddr[0],rbuf+4,8))
                 {
                     state = stateAckLinkTest;//ackLinkTest();
                 }
@@ -428,10 +636,10 @@ uint8 receive_data( uint8 *buf, uint16 len )
                 }
                 break;
             case cmdHeartBeatPkg:
-                for(int i = 0; i < (int)rbuf[4]; i++)
+                for(int i = 0; i < (int)*(rbuf+4); i++)
                 {
                     if((stDevInfo->devLoacalNetAddr[0] << 8 | \
-                      stDevInfo->devLoacalNetAddr[1]) == *(unsigned short *)&rbuf[5+i*2])
+                      stDevInfo->devLoacalNetAddr[1]) == *(unsigned short *)(rbuf+5+i*2))
 //                    if((stDevInfo->devLoacalNetAddr[0] == rbuf[6+i]) && \
 //                      (stDevInfo->devLoacalNetAddr[1] == rbuf[6+i-1]))
                     {
@@ -445,24 +653,24 @@ uint8 receive_data( uint8 *buf, uint16 len )
                 break;
         }
     }
-    if((rbuf[0] == 'T')&&(rbuf[1] == 'S')&&(rbuf[2] == 'T'))
+    if((*rbuf == 'T')&&(*(rbuf+1) == 'S')&&(*(rbuf+2) == 'T'))
     {
-        switch(rbuf[3])
+        switch(*(rbuf+3))
         {
             case cmdBeepTest:
-              if(cmdBuzz == rbuf[4])
+              if(cmdBuzz == *(rbuf+4))
                 state = stateBeepOn;
                 //setBeepOn();
-              else if(cmdSilence == rbuf[4])
+              else if(cmdSilence == *(rbuf+4))
                 //setBeepOff();
                 state = stateBeepOff;
               break;
             case cmdLedTest:
-              uartReturnFlag.ledBitState = rbuf[4];
+              uartReturnFlag->ledBitState = *(rbuf+4);
               state = stateLedTest;
               break;
             case cmdMotorTest:
-              switch(rbuf[4])
+              switch(*(rbuf+4))
               {
               case cmdStop:
                 setMotorStop();
@@ -481,17 +689,17 @@ uint8 receive_data( uint8 *buf, uint16 len )
               break;      
         }
     }
-    if((rbuf[0] == 'C')&&(rbuf[1] == 'T')&&(rbuf[2] == 'L'))
+    if((*rbuf == 'C')&&(*(rbuf+1) == 'T')&&(*(rbuf+2) == 'L'))
     {
-        switch( rbuf[3] )
+        switch( *(rbuf+3) )
         {
             case 0x00:
-                if( rbuf[4] == 0x00)
+                if( *(rbuf+4) == 0x00)
                 {
                 //          setMotorForward();unlock
                   state = stateMotorForward;
                 }
-                else if( rbuf[4] == 0x01)
+                else if( *(rbuf+4) == 0x01)
                 {
                 //          setMotorReverse();//lock
                   state = stateMotorReverse;
@@ -505,15 +713,15 @@ uint8 receive_data( uint8 *buf, uint16 len )
                 break;
         }
     }
-    if((rbuf[0] == 'S')&&(rbuf[1] == 'E')&&(rbuf[2] == 'N'))
+    if((*rbuf == 'S')&&(*(rbuf+1) == 'E')&&(*(rbuf+2) == 'N'))
     {
-        switch( rbuf[3] )
+        switch( *(rbuf+3) )
         {
         case cmdSensorCalibration:
             //开始标定
             break;
         case 0x04:
-            eventReportData.reportSuccess = 1;
+            eventReportData->reportSuccess = 1;
             break;
         default:
             break;

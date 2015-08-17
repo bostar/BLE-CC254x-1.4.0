@@ -4,7 +4,7 @@
 #include "zlgAtCmd.h"
 #include "OSAL.h"
 
-eventReport_t eventReportData;
+eventReport_t * eventReportData;
 
 void applicateForNetwork(unsigned char *IEEEAddress)
 {
@@ -75,7 +75,7 @@ void batteryRemainingReport(unsigned char voltage)
 
 void motorStopAdcReport(unsigned short voltage)
 {
-    char wbuf[6];
+    char wbuf[8];
       
     wbuf[0] = 'S';
     wbuf[1] = 'E';
@@ -83,6 +83,8 @@ void motorStopAdcReport(unsigned short voltage)
     wbuf[3] = 0x03;
     wbuf[4] = voltage >> 8;
     wbuf[5] = voltage;
+    wbuf[6] = stDevInfo->devLoacalNetAddr[0];
+    wbuf[7] = stDevInfo->devLoacalNetAddr[1];
     
-    NPI_WriteTransport( (unsigned char *)wbuf , 6 );
+    NPI_WriteTransport( (unsigned char *)wbuf , 8 );
 }

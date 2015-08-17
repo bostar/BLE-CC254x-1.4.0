@@ -83,8 +83,8 @@ typedef struct _zlgContext_t {
   uartReturnStatus_t uartReturnFlags;
 }zlgContext_t;
 
-extern uartReturnStatus_t uartReturnFlag;
-extern dev_info_t * const stDevInfo;
+extern uartReturnStatus_t * uartReturnFlag;
+extern dev_info_t * stDevInfo;
 extern unsigned short localAddress;
 extern unsigned char zlgIOLevel;
 
