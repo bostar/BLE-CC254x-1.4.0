@@ -7,6 +7,7 @@
 #include "hal_key.h"
 #include <math.h>
 #include <stdlib.h>
+#include "hal_adc.h"
 
 #if defined _USE_ZM516X_
 
@@ -38,12 +39,26 @@ static void zigBee_ProcessOSALMsg( osal_event_hdr_t *pMsg );
 static void zigBee_HandleKeys( uint8 shift, uint8 keys );
 #endif
 
+int16 vbt = 0,sen = 0,avdd = 0;
+float sen_v = 0,vbt_v = 0,avdd_v = 0;
+  
 void Zigbee_Init( uint8 task_id )
 {
   zigbee_TaskID = task_id;
 
   NPI_InitTransport(npiCBack_uart);
   InitUart1();
+  HalAdcSetReference ( HAL_ADC_REF_AVDD );
+  sen = HalAdcRead (HAL_ADC_CHANNEL_0, HAL_ADC_RESOLUTION_8);
+  HAL_GPIO_CHANGE_DELAY();
+  for(int loop = 0;loop < 1000;loop ++)
+  vbt = HalAdcRead (HAL_ADC_CHANNEL_1, HAL_ADC_RESOLUTION_8);
+  HAL_GPIO_CHANGE_DELAY();
+  sen_v = 3.482 * (float)sen / 0x7f;
+  vbt_v = 3.482 * (float)vbt / 0x7f;
+  vbt_v = vbt_v;
+  sen_v = sen_v;
+
 #if defined( STARBO_BOARD )
 
   //SK_AddService( GATT_ALL_SERVICES ); // Simple Keys Profile

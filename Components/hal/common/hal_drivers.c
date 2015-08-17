@@ -162,12 +162,15 @@ void HalDriverInit (void)
 #if (defined HAL_SPI) && (HAL_SPI == TRUE)
   HalSpiInit();
 #endif
-  HalI2CInit(HAL_I2C_SLAVE_ADDR_DEF,i2cClock_123KHZ);
+  //HalI2CInit(HAL_I2C_SLAVE_ADDR_DEF,i2cClock_123KHZ);
   /* HID */
 #if (defined HAL_HID) && (HAL_HID == TRUE)
   usbHidInit();
 #endif
-
+  /* ADC */
+#if (defined HAL_ADC) && (HAL_ADC == TRUE)
+  HalAdcInit();
+#endif
 }
 
 /**************************************************************************************************
