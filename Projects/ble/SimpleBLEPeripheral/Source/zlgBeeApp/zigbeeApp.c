@@ -368,7 +368,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   {
      SET_ZM516X_SLEEP();
      zlgSleepOrwake = sleepState;
-     osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,1000 );
+     osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,1700 );
      return ( events ^ ZIGBEE_SLEEP_ZM516X_EVT );
   }
   
@@ -381,7 +381,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
      }
      dateRequset();
 //     osal_start_timerEx( zigbee_TaskID, READ_ZIGBEE_ADC_EVT, 300 );
-     osal_start_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT ,1000 );
+     osal_start_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT ,300 );
      return ( events ^ ZIGBEE_WAKE_ZM516X_EVT );
   }
   
