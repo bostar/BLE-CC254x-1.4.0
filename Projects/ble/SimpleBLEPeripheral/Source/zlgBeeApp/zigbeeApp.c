@@ -811,13 +811,11 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
 
 static void eventReportToGateway( parkingEvent_t event )
 {
-    uint32 rtrn;
     eventReportData->event =  event ;
     eventReportData->reportSuccess = 0;
-    rtrn = osal_get_timeoutEx( zigbee_TaskID, EVENT_REPORT_EVT );
-    if( rtrn > 0 )
+    if( osal_get_timeoutEx( zigbee_TaskID, EVENT_REPORT_EVT ) > 0)
       osal_stop_timerEx( zigbee_TaskID, EVENT_REPORT_EVT );
-    osal_set_event( zigbee_TaskID, EVENT_REPORT_EVT );
+    osal_set_event( zigbee_TaskID, EVENT_REPORT_EVT);
 }
 
 #endif

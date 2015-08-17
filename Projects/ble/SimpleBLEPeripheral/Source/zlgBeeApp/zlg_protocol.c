@@ -8,7 +8,7 @@ eventReport_t * eventReportData;
 
 void applicateForNetwork(unsigned char *IEEEAddress)
 {
-    char wbuf[12];
+    static char wbuf[12];
 
     wbuf[0] = 'C';
     wbuf[1] = 'F';
@@ -21,7 +21,7 @@ void applicateForNetwork(unsigned char *IEEEAddress)
 
 void ackLinkTest(unsigned char *IEEEAddress)
 {
-    char wbuf[11];
+    static char wbuf[11];
     wbuf[0] = 'C';
     wbuf[1] = 'F';
     wbuf[2] = 'G';
@@ -33,7 +33,7 @@ void ackLinkTest(unsigned char *IEEEAddress)
 
 void dateRequset(void)
 {
-    char wbuf[6];
+    static char wbuf[6];
     wbuf[0] = 'C';
     wbuf[1] = 'F';
     wbuf[2] = 'G';
@@ -46,7 +46,7 @@ void dateRequset(void)
 
 void eventReport(parkingEvent_t event)
 {
-    char wbuf[7];
+    static char wbuf[7];
     wbuf[0] = 'S';
     wbuf[1] = 'E';
     wbuf[2] = 'N';
@@ -60,7 +60,7 @@ void eventReport(parkingEvent_t event)
 
 void batteryRemainingReport(unsigned char voltage)
 {
-    char wbuf[7];
+    static char wbuf[7];
     
     wbuf[0] = 'S';
     wbuf[1] = 'E';
@@ -75,7 +75,7 @@ void batteryRemainingReport(unsigned char voltage)
 
 void motorStopAdcReport(unsigned short voltage)
 {
-    char wbuf[8];
+    static char wbuf[8];
       
     wbuf[0] = 'S';
     wbuf[1] = 'E';
