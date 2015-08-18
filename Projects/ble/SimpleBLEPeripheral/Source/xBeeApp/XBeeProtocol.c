@@ -49,12 +49,10 @@ void CTLProcess(uint8 *cmd)
     case 0:
         if(*(cmd+1) == 0)  //╫БкЬ
         {
-            MotorForward();
             LockObjState = unlock;
         }
-        if(*(cmd+1) == 1)  //иокЬ
+        else if(*(cmd+1) == 1)  //иокЬ
         {
-            MotorReverse();
             LockObjState = lock;
         }
         osal_set_event( XBeeTaskID, XBEE_MOTOO_CTL_EVT );
