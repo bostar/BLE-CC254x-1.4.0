@@ -630,24 +630,13 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
                 }
                 break;
             case cmdRestoreFactoryConfig:
+                if( (stDevInfo->devLoacalNetAddr[0] == *(rbuf+4) && \
+                    stDevInfo->devLoacalNetAddr[1] == *(rbuf+5)) || \
+                      ( 0xff == *(rbuf+4) && 0xff == *(rbuf+5) ) )
                 {
                   //
                   state = stateRestoreFactoryConfig;
                 }
-                break;
-            case cmdHeartBeatPkg:
-                for(int i = 0; i < (int)*(rbuf+4); i++)
-                {
-                    if((stDevInfo->devLoacalNetAddr[0] << 8 | \
-                      stDevInfo->devLoacalNetAddr[1]) == *(unsigned short *)(rbuf+5+i*2))
-//                    if((stDevInfo->devLoacalNetAddr[0] == rbuf[6+i]) && \
-//                      (stDevInfo->devLoacalNetAddr[1] == rbuf[6+i-1]))
-                    {
-                        state = stateDataRequset;
-                        return state;
-                    }
-                }
-                state = stateHeartBeat;
                 break;
             default:
                 break;
@@ -658,32 +647,47 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
         switch(*(rbuf+3))
         {
             case cmdBeepTest:
-              if(cmdBuzz == *(rbuf+4))
-                state = stateBeepOn;
-                //setBeepOn();
-              else if(cmdSilence == *(rbuf+4))
-                //setBeepOff();
-                state = stateBeepOff;
+                if( (stDevInfo->devLoacalNetAddr[0] == *(rbuf+5) && \
+                    stDevInfo->devLoacalNetAddr[1] == *(rbuf+6)) || \
+                      ( 0xff == *(rbuf+5) && 0xff == *(rbuf+6) ) )
+                {
+                      if(cmdBuzz == *(rbuf+4))
+                        state = stateBeepOn;
+                        //setBeepOn();
+                      else if(cmdSilence == *(rbuf+4))
+                        //setBeepOff();
+                        state = stateBeepOff;
+                }
               break;
             case cmdLedTest:
-              uartReturnFlag->ledBitState = *(rbuf+4);
-              state = stateLedTest;
+                if( (stDevInfo->devLoacalNetAddr[0] == *(rbuf+5) && \
+                    stDevInfo->devLoacalNetAddr[1] == *(rbuf+6)) || \
+                      ( 0xff == *(rbuf+5) && 0xff == *(rbuf+6) ) )
+                {
+                      uartReturnFlag->ledBitState = *(rbuf+4);
+                      state = stateLedTest;
+                }
               break;
             case cmdMotorTest:
-              switch(*(rbuf+4))
-              {
-              case cmdStop:
-                setMotorStop();
-                break;
-              case cmdForward:
-                setMotorForward();
-                break;
-              case cmdReverse:
-                setMotorReverse();
-                break;
-              default:
-                break;
-              }
+                if( (stDevInfo->devLoacalNetAddr[0] == *(rbuf+5) && \
+                    stDevInfo->devLoacalNetAddr[1] == *(rbuf+6)) || \
+                      ( 0xff == *(rbuf+5) && 0xff == *(rbuf+6) ) )
+                {
+                      switch(*(rbuf+4))
+                      {
+                      case cmdStop:
+                        setMotorStop();
+                        break;
+                      case cmdForward:
+                        setMotorForward();
+                        break;
+                      case cmdReverse:
+                        setMotorReverse();
+                        break;
+                      default:
+                        break;
+                      }
+                }
               break;
             default:
               break;      
@@ -694,19 +698,24 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
         switch( *(rbuf+3) )
         {
             case 0x00:
-                if( *(rbuf+4) == 0x00)
+                if( (stDevInfo->devLoacalNetAddr[0] == *(rbuf+5) && \
+                    stDevInfo->devLoacalNetAddr[1] == *(rbuf+6)) || \
+                      ( 0xff == *(rbuf+5) && 0xff == *(rbuf+6) ) )
                 {
-                //          setMotorForward();unlock
-                  state = stateMotorForward;
-                }
-                else if( *(rbuf+4) == 0x01)
-                {
-                //          setMotorReverse();//lock
-                  state = stateMotorReverse;
-                }
-                else
-                {
-                  setMotorStop();
+                    if( *(rbuf+4) == 0x00)
+                    {
+                    //          setMotorForward();unlock
+                      state = stateMotorForward;
+                    }
+                    else if( *(rbuf+4) == 0x01)
+                    {
+                    //          setMotorReverse();//lock
+                      state = stateMotorReverse;
+                    }
+                    else
+                    {
+                      setMotorStop();
+                    }
                 }
                 break;
             default:
@@ -721,7 +730,12 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
             //开始标定
             break;
         case 0x04:
-            eventReportData->reportSuccess = 1;
+            if( (stDevInfo->devLoacalNetAddr[0] == *(rbuf+5) && \
+                    stDevInfo->devLoacalNetAddr[1] == *(rbuf+6)) || \
+                      ( 0xff == *(rbuf+5) && 0xff == *(rbuf+6) ) )
+            {
+                eventReportData->reportSuccess = 1;
+            }
             break;
         default:
             break;

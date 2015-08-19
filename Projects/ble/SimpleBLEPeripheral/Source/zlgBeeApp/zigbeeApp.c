@@ -408,12 +408,6 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
             case stateRestoreFactoryConfig:
               osal_set_event( zigbee_TaskID, ZIGBEE_RESTORE_FACTORY_EVT );
               break;
-            case stateHeartBeat:
-//              osal_set_event( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT );
-              break;
-            case stateDataRequset:
-//              dateRequset();
-              break;
             case stateBeepOn:
               test_state = 1;
               osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
@@ -694,9 +688,6 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
        cmd_len = 8;
        break;
      case cmdRestoreFactoryConfig:
-       cmd_len = 0;
-       break;
-     case cmdHeartBeatPkg:
        cmd_len = 2;
        break;
      default:
@@ -710,7 +701,7 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
      case cmdBeepTest:
      case cmdLedTest:
      case cmdMotorTest:
-       cmd_len = 1;     
+       cmd_len = 3;     
        break;
      default:
        break;
@@ -721,7 +712,7 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
      switch(cmd)
      {
      case 0x00:
-       cmd_len = 1;
+       cmd_len = 3;
        break;
      default:
        break;
@@ -732,7 +723,7 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
      switch(cmd)
      {
      case 0x04:
-       cmd_len = 1;
+       cmd_len = 3;
        break;
      default:
        break;

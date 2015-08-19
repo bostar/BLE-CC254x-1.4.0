@@ -55,8 +55,6 @@ typedef enum{
     stateMotorReverse = 0x15,
     stateAckLinkTest = 0x16,
     stateRestoreFactoryConfig = 0x17,
-    stateHeartBeat = 0x18,
-    stateDataRequset = 0x19,
     stateTest = 0x99,
     stateNoWork = 0xff
 }state_t;
