@@ -55,8 +55,10 @@ void XBeeInit( uint8 task_id )
     NPI_InitTransport(npiCBack_uart);         //初始化UART 
     InitUart1();  //初始化串口1
     RegisterForKeys( XBeeTaskID );
-    osal_set_event( XBeeTaskID, XBEE_START_DEVICE_EVT );  //触发事件
-    //osal_set_event( XBeeTaskID, XBEE_TEST_EVT );
+    //MotorInit();
+    //osal_set_event( XBeeTaskID, XBEE_START_DEVICE_EVT );  //触发事件
+    //osal_set_event( XBeeTaskID, XBEE_MOTOO_CTL_EVT );
+    osal_set_event( XBeeTaskID, XBEE_TEST_EVT );
 }
 
 uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
@@ -253,24 +255,43 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     
     if( events & XBEE_MOTOO_CTL_EVT )           //控制MOTOR动作
     {
-        LockCurrentStateType MotorCurrentState;
-        LockCurrentStateType LocalLockState;
+        LockCurrentStateType MotorCurrentState,LocalLockState;
         
-        LocalLockState = LockObjState;
+        //LocalLockState = LockObjState;
+        LocalLockState = lock;
         MotorCurrentState = GetCurrentMotorState();
-        if(LocalLockState == MotorCurrentState)
+        //MotorLock();
+        MotorUnlock();
+        
+        if(LocalLockState == lock)
         {
-            MotorStop();
-            XBeeLockState(Success);
-            osal_set_event( XBeeTaskID, XBEE_HMC5983_EVT );
-            osal_set_event( XBeeTaskID, XBEE_VBT_CHENCK_EVT );
-            return ( events ^ XBEE_MOTOO_CTL_EVT );
+            MotorLock();
+            if(MotorCurrentState == LocalLockState || MotorCurrentState == over_lock)
+            {
+                MotorStop();
+                XBeeLockState(Success);
+                //osal_set_event( XBeeTaskID, XBEE_HMC5983_EVT );
+                //osal_set_event( XBeeTaskID, XBEE_VBT_CHENCK_EVT );
+                return ( events ^ XBEE_MOTOO_CTL_EVT );
+            }
+        }
+        if(LocalLockState == unlock)
+        {
+            MotorUnlock();
+            if(MotorCurrentState == LocalLockState)
+            {
+                MotorStop();
+                XBeeLockState(Success);
+                //osal_set_event( XBeeTaskID, XBEE_HMC5983_EVT );
+                //osal_set_event( XBeeTaskID, XBEE_VBT_CHENCK_EVT );
+                return ( events ^ XBEE_MOTOO_CTL_EVT );
+            }
         }
         //轮询马达是否阻塞，马达阻塞时，归位或停止在当前位置
         //停止马达
         //检查马达当前位置
         //发送失败报告
-        osal_start_timerEx( XBeeTaskID, XBEE_MOTOO_CTL_EVT, 10 );
+        osal_start_timerEx( XBeeTaskID, XBEE_MOTOO_CTL_EVT, 1 );
         return (events ^ XBEE_START_DEVICE_EVT) ;
     }
     
@@ -288,18 +309,31 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         return (events ^ XBEE_START_DEVICE_EVT) ;
     }
     
-    if( events & XBEE_TEST_EVT )                //测试用
+    if( events & XBEE_TEST_EVT )                //测试事件
     {   
-        uint8 data[5];
-    
-        data[0]   =   0x88;
-        data[1]   =   0x88;
-        data[2]   =   0x88;
-        data[3]   =   0x88;
-        //XBeeMode5Wake();
-        XBeeSendToCoor(data,4,NO_RES);
+#if 0
+        LockCurrentStateType i;
         
-        osal_start_timerEx( XBeeTaskID, XBEE_TEST_EVT, 500 );
+        i = GetCurrentMotorState();
+#endif
+#if 1
+        uint8 abc;
+        
+        MotorUnlock();
+
+            abc = GetCurrentMotorState();
+            if(abc == unlock )
+            {
+                MotorStop();
+            }
+
+#endif      
+#if 0
+        MotorUnlock();
+        MotorLock();
+        MotorStop();
+#endif  
+        osal_start_timerEx( XBeeTaskID, XBEE_TEST_EVT, 1 );
         return (events ^ XBEE_START_DEVICE_EVT) ;
     }
     

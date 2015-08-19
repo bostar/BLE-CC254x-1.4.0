@@ -49,13 +49,13 @@ void CTLProcess(uint8 *cmd)
     case 0:
         if(*(cmd+1) == 0)  //解锁
         {
-            MotorForward();
             LockObjState = unlock;
+            //MotorUnlock();      //开始解锁
         }
-        if(*(cmd+1) == 1)  //上锁
+        else if(*(cmd+1) == 1)  //上锁
         {
-            MotorReverse();
             LockObjState = lock;
+            //MotorLock();      //开始解锁
         }
         osal_set_event( XBeeTaskID, XBEE_MOTOO_CTL_EVT );
         osal_stop_timerEx( XBeeTaskID,XBEE_HMC5983_EVT);

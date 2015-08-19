@@ -119,7 +119,7 @@ void MotorStop(void)
 /**********************************************
 **brief 马达正转
 **********************************************/
-void MotorForward(void)
+void MotorUnlock(void)
 {
    GPIO_XBEE_MOTOR1_TURN_LOW();
    GPIO_XBEE_MOTOR2_TURN_HIGH();
@@ -127,13 +127,25 @@ void MotorForward(void)
 /**********************************************
 **brief 马达反转
 **********************************************/
-void MotorReverse(void)
+void MotorLock(void)
 {
    GPIO_XBEE_MOTOR1_TURN_HIGH();
    GPIO_XBEE_MOTOR2_TURN_LOW();
 }
-
-
+/**********************************************
+**brief motor复位
+**********************************************/
+void MotorInit(void)
+{
+    LockCurrentStateType state=none;
+    state = GetCurrentMotorState();
+    while(state != unlock)
+    {
+        MotorUnlock();
+        state = GetCurrentMotorState();
+        //检测马达是否阻塞
+    }
+}
 /**************************************************
 **brief xbee休眠初始化，设置为mode5
 **************************************************/
@@ -178,28 +190,36 @@ void XBeeMode5Wake(void)
 **************************************************/
 LockCurrentStateType GetCurrentMotorState(void)
 {
-    uint8 key1,key2,key3,direction=2;
+    uint8 key1,key2,key3;
+    LockCurrentStateType state=none;
     
     key1 = HalGpioGet(GPIO_XBEE_KEY1);
     key2 = HalGpioGet(GPIO_XBEE_KEY2);
     key3 = HalGpioGet(GPIO_XBEE_KEY3);
-    if(HalGpioGet(GPIO_XBEE_MOTOR1)==1 && HalGpioGet(GPIO_XBEE_MOTOR2)==0)
-        direction = 1;  //解锁方向
-    if(HalGpioGet(GPIO_XBEE_MOTOR1)==0 && HalGpioGet(GPIO_XBEE_MOTOR2)==1)
-        direction = 2;  //锁定方向    
-    if(HalGpioGet(GPIO_XBEE_MOTOR1)==1 && HalGpioGet(GPIO_XBEE_MOTOR2)==1)
-        direction = 3;  //马达停止
-    if(key1 == 0 && key2 == 0 && key3 == 0 && direction == 2)
-        return lock;
-    if(key1 == 0 && key2 == 1 && key3 == 1 && direction == 1)
-        return unlock;
-//    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 2)
-//        return lockTounlock;
-//    if(key1 == 1 && key2 == 1 && key3 == 1 && direction == 1)
-//        return unlockTolock;
-    if(key1 == 1 && key2 == 0 && key3 == 0 && direction == 2)
-        return over_lock;
-    return none;
+
+    if(key1 == 1 && key2 == 1 && key3 == 1 )
+        state = lock;
+    else if(key1 == 1 && key2 == 0 && key3 == 0 )
+        state = unlock;  
+    else if(key1 == 0 && key2 == 1 && key3 == 1 )
+        state = over_lock;
+    
+    return state;  
+}
+/**************************************************
+**brief 获得当前马达状态 、测试
+**************************************************/
+uint8 GetCurrentMotorStateTest(void)
+{
+    uint8 valve=0;
+    
+    if(HalGpioGet(GPIO_XBEE_KEY1) == 1)
+        valve |= 0x01;
+    if(HalGpioGet(GPIO_XBEE_KEY2) == 1)
+        valve |= 0x02;
+    if(HalGpioGet(GPIO_XBEE_KEY3) == 1)
+        valve |= 0x04;
+    return valve;
 }
 
 void Delay1ms(void)		//@33.000MHz

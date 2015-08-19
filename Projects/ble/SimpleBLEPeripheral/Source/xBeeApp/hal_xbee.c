@@ -44,26 +44,37 @@ void HalXbeeInit (void)
     GPIO_XBEE_RESET_TURN_HIGH();
     GPIO_XBEE_SLEEP_TURN_LOW();
     GPIO_XBEE_DIR_TURN_LOW();
+    GPIO_XBEE_MOTOR1_TURN_HIGH();
+    GPIO_XBEE_MOTOR2_TURN_HIGH();
 }
 
 uint8 HalGpioGet(GPIOType pin)
 {
+    uint8 reval;
     switch(pin)
     {
         case GPIO_XBEE_KEY1:
-            return GPIO_XBEE_KEY1_SBIT;
+            reval = GPIO_XBEE_KEY1_SBIT;
+            break;
         case GPIO_XBEE_KEY2:
-            return GPIO_XBEE_KEY2_SBIT;
+            reval = GPIO_XBEE_KEY2_SBIT;
+            break;
+        case GPIO_XBEE_KEY3:
+            reval = GPIO_XBEE_KEY3_SBIT;
+            break;
         case GPIO_XBEE_SLEEP_INDER:
-            return GPIO_XBEE_SLEEP_INDER_SBIT;
+            reval = GPIO_XBEE_SLEEP_INDER_SBIT;
+            break;
         case GPIO_XBEE_MOTOR1:
-            return GPIO_XBEE_MOTOR1_SBIT;
+            reval = GPIO_XBEE_MOTOR1_SBIT;
+            break;
         case GPIO_XBEE_MOTOR2:
-            return GPIO_XBEE_MOTOR2_SBIT;
+            reval = GPIO_XBEE_MOTOR2_SBIT;
+            break;
         default:
             break;
     }
-    return 2;
+    return reval;
 }
 #endif
 

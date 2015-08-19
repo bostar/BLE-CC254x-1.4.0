@@ -21,8 +21,8 @@ uint16 XBeeUartRead(uint8* buff);
 void XBeeRourerJoinNet(void);  //加入网络
 void XBeeLeaveNet(void);       //离开网络
 uint16 XBeeReqJionPark(void);  // 加入停车场
-void MotorReverse(void);
-void MotorForward(void);
+void MotorLock(void);
+void MotorUnlock(void);
 void MotorStop(void);    
 uint16 XBeeSleepMode5(void);
 uint16 XBeeSleepMode1(void);
@@ -32,6 +32,8 @@ void XBeeMode5Wake(void);
 LockCurrentStateType GetCurrentMotorState(void);
 void Delay1ms(void);		//@33.000MHz
 void Delay100us(void);		//@33.000MHz
+void MotorInit(void);
+uint8 GetCurrentMotorStateTest(void);
 #endif
 
 
