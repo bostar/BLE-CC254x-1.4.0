@@ -296,7 +296,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
       HAL_GPIO_CHANGE_DELAY();
       sen_v = 3.482 * (float)sen / 0x7f;
 //          motorStopAdcReport(uartReturnFlag->adc_value);   
-      if(sen_v > 1.0)
+      if(sen_v > 0.2)
       {
           if( parkingState->lockState == cmdLocking )  
           {
@@ -311,11 +311,11 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
               eventReportToGateway( cmdUnlockFailed );
           }
           else if(parkingState->lockState != cmdLockFailed && \
-            parkingState->lockState != cmdUnlockFailed)
+            parkingState->lockState != cmdUnlockFailed && (sen_v > 2))
           {
             setMotorStop();
           }
-      }     
+      }
       osal_start_reload_timer( zigbee_TaskID, READ_ZIGBEE_ADC_EVT,1000 );
       return ( events ^ READ_ZIGBEE_ADC_EVT );
   }
