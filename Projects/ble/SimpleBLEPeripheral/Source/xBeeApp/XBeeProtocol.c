@@ -17,19 +17,23 @@ void CFGProcess(uint8 *cmd)
 {
     switch(*cmd)
     {
-        case 0x00:   //允许限时加入网络
+        case 0x00:      //设置限时加入网络时限
             XBeeSetNJ(*(cmd+1),NO_RES);
             break;
-        case 0x02:   //入网响应
+        case 0x02:      //入网响应
             if(*(cmd+1) == 0x01)   //允许入网
-              FlagJionNet = NetOK;    
-            else    //禁止入网
+            {
+              FlagJionNet = NetOK;
+              osal_stop_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT);
+              osal_set_event( XBeeTaskID, XBEE_HMC5983_EVT ); 
+              return;
+            }
+            else if(*(cmd+1) == 0x00)   //禁止入网
             {
                 XBeeLeaveNet();  
                 FlagJionNet = JoinNet;
                 return;
-            } 
-            osal_stop_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT);
+            }
             break;
         case 0x03:  //恢复出厂设置
             XBeeLeaveNet();  
@@ -48,13 +52,9 @@ void CTLProcess(uint8 *cmd)
   {
     case 0:
         if(*(cmd+1) == 0)  //解锁
-        {
             LockObjState = unlock;
-        }
         else if(*(cmd+1) == 1)  //上锁
-        {
             LockObjState = lock;
-        }
         osal_set_event( XBeeTaskID, XBEE_MOTOO_CTL_EVT );
         osal_stop_timerEx( XBeeTaskID,XBEE_HMC5983_EVT);
         osal_stop_timerEx( XBeeTaskID,XBEE_VBT_CHENCK_EVT);
@@ -86,13 +86,13 @@ void TSTProcess(uint8 *cmd)
 /*********************************************************
 **brief 发送锁状态函数
 *********************************************************/
-uint16 XBeeLockState(LockStateType LockState)
+uint16 XBeeLockState(parkingEventType LockState)
 {
   uint8 data[5];
   
-  data[0]   =   'C';
-  data[1]   =   'T';
-  data[2]   =   'L';
+  data[0]   =   'S';
+  data[1]   =   'E';
+  data[2]   =   'N';
   data[3]   =  0x01;
   data[4]   =  LockState;
   

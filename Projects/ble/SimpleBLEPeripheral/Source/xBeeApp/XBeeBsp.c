@@ -143,6 +143,8 @@ void MotorInit(void)
     {
         MotorUnlock();
         state = GetCurrentMotorState();
+        if(state == unlock)
+            MotorStop();
         //检测马达是否阻塞
     }
 }
@@ -196,13 +198,7 @@ LockCurrentStateType GetCurrentMotorState(void)
     key1 = HalGpioGet(GPIO_XBEE_KEY1);
     key2 = HalGpioGet(GPIO_XBEE_KEY2);
     key3 = HalGpioGet(GPIO_XBEE_KEY3);
-/*    if(HalGpioGet(GPIO_XBEE_MOTOR1)==0 && HalGpioGet(GPIO_XBEE_MOTOR2)==1)
-        direction = 1;  //解锁方向
-    else if(HalGpioGet(GPIO_XBEE_MOTOR1)==1 && HalGpioGet(GPIO_XBEE_MOTOR2)==0)
-        direction = 2;  //锁定方向    
-    else (HalGpioGet(GPIO_XBEE_MOTOR1)==1 && HalGpioGet(GPIO_XBEE_MOTOR2)==1)
-        direction = 3;  //马达停止
-*/
+
     if(key1 == 1 && key2 == 1 && key3 == 1 )
         state = lock;
     else if(key1 == 1 && key2 == 0 && key3 == 0 )

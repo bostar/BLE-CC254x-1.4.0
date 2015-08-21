@@ -22,7 +22,7 @@ extern "C"
 #define z2                         0x0008
 #define XBEE_REC_DATA_PROCESS_EVT                          0x0010
 #define XBEE_TEST_EVT                                      0x0020
-#define z3                         0x0040
+#define XBEE_TEST2_EVT                                     0x0040
 #define XBEE_IDLE_EVT                                      0x0080
 #define XBEE_MOTOO_CTL_EVT                                 0x0100
 #define XBEE_HMC5983_EVT                                   0x0200
@@ -126,13 +126,13 @@ typedef enum
 
 typedef enum 
 {
-    ParkingUsed             =   0x00,   //车位被使用
-    ParkingUnUsed           =   0x01,   //车位空
-    ParkLockSuccess         =   0x02,   //锁定成功
-    ParkLockFailed          =   0x03,   //锁定失败
-    ParkUnlockSuccess       =   0x04,   //解锁成功
-    ParkUnlockFailed        =   0x05,   //解锁失败
-    ParkLockingOrUnlocking  =   0x06,   
+    ParkingUsed             =   0x01,   //车位被使用
+    ParkingUnUsed           =   0x02,   //车位空
+    ParkLockSuccess         =   0x03,   //锁定成功
+    ParkLockFailed          =   0x04,   //锁定失败
+    ParkUnlockSuccess       =   0x05,   //解锁成功
+    ParkUnlockFailed        =   0x06,   //解锁失败
+    ParkLockingOrUnlocking  =   0x07
 } parkingEventType;
 
 typedef enum{

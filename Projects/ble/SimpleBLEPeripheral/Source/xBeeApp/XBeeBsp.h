@@ -9,6 +9,8 @@
 #define BEEPOFF        (unsigned char)(0x00)
 #include "hal_types.h"
 
+
+
 extern FlagJionNetType FlagJionNet;
 
 

@@ -413,7 +413,7 @@ void Uart1_Send_Byte(char *Data,int len)
 HMC5983DataType hmc5983Data;
 HMC5983DataType hmc5983DataStandard;
 
-static  uint8 temp[10] = {0};
+static  uint8 temp_uart[10] = {0};
 HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
 { 
   static uint8 index = 0;
@@ -421,26 +421,51 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
   
   HAL_ENTER_ISR();
   URX1IF = 0; // 清中断标志 
-
-  if(temp[0] != 0xAA)
+#if 0
+   if(index > 9)
+   {
+     index = 0;
+     while(1);
+   }
+   else
+   {
+     temp_uart[index++] = U1DBUF;
+   }
+#endif
+#if 1
+  if(U1DBUF == 0xAA)
   {
-    temp[0] = U1DBUF; 
-    index = 0;
-  } 
-  temp[index ++] = U1DBUF; 
+    temp_uart[0] = U1DBUF; 
+    index = 1;
+  }
+  else if(U1DBUF == 0xBB)
+  {
+    temp_uart[index] = U1DBUF;
+    index = 2;
+  }
+  else if(U1DBUF == 0xCC)
+  {
+    temp_uart[index] = U1DBUF;
+    index = 3;
+  }
+  else if(index >2)
+  {
+    temp_uart[index] = U1DBUF;
+    index++;
+  }
   
   if( index >= 10 )
   {
     index = 0;
     add_sum = 0;
     for(int i=0;i<9;i++)
-        add_sum += temp[i];
+        add_sum += temp_uart[i];
     check = 0xFF - add_sum;
-    if(temp[0] == 0xAA && temp[1] == 0xBB && temp[2] == 0xCC && temp[9] == check)
+    if(temp_uart[0] == 0xAA && temp_uart[1] == 0xBB && temp_uart[2] == 0xCC && temp_uart[9] == check)
     {
-        hmc5983Data.x = (unsigned short)temp[3] << 8 | temp[4];
-        hmc5983Data.y = (unsigned short)temp[5] << 8 | temp[6];
-        hmc5983Data.z = (unsigned short)temp[7] << 8 | temp[8];
+        hmc5983Data.x = (unsigned short)temp_uart[3] << 8 | temp_uart[4];
+        hmc5983Data.y = (unsigned short)temp_uart[5] << 8 | temp_uart[6];
+        hmc5983Data.z = (unsigned short)temp_uart[7] << 8 | temp_uart[8];
         hmc5983Data.state = 0x88;       
         if(SenFlag == 0x88)
         {
@@ -451,6 +476,7 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
         }
     }
   }
+#endif
   HAL_EXIT_ISR();
 }
 /******************************************************************************
