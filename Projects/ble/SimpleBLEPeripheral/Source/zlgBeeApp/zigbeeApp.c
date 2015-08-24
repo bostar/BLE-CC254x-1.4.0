@@ -442,6 +442,15 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
               test_state = 5;
               osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
               break;
+            case stateOTAPrepare:
+              if(zlgSleepOrwake == sleepState)
+              {
+                  osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT);//stop timer
+                  SET_ZM516X_WAKEUP();//and wake up right now
+              }
+              if(zlgSleepOrwake == wakeState)
+                  osal_stop_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT);
+              break;
             default:
               break;
         }
@@ -507,7 +516,7 @@ static void npiCBack_uart( uint8 port, uint8 events )
               if(!numBytes)
                   return;
           }while( !(revPara.header[0] == 0xab || revPara.header[0] == 0xde || revPara.header[0] == 'C' \
-                || revPara.header[0] == 'T' || revPara.header[0] == 'S') );
+                || revPara.header[0] == 'T' || revPara.header[0] == 'S' || revPara.header[0] == 'O') );
           NPI_ReadTransport( &revPara.header[1], 2 );
           numBytes -= 2;
           rbuf[idx++] = revPara.header[0];
@@ -537,6 +546,10 @@ static void npiCBack_uart( uint8 port, uint8 events )
           else if((revPara.header[0] == 'S') && (revPara.header[1] == 'E') && (revPara.header[2] == 'N'))
           {
             command_word = BASE_STATION_SEN;
+          }
+          else if((revPara.header[0] == 'O') && (revPara.header[1] == 'T') && (revPara.header[2] == 'A'))
+          {
+            command_word = BASE_STATION_OTA;
           }
           else
             return;
@@ -724,6 +737,17 @@ static unsigned char referenceCmdLength(unsigned char * const command,unsigned c
      {
      case 0x04:
        cmd_len = 3;
+       break;
+     default:
+       break;
+     }
+   }
+   if(*command == 'O' && *(command+1) == 'T' && *(command+2) == 'A')
+   {
+     switch(cmd)
+     {
+     case 0x00:
+       cmd_len = 4;
        break;
      default:
        break;

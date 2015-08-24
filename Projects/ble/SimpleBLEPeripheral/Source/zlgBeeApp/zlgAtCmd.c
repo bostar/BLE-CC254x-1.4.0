@@ -712,6 +712,10 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
                     //          setMotorReverse();//lock
                       state = stateMotorReverse;
                     }
+                    else if( *(rbuf+4) == 0x03)
+                    {
+                      state = stateOTAPrepare;
+                    }
                     else
                     {
                       setMotorStop();
@@ -736,6 +740,21 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
             {
                 eventReportData->reportSuccess = 1;
             }
+            break;
+        default:
+            break;
+        }
+    }
+    if((*rbuf == 'O')&&(*(rbuf+1) == 'T')&&(*(rbuf+2) == 'A'))
+    {
+        static uint16 firmwareVersion,firmwareSize;
+        switch( *(rbuf+3) )
+        {
+        case 0x00:
+            firmwareVersion = (unsigned short)*(rbuf+4) << 8 | *(rbuf+5);
+            firmwareSize = (unsigned short)*(rbuf+6) << 8 | *(rbuf+7);
+            VOID firmwareVersion;
+            VOID firmwareSize;
             break;
         default:
             break;
