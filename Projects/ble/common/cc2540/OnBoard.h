@@ -45,7 +45,9 @@
 #include "hal_sleep.h"
 #include "osal.h"
 
-#define STARBO_BOARD
+#if !defined( STARBO_BOARD )
+  #define STARBO_BOARD
+#endif
 
 #define _USE_ZM516X_
 //#define _USE_XBEE_
