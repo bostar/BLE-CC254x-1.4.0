@@ -80,11 +80,11 @@ build/
 *.map
 *.hex
 *.d51
-*.bat
+#*.bat
 *.wsdt
 *.dbgdt
 *.r51
-*.exe
+#*.exe
 *.pdf
 *.dep
 *.ewp
