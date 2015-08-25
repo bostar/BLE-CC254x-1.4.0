@@ -13,8 +13,8 @@ extern "C"
 /*********************************************************************
  * CONSTANTS
  */
-
-
+#define FIRMWAREVERSION    0x0001    //modify firmware pls add one
+#define VERSION_NV_ID      80        //version NV item ID
 // Simple BLE Peripheral Task Events
 #define ZIGBEE_START_DEVICE_EVT                              0x0001
 #define ZIGBEE_RESET_ZM516X_EVT                              0x0002

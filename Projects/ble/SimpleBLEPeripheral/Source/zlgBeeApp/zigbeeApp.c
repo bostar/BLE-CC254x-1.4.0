@@ -8,6 +8,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include "hal_adc.h"
+#include "osal_snv.h"
 
 #if defined _USE_ZM516X_
 
@@ -45,7 +46,16 @@ float sen_v = 0,vbt_v = 0,avdd_v = 0;
 void Zigbee_Init( uint8 task_id )
 {
   zigbee_TaskID = task_id;
-
+  uint16 firmware_version;
+  
+  if ( osal_snv_read( VERSION_NV_ID, sizeof( uint16 ), &firmware_version ) == SUCCESS )
+  {
+       if(firmware_version != FIRMWAREVERSION)
+       {
+           firmware_version = FIRMWAREVERSION;
+           VOID osal_snv_write( VERSION_NV_ID, sizeof( uint16 ), &firmware_version );
+       }
+  }
   NPI_InitTransport(npiCBack_uart);
   InitUart1();
   HalAdcSetReference ( HAL_ADC_REF_AVDD );
