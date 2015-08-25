@@ -6,6 +6,8 @@
 #include "zigbeeApp.h"
 #include "zlg_bsp.h"
 #include "string.h"
+#include "hal_flash.h"
+#include "OnBoard.h"
 
 const unsigned short broadcastAddr = 0xffff;
 
@@ -753,6 +755,12 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
         case 0x00:
             firmwareVersion = (unsigned short)*(rbuf+4) << 8 | *(rbuf+5);
             firmwareSize = (unsigned short)*(rbuf+6) << 8 | *(rbuf+7);
+            extern const uint16 firmware_version;
+            if(firmwareVersion < firmware_version)
+            {
+              HalFlashErase(0);// CHECKSUM & CRC_SHDW
+              Onboard_soft_reset();
+            }
             VOID firmwareVersion;
             VOID firmwareSize;
             break;
