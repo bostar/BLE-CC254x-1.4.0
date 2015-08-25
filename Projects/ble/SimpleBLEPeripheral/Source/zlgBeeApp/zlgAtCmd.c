@@ -756,7 +756,7 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
             firmwareVersion = (unsigned short)*(rbuf+4) << 8 | *(rbuf+5);
             firmwareSize = (unsigned short)*(rbuf+6) << 8 | *(rbuf+7);
             extern const uint16 firmware_version;
-            if(firmwareVersion < firmware_version)
+            if(firmwareVersion > firmware_version)
             {
               HalFlashErase(0);// CHECKSUM & CRC_SHDW
               Onboard_soft_reset();
