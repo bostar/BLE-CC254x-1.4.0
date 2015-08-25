@@ -7175,7 +7175,7 @@
       <archiveVersion>1</archiveVersion>
       <data>
         <prebuild></prebuild>
-        <postbuild>"$PROJ_DIR$\..\..\common\cc2540\cc254x_ubl_pp.bat" "$PROJ_DIR$" "ProdUBL" "$PROJ_DIR$\MT254xboard\Exe\SBLExample"</postbuild>
+        <postbuild>"$PROJ_DIR$\..\..\common\cc2540\cc254x_ubl_pp.bat" "$PROJ_DIR$" "ProdUBL" "$PROJ_DIR$\BIN\Exe\SimpleBLEPeripheral"</postbuild>
       </data>
     </settings>
     <settings>
