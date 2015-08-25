@@ -168,7 +168,7 @@
         </option>
         <option>
           <name>General Idata Stack Size</name>
-          <state>0xC0</state>
+          <state>0xB7</state>
         </option>
         <option>
           <name>General Pdata Stack Size</name>
@@ -310,6 +310,9 @@
           <state>HAL_I2C=FALSE</state>
           <state>HAL_KEY=TRUE</state>
           <state>xSTARBO_BOARD</state>
+          <state>MAKE_CRC_SHDW</state>
+          <state>FEATURE_SBL</state>
+          <state>OAD_KEEP_NV_PAGES</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -754,7 +757,7 @@
       <archiveVersion>1</archiveVersion>
       <data>
         <prebuild></prebuild>
-        <postbuild></postbuild>
+        <postbuild>&#x201C;$PROJ_DIR$\&#x3002;&#x3002;\&#x3002;&#x3002;\common\cc2540\cc254x_ubl_pp.bat&#x201D;&#x201C;$PROJ_DIR$&#x201D; &#x201C;ProdUBL&#x201D; &#x201C;$PROJ_DIR$\MT254xboard\Exe\SimpleBLEPeripheral</postbuild>
       </data>
     </settings>
     <settings>
@@ -836,7 +839,7 @@
         </option>
         <option>
           <name>XclFile</name>
-          <state>$PROJ_DIR$\..\..\common\cc2540\ti_51ew_cc2540b.xcl</state>
+          <state>$PROJ_DIR$\..\..\common\cc2540\cc254x_f256_sbl.xcl</state>
         </option>
         <option>
           <name>XclFileSlave</name>
@@ -968,16 +971,16 @@
         </option>
         <option>
           <name>XExtraOutOverride</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>ExtraOutputFile</name>
-          <state>SimpleBLEPeripheral.hex</state>
+          <state>SimpleBLEPeripheral.sim</state>
         </option>
         <option>
           <name>ExtraOutputFormat</name>
           <version>11</version>
-          <state>23</state>
+          <state>60</state>
         </option>
         <option>
           <name>ExtraFormatVariant</name>
