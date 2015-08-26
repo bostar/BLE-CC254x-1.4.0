@@ -759,7 +759,7 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
             if(firmwareVersion > firmware_version)
             {
               SET_ZM516X_WAKEUP();
-              HalFlashErase(0);// CHECKSUM & CRC_SHDW
+              HalFlashErase(1);// CHECKSUM & CRC_SHDW
               Onboard_soft_reset();
             }
             VOID firmwareVersion;

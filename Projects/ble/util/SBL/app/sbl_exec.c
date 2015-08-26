@@ -256,15 +256,17 @@ static void sblProc(void)
   uint16 t16 = BUILD_UINT16(sbBuf[SBL_REQ_ADDR_LSB], sbBuf[SBL_REQ_ADDR_MSB]) + HAL_SBL_IMG_BEG;
   uint8 len = 1, rsp = SBL_SUCCESS;
   uint16 crc[2];
+  int loop = 0;
   static uint16 crcword = 0;
 
   switch (sbBuf[RPC_POS_CMD1])
   {
+    
   case SBL_WRITE_CMD:
-    if ((t16 % SBL_PAGE_SIZE) == 0)
+    /*if ((t16 % SBL_PAGE_SIZE) == 0)
     {
       HalFlashErase(t16 / SBL_PAGE_SIZE);
-    }
+    }*/
     HalFlashWrite(t16, (sbBuf + SBL_REQ_DAT0), (SBL_RW_BUF_LEN / HAL_FLASH_WORD_SIZE));
     break;
 /*
@@ -308,6 +310,10 @@ static void sblProc(void)
     break;
 
   case SBL_HANDSHAKE_CMD:
+    for(loop = 0x800 / 4 / SBL_PAGE_SIZE;loop < (253952 / 4 / SBL_PAGE_SIZE);loop ++)
+    {
+      HalFlashErase(loop);
+    }
     break;
 
   default:
