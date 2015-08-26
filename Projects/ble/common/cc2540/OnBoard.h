@@ -47,6 +47,7 @@
 
 #if !defined( STARBO_BOARD )
   #define STARBO_BOARD
+  #define STARBO_OLD
 #endif
 
 #define _USE_ZM516X_
