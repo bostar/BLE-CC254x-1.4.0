@@ -91,7 +91,7 @@ extern "C"
 
 /* ZLG Zigbee Gpio defines */
 #ifndef STARBO_OLD
-  #define STARBO_OLD
+//  #define STARBO_OLD
 #endif
 
 //#define HAL_GPIO_CHANGE_DELAY()   st( { volatile uint32 i; for (i=0; i<0x320; i++) { }; } )
@@ -480,7 +480,11 @@ st( \
 
 /* Set to TRUE enable ADC usage, FALSE disable it */
 #ifndef HAL_ADC
-#define HAL_ADC FALSE
+#ifndef STARBO_OLD
+  #define HAL_ADC TRUE
+#else
+  #define HAL_ADC FALSE
+#endif
 #endif
 
 /* Set to TRUE enable DMA usage, FALSE disable it */
