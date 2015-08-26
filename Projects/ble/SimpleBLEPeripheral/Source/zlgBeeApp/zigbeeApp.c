@@ -8,7 +8,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include "hal_adc.h"
-#include "osal_snv.h"
 
 #if defined _USE_ZM516X_
 
@@ -30,7 +29,6 @@ static uint8 rbuf[255];
 static uint8 idx = 0;
 parkingState_t * parkingState;
 static sleepOrwake_t zlgSleepOrwake;
-const uint16 firmware_version @ "VERSION" = 0X0001;
 static void npiCBack_uart( uint8 port, uint8 events );
 static unsigned char referenceCmdLength( unsigned char * const command,unsigned char cmd );
 static void eventReportToGateway( parkingEvent_t event );
@@ -46,16 +44,7 @@ float sen_v = 0,vbt_v = 0,avdd_v = 0;
 void Zigbee_Init( uint8 task_id )
 {
   zigbee_TaskID = task_id;
-  /*uint16 firmware_version;
-  
-  if ( osal_snv_read( VERSION_NV_ID, sizeof( uint16 ), &firmware_version ) == SUCCESS )
-  {
-       if(firmware_version != FIRMWAREVERSION)
-       {
-           firmware_version = FIRMWAREVERSION;
-           VOID osal_snv_write( VERSION_NV_ID, sizeof( uint16 ), &firmware_version );
-       }
-  }*/
+
   NPI_InitTransport(npiCBack_uart);
   InitUart1();
   HalAdcSetReference ( HAL_ADC_REF_AVDD );
@@ -78,7 +67,6 @@ void Zigbee_Init( uint8 task_id )
   
 #endif // !STARBO_BOARD
   // Setup a delayed profile startup
-//  osal_set_event( zigbee_TaskID, ZIGBEE_START_DEVICE_EVT );
   osal_start_timerEx(zigbee_TaskID, ZIGBEE_START_DEVICE_EVT ,1000);
 }
 

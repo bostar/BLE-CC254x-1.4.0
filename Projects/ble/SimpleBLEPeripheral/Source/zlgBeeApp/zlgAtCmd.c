@@ -10,6 +10,8 @@
 #include "OnBoard.h"
 
 const unsigned short broadcastAddr = 0xffff;
+//const uint16 firmware_version @ "VERSION" = 0X0001;
+uint16 firmware_version = 0x0001;
 
 dev_info_t * stDevInfo;
 uartReturnStatus_t * uartReturnFlag;
