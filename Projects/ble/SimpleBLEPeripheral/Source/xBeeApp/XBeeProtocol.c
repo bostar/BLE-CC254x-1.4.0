@@ -32,6 +32,8 @@ void CFGProcess(uint8 *cmd)
             {
                 XBeeLeaveNet();  
                 FlagJionNet = JoinNet;
+                osal_stop_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT);
+                osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 5000 );
                 return;
             }
             break;

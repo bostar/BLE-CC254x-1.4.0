@@ -74,7 +74,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
             switch(SetSleepMode)
             {
                 case SetMode:
-                    XBeeSendSM(PinCyc,RES);
+                    XBeeSetSM(PinCyc,RES);
                     break;
                 case SetSP:
                     XBeeSetSP(100,RES);
@@ -106,7 +106,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
                 XBeeReadSL();
                 break;
             case GetMY:
-                XBeeReadMY(RES);
+                XBeeReadMY();
                 break;
             case JoinPark:
                 XBeeReqJionPark();
@@ -133,8 +133,9 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
             return ( events ^ XBEE_HMC5983_EVT );
         }      
         hmc5983Data.state = 1;
-        if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > 150 || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > 150 \
-                                                          || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > 150)  
+        if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > OFFSET \
+            || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > OFFSET \
+            || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > OFFSET)  
     
         {   
             if(parkingState.vehicleState == ParkingUnUsed)
@@ -148,11 +149,17 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
             parkingState.vehicleState = ParkingUnUsed;
             XBeeParkState(ParkingUnUsed);  
         }
+        
         cnt++;
-        if(cnt > 10)
+        if(cnt > 2)
         {
             cnt = 0;
-            XBeeParkState(ParkingUnUsed);
+            if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > OFFSET \
+                || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > OFFSET \
+                || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > OFFSET)                  
+                XBeeParkState(ParkingUsed);
+            else
+                XBeeParkState(ParkingUnUsed);
         }
         osal_start_timerEx( XBeeTaskID , XBEE_HMC5983_EVT,1000);
         return (events ^ XBEE_HMC5983_EVT) ;
@@ -173,7 +180,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         FrameTypeState = temp_rbuf.data[3];
         switch(FrameTypeState)
         {
-            case 0x90:  //处理收到的RF包
+            case receive_packet:  //处理收到的RF包
                 if(temp_rbuf.data[15]=='C' && temp_rbuf.data[16]=='F' && temp_rbuf.data[17]=='G')
                     CFGProcess((uint8*)&XBeeUartRec.data[18]);
                 if(temp_rbuf.data[15]=='C' && temp_rbuf.data[16]=='T' && temp_rbuf.data[17]=='L')
@@ -185,7 +192,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
                 if(temp_rbuf.data[15]=='T' && temp_rbuf.data[16]=='S' && temp_rbuf.data[17]=='T')
                 {}        
                 break;
-            case 0x88:  //处理收到的AT指令返回值
+            case at_command_response:  //处理收到的AT指令返回值
                 if(temp_rbuf.data[5]=='N' && temp_rbuf.data[6]=='J')
                 {
                     //如果没有执行OK，再次执行
@@ -254,6 +261,8 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
                         osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
                     }
                 }
+                if(temp_rbuf.data[5]=='M' && temp_rbuf.data[6]=='P')
+                {}
                 break;
             case 0x8A:        //Zigbee模块状态，自动回发帧，暂不处理
                 break;
@@ -272,8 +281,8 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         LockCurrentStateType MotorCurrentState,LocalLockState;
         
         UART_XBEE_DIS;
-        //LocalLockState = LockObjState;
-        LocalLockState = lock;
+        LocalLockState = LockObjState;
+        //LocalLockState = lock;
         MotorCurrentState = GetCurrentMotorState();
         switch(LocalLockState)
         {
@@ -327,30 +336,10 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     
     if( events & XBEE_TEST_EVT )                //测试
     {   
-#if 0
-        LockCurrentStateType i;
-        
-        i = GetCurrentMotorState();
-#endif
-#if 1
-        uint8 abc;
-        
-        MotorLock();
-        //MotorUnlock();
-            abc = GetCurrentMotorState();
-            if(abc == unlock )
-            if(abc == lock )
-            {
-                MotorStop();
-                MotorStop();
-            }
-#endif      
-#if 0
-        MotorUnlock();
-        MotorLock();
-        MotorStop();
-#endif  
-        osal_start_timerEx( XBeeTaskID, XBEE_TEST_EVT, 1 );
+        XBeeRourerJoinNet();
+        XBeeReadAT("MP");
+        XBeeReadAT("OP");
+        //osal_start_timerEx( XBeeTaskID, XBEE_TEST_EVT, 1 );
         return (events ^ XBEE_TEST_EVT) ;
     }
     

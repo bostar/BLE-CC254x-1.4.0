@@ -383,7 +383,7 @@ CLKCONCMD &= ~0x47; // 设置系统主时钟频率为 32MHZ
 PERCFG |= 0x02;     // Set UART1 I/O to Alt. 2 location on P1.
 P1SEL  |= 0xC0;         // Enable Peripheral control of Rx/Tx on Px.
 U1UCR |= 0X02;                 // Flush it.
- 
+
 U1CSR |= 0xC0; 
 U1GCR |= 11;
 U1BAUD |= 216;

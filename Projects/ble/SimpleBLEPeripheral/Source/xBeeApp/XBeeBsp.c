@@ -29,15 +29,15 @@ void ClearDMA(void)
 *******************************************/
 void XBeeRourerJoinNet(void)
 {
-  uint8 panID[8],i;
-  for(i=0;i<8;i++)
-    panID[i] = 0;
-  XBeeSetPanID(panID,NO_RES);   //设置ID的值
-  XBeeSetChannel(NO_RES); //设置信道
-  XBeeSetZS(NO_RES);
-  XbeeSendAC(NO_RES);
-  XBeeSendWR(NO_RES);
-  XBeeReadAI(RES);
+    uint8 panID[8],i;
+    for(i=0;i<8;i++)
+        panID[i] = 0;
+    XBeeSetPanID(panID,NO_RES);   //设置ID的值
+    XBeeSetChannel(NO_RES); //设置信道
+    XBeeSetZS(1,NO_RES);
+    XbeeRunAC(NO_RES);
+    XBeeRunWR(NO_RES);
+    XBeeReadAI();
 }
 /*******************************************
 **brief 离开网络
@@ -46,11 +46,11 @@ void XBeeLeaveNet(void)
 {
   uint8 panID[8],i;
   for(i=0;i<8;i++)
-    panID[i] = 0xee;
+    panID[i] = 0x00;
   XBeeSetPanID(panID,NO_RES);   //设置ID的值
-  XbeeSendAC(NO_RES);
-  XBeeReadAI(RES);
-  FlagJionNet = NetOK;
+//  XbeeSendAC(NO_RES);
+//  XBeeReadAI();
+//  FlagJionNet = NetOK;
 }
 /*******************************************
 **brief 申请加入停车网络
@@ -153,7 +153,7 @@ void MotorInit(void)
 **************************************************/
 uint16 XBeeSleepMode5(void)
 {
-   return XBeeSendSM(PinSleep,RES);
+   return XBeeSetSM(PinSleep,RES);
    //XBeeSetSP(0x64,NO_RES);
 }
 /*************************************************
@@ -161,7 +161,7 @@ uint16 XBeeSleepMode5(void)
 *************************************************/
 uint16 XBeeSleepMode1(void)
 {
-    return XBeeSendSM(PinSleep,NO_RES);
+    return XBeeSetSM(PinSleep,NO_RES);
 }
 /**************************************************
 **brief pin脚唤醒

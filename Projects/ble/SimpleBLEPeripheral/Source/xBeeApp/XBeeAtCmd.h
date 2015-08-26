@@ -5,6 +5,19 @@
 
 typedef enum
 {
+    at_command_response         =   0x88,
+    modem_status                =   0x8a,
+    transmit_status             =   0x8b,
+    receive_packet              =   0x90,
+    route_record_indicator      =   0xa1,
+    mto_route_request_indcator  =   0xa3,
+    remoto_command_response     =   0x97,
+    node_identification         =   0x95,
+    explicit_rx_indeicator      =   0x91
+}APIFrameType;
+
+typedef enum
+{
   ModemStatus     =     0x8A,
   ATCmdRep        =     0x88,
   XBeeRevPacket   =     0x90,
@@ -117,33 +130,37 @@ typedef enum
 
 uint8 XBeeApiChecksum(uint8 *begin,uint16 length);
 void XBeeSetIO(XBeeIOParam ioparam,IOStatus state);       //设置IO口状态
-uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes);   //发送zt指令
+
+uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes);   //发送at指令
 uint16 XBeeSetPanID(uint8 *panID,IsResp IsRes);   //设置ID的值
-uint16 XBeeReadPanID(IsResp IsRes);  //读取ID
-uint16 XBeeSetChannel(IsResp IsRes); //设置信道
-uint16 XbeeFR(IsResp IsRes);  //
-uint16 XBeeReadAI(IsResp IsRes);
-uint16 XBeeSendWR(IsResp IsRes);
-uint16 XBeeReadMY(IsResp IsRes);
-uint16 XBeeReadCH(IsResp IsRes);
-uint16 XbeeSendAC(IsResp IsRes);      
+uint16 XBeeSetChannel(IsResp IsRes); //设置信道    
 uint16 XBeeSetNJ(uint8 time, IsResp IsRes);
 uint16 XBeeSetLT(uint8 time,IsResp IsRes);
-uint16 XBeeSetZS(IsResp IsRes);
-uint16 XBeeReadSH();
-uint16 XBeeReadSL();
-uint16 XBeeReadDL();
-uint16 XBeeReadRegCmd(int8 *atcmd);
-uint16 XBeeSendSM(SleepType sleep,IsResp IsRes);
-uint16 XBeeReadSM(void);
+uint16 XBeeSetZS(uint8 data,IsResp IsRes);
+uint16 XBeeSetSM(SleepType sleep,IsResp IsRes);
 uint16 XBeeSetSP(uint16 num,IsResp IsRes);
 uint16 XBeeSetSN(uint16 num,IsResp IsRes);
 uint16 XBeeSetST(uint16 num,IsResp IsRes);
+
+uint16 XbeeRunFR(IsResp IsRes);  
+uint16 XBeeRunWR(IsResp IsRes);
+uint16 XbeeRunAC(IsResp IsRes);  
+
+uint16 XBeeReadPanID(void);  //读取ID
+uint16 XBeeReadAI(void);
+uint16 XBeeReadMY(void);
+uint16 XBeeReadCH(void);
+uint16 XBeeReadSH(void);
+uint16 XBeeReadSL(void);
+uint16 XBeeReadDL(void);
+uint16 XBeeReadSM(void);
+uint16 XBeeReadAT(int8 *at_cmd);
+
 uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len, IsResp IsRes); //xbee发送数据请求
 uint16 XBeeSendToCoor(uint8 *data,uint16 len,IsResp IsRes);  //向coordinator发送数据
 uint16 XBeeUnicastTrans(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len,IsResp IsRes);
 uint16 XBeeBoardcastTrans(uint8 *data,uint16 len,IsResp IsRes);
-
+//uint16 XBee
 
 #endif
 
