@@ -90,6 +90,9 @@ extern "C"
 #define HAL_LCD_MAX_BUFF    25
 
 /* ZLG Zigbee Gpio defines */
+#ifndef STARBO_OLD
+  #define STARBO_OLD
+#endif
 
 //#define HAL_GPIO_CHANGE_DELAY()   st( { volatile uint32 i; for (i=0; i<0x320; i++) { }; } )
 #define HAL_GPIO_CHANGE_DELAY()   st( { volatile uint32 microSecs = 1500; while(microSecs--) {\

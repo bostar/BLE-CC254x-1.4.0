@@ -47,9 +47,8 @@
 
 #if !defined( STARBO_BOARD )
   #define STARBO_BOARD
-  #define STARBO_OLD
 #endif
-
+  #define STARBO_OLD
 #define _USE_ZM516X_
 //#define _USE_XBEE_
 
