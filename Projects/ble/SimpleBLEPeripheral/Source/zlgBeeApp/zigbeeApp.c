@@ -142,7 +142,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
          osal_start_timerEx( zigbee_TaskID, BOARD_TEST_EVT ,100 );
          osal_start_timerEx( zigbee_TaskID, UART1_READ_HMC5983_EVT ,500 );
 //         osal_set_event( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT );
-         osal_start_timerEx( zigbee_TaskID, READ_ZIGBEE_ADC_EVT, 10);//add to test
+//         osal_start_timerEx( zigbee_TaskID, READ_ZIGBEE_ADC_EVT, 10);//add to test
 //         setMotorForward();
        }
      }
