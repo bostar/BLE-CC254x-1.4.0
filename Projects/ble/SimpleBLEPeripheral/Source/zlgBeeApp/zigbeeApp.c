@@ -79,7 +79,8 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   if ( events & ZIGBEE_START_DEVICE_EVT )
   {
     setMotorStop();
-    
+    if(0x06 != HalKeyRead())
+      setMotorForward();
     //init global variable
     stDevInfo = osal_mem_alloc( sizeof( dev_info_t ) );
     osal_memset( stDevInfo,0x00,sizeof( dev_info_t ) );
