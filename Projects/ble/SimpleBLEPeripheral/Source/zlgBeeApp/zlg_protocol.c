@@ -4,36 +4,40 @@
 #include "zlgAtCmd.h"
 #include "OSAL.h"
 
+#define  WBUF_LEN   12
+static char wbuf[ WBUF_LEN ];
 eventReport_t * eventReportData;
 
-void applicateForNetwork(unsigned char *IEEEAddress)
+void applicateForNetwork( unsigned char *IEEEAddress )
 {
-    static char wbuf[12];
-
+    osal_memset( wbuf, 0x00, WBUF_LEN );
+    
     wbuf[0] = 'C';
     wbuf[1] = 'F';
     wbuf[2] = 'G';
     wbuf[3] = cmdCheckIn;//cmd
 
-    osal_memcpy( &wbuf[4],(char const *)IEEEAddress,8 );
+    osal_memcpy( &wbuf[4], (char const *)IEEEAddress, 8 );
     NPI_WriteTransport( (unsigned char *)wbuf , 12 ); 
 }
 
-void ackLinkTest(unsigned char *IEEEAddress)
+void ackLinkTest( unsigned char *IEEEAddress )
 {
-    static char wbuf[11];
+    osal_memset( wbuf, 0x00, WBUF_LEN ); 
+  
     wbuf[0] = 'C';
     wbuf[1] = 'F';
     wbuf[2] = 'G';
     wbuf[3] = cmdAckLinkTest;//cmd    
-    osal_memcpy( &wbuf[4],(char const *)IEEEAddress,8 );
+    osal_memcpy( &wbuf[4], (char const *)IEEEAddress, 8 );
     
     NPI_WriteTransport( (unsigned char *)wbuf , 11 );
 }
 
-void dateRequset(void)
+void dateRequset( void )
 {
-    static char wbuf[6];
+    osal_memset( wbuf, 0x00, WBUF_LEN );
+    
     wbuf[0] = 'C';
     wbuf[1] = 'F';
     wbuf[2] = 'G';
@@ -44,9 +48,10 @@ void dateRequset(void)
     NPI_WriteTransport( (unsigned char *)wbuf , 6 );
 }
 
-void eventReport(parkingEvent_t event)
+void eventReport( parkingEvent_t event )
 {
-    static char wbuf[7];
+    osal_memset( wbuf, 0x00, WBUF_LEN );
+    
     wbuf[0] = 'S';
     wbuf[1] = 'E';
     wbuf[2] = 'N';
@@ -58,9 +63,9 @@ void eventReport(parkingEvent_t event)
     NPI_WriteTransport( (unsigned char *)wbuf , 7 );
 }
 
-void batteryRemainingReport(unsigned char voltage)
-{
-    static char wbuf[7];
+void batteryRemainingReport( unsigned char voltage )
+{    
+    osal_memset( wbuf, 0x00, WBUF_LEN );
     
     wbuf[0] = 'S';
     wbuf[1] = 'E';
@@ -73,10 +78,10 @@ void batteryRemainingReport(unsigned char voltage)
     NPI_WriteTransport( (unsigned char *)wbuf , 7 );
 }
 
-void motorStopAdcReport(unsigned short voltage)
-{
-    static char wbuf[8];
-      
+void motorStopAdcReport( unsigned short voltage )
+{     
+    osal_memset( wbuf, 0x00, WBUF_LEN );
+    
     wbuf[0] = 'S';
     wbuf[1] = 'E';
     wbuf[2] = 'N';

@@ -67,9 +67,9 @@ extern "C"
 #define SK_KEY_RIGHT                  0x02
 
 // Key Values
-#define SK_LIMIT_UP                   0x01
-#define SK_LIMIT_M                    0x02
-#define SK_LIMIT_DOWN                 0x04
+#define SK_LIMIT_LOCKED_OVER          0x01
+#define SK_LIMIT_LOCKED               0x00
+#define SK_LIMIT_UNLOCK               0x06
      
 // Simple Keys Profile Services bit fields
 #define SK_SERVICE                    0x00000001

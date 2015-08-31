@@ -13,8 +13,8 @@ extern "C"
 /*********************************************************************
  * CONSTANTS
  */
-#define FIRMWAREVERSION    0x0001    //modify firmware pls add one
-#define VERSION_NV_ID      80        //version NV item ID
+#define ZLG_ZIGBEE_CFG_NV_ID      80        //zlg config NV item ID
+#define APPLY_NETWORK_FLAG_NV_ID  81
 // Simple BLE Peripheral Task Events
 #define ZIGBEE_START_DEVICE_EVT                              0x0001
 #define ZIGBEE_RESET_ZM516X_EVT                              0x0002
@@ -34,7 +34,7 @@ extern "C"
 /*********************************************************************
  * MACROS
  */
-typedef enum{
+typedef enum {
     stateInit = 0x00,
     stateStart = 0x01,
     stateReadCfg = 0x02,
@@ -58,7 +58,7 @@ typedef enum{
     stateOTAPrepare = 0x18,
     stateTest = 0x99,
     stateNoWork = 0xff
-}state_t;
+} state_t;
 
 /* States for CRC parser */
 typedef enum {
@@ -77,13 +77,13 @@ typedef enum {
     BASE_STATION_SEN,
     BASE_STATION_OTA,
     BASE_STATION_TST
-}command_word_t;
+} command_word_t;
 
 typedef struct {
     unsigned char header[3];
     unsigned char cmd;
     unsigned char len;
-}ptk_t;
+} ptk_t;
 /*********************************************************************
  * FUNCTIONS
  */

@@ -13,21 +13,21 @@ typedef enum _parkingEvent_t {
 } parkingEvent_t;
 
 enum cfg_cmd {
-	cmdCheckIn = 0x00,
-	cmdAckCheckIn = 0x01,
+    cmdCheckIn = 0x00,
+    cmdAckCheckIn = 0x01,
 //	cmdChangeNodeType = 0x02,
 //	cmdAckChangeNodeType = 0x03,
 //	cmdChangePanidChannel = 0x04,
 //	cmdAllNodeReset = 0x05,
-	cmdLinkTest = 0x06,
-	cmdAckLinkTest = 0x07,
+    cmdLinkTest = 0x06,
+    cmdAckLinkTest = 0x07,
     cmdRestoreFactoryConfig = 0x08,
     cmdHeartBeatPkg = 0x09,
     cmdDataRequest = 0x0A
 };
 
 enum sen_cmd {
-	cmdSensorCalibration = 0x00,
+    cmdSensorCalibration = 0x00,
     cmdEventReport = 0x01,
     cmdBatteryRemainReport = 0x02
 };
@@ -55,10 +55,10 @@ typedef struct _eventReport_t {
 } eventReport_t;
 
 extern eventReport_t * eventReportData;
-void applicateForNetwork(unsigned char *IEEEAddress);
-void ackLinkTest(unsigned char *IEEEAddress);
-void dateRequset(void);
-void eventReport(parkingEvent_t event);
-void batteryRemainingReport(unsigned char voltage);
-void motorStopAdcReport(unsigned short voltage);
+void applicateForNetwork( unsigned char *IEEEAddress );
+void ackLinkTest( unsigned char *IEEEAddress );
+void dateRequset( void );
+void eventReport( parkingEvent_t event );
+void batteryRemainingReport( unsigned char voltage );
+void motorStopAdcReport( unsigned short voltage );
 #endif
