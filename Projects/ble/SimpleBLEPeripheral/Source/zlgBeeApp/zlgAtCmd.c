@@ -10,8 +10,8 @@
 #include "OnBoard.h"
 
 const unsigned short broadcastAddr = 0xffff;
-//const uint16 firmware_version @ "VERSION" = 0X0001;
-uint16 firmware_version = 0x0001;
+const uint16 firmware_version @ "VERSION" = 0X0001;
+//uint16 firmware_version = 0x0001;
 
 dev_info_t * stDevInfo;
 uartReturnStatus_t * uartReturnFlag;
@@ -761,7 +761,7 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
             if(firmwareVersion > firmware_version)
             {
               SET_ZM516X_WAKEUP();
-              HalFlashErase(1);// CHECKSUM & CRC_SHDW
+              HalFlashErase(0x800 / 4 / (2048 / 4));//SBL_PAGE_SIZE);// CHECKSUM & CRC_SHDW
               Onboard_soft_reset();
             }
             VOID firmwareVersion;

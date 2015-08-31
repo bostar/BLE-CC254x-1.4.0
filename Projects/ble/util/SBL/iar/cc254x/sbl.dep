@@ -2,7 +2,7 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>4024236301</fileChecksum>
+  <fileChecksum>609918340</fileChecksum>
   <configuration>
     <name>CC254xF256_SPI1_ALT2</name>
     <outputs/>
@@ -25,38 +25,38 @@
       <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\include\hal_uart.h</file>
       <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\target\CC2540EB\hal_board_cfg.h</file>
       <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\target\CC2540EB\hal_adc.c</file>
-      <file>$TOOLKIT_DIR$\lib\clib\cl-pli-blxd-1e16x01.r51</file>
+      <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\target\CC2540EB\hal_dma.h</file>
       <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\target\CC2540EB\hal_flash.c</file>
       <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\target\CC2540EB\hal_mcu.h</file>
       <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\target\CC2540EB\hal_types.h</file>
-      <file>$PROJ_DIR$\..\..\app\cc254x\_sbl_uart.c</file>
-      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\sbl_main.r51</file>
-      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\hal_adc.pbi</file>
-      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Exe\SBL_CC254xF256_UART0_ALT1.hex</file>
-      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\sbl_ivec.r51</file>
-      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\sbl_exec.r51</file>
       <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Exe\sbl.d51</file>
-      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\hal_flash.pbi</file>
-      <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\target\CC2540EB\hal_dma.h</file>
       <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\sbl.pbd</file>
+      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\sbl_exec.r51</file>
       <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\sbl_main.pbi</file>
-      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\hal_flash.r51</file>
+      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\sbl_main.r51</file>
       <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\hal_adc.r51</file>
-      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\sbl_exec.pbi</file>
+      <file>$PROJ_DIR$\..\..\app\cc254x\_sbl_uart.c</file>
       <file>$PROJ_DIR$\..\..\app\cc254x\sbl_cc254x.xcl</file>
+      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\sbl_ivec.r51</file>
+      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\hal_adc.pbi</file>
+      <file>$TOOLKIT_DIR$\lib\clib\cl-pli-blxd-1e16x01.r51</file>
+      <file>$TOOLKIT_DIR$\inc\ioCC2540.h</file>
+      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\hal_flash.r51</file>
+      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\sbl_exec.pbi</file>
       <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\include\hal_board.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\include\hal_assert.h</file>
       <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\include\hal_sleep.h</file>
       <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\List\sbl.map</file>
-      <file>$TOOLKIT_DIR$\inc\ioCC2540.h</file>
+      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Obj\hal_flash.pbi</file>
       <file>$PROJ_DIR$\..\..\app\sbl_app.h</file>
-      <file>$PROJ_DIR$\..\..\..\..\..\..\Components\hal\include\hal_assert.h</file>
+      <file>$PROJ_DIR$\CC254xF256_UART0_ALT1\Exe\SBL_CC254xF256_UART0_ALT1.hex</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
           <name>XLINK</name>
-          <file> 21 32 18</file>
+          <file> 15 32 35</file>
         </tool>
       </outputs>
     </file>
@@ -65,7 +65,7 @@
       <outputs>
         <tool>
           <name>A8051</name>
-          <file> 19</file>
+          <file> 23</file>
         </tool>
       </outputs>
     </file>
@@ -74,7 +74,7 @@
       <outputs>
         <tool>
           <name>ICC8051</name>
-          <file> 20</file>
+          <file> 17</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -84,11 +84,11 @@
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 3 14 30 9 13 5 33 7 6 8 34 2</file>
+          <file> 3 14 29 9 13 5 26 7 6 8 34 2</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 3 14 30 9 13 5 33 7 6 8 34 2</file>
+          <file> 3 14 29 9 13 5 26 7 6 8 34 2</file>
         </tool>
       </inputs>
     </file>
@@ -97,21 +97,21 @@
       <outputs>
         <tool>
           <name>ICC8051</name>
-          <file> 16</file>
+          <file> 19</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 25</file>
+          <file> 18</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 3 14 30 9 13 5 33 35 23 31 2 15 6 8</file>
+          <file> 3 14 29 9 13 5 26 30 11 31 2 21 6 8</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 3 14 30 9 13 5 33 35 23 31 2 15 6 8</file>
+          <file> 3 14 29 9 13 5 26 30 11 31 2 21 6 8</file>
         </tool>
       </inputs>
     </file>
@@ -120,21 +120,21 @@
       <outputs>
         <tool>
           <name>ICC8051</name>
-          <file> 27</file>
+          <file> 20</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 17</file>
+          <file> 24</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 3 14 30 9 13 5 33</file>
+          <file> 3 14 29 9 13 5 26</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 3 14 30 9 13 5 33</file>
+          <file> 3 14 29 9 13 5 26</file>
         </tool>
       </inputs>
     </file>
@@ -143,21 +143,21 @@
       <outputs>
         <tool>
           <name>ICC8051</name>
-          <file> 26</file>
+          <file> 27</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 22</file>
+          <file> 33</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICC8051</name>
-          <file> 9 13 5 14 33 23 30 7</file>
+          <file> 9 13 5 14 26 11 29 7</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 9 13 5 14 33 23 30 7</file>
+          <file> 9 13 5 14 26 11 29 7</file>
         </tool>
       </inputs>
     </file>
@@ -166,13 +166,13 @@
       <outputs>
         <tool>
           <name>XLINK</name>
-          <file> 32 18</file>
+          <file> 32 35</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>XLINK</name>
-          <file> 29 27 26 20 19 16 11</file>
+          <file> 22 20 27 17 23 19 25</file>
         </tool>
       </inputs>
     </file>

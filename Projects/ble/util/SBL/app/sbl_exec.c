@@ -194,7 +194,7 @@ uint8 sblPoll(void)
       break;
 
     case rpcSteLen:
-      if (ch > SBL_MAX_SIZE)
+      if ((ch != 0x42) && (ch != 0x02))
       {
         rpcSte = rpcSteSOF;
         break;
@@ -256,7 +256,7 @@ static void sblProc(void)
   uint16 t16 = BUILD_UINT16(sbBuf[SBL_REQ_ADDR_LSB], sbBuf[SBL_REQ_ADDR_MSB]) + HAL_SBL_IMG_BEG;
   uint8 len = 1, rsp = SBL_SUCCESS;
   uint16 crc[2];
-  int loop = 0;
+  long loop = 0;
   static uint16 crcword = 0;
 
   switch (sbBuf[RPC_POS_CMD1])
@@ -310,9 +310,12 @@ static void sblProc(void)
     break;
 
   case SBL_HANDSHAKE_CMD:
-    for(loop = 0x800 / 4 / SBL_PAGE_SIZE;loop < (253952 / 4 / SBL_PAGE_SIZE);loop ++)
+    for(loop = 0x800 / 4;loop < (long)248 * 1024 / 4;loop ++)
     {
-      HalFlashErase(loop);
+      if ((loop % SBL_PAGE_SIZE) == 0)
+      {
+        HalFlashErase(loop / SBL_PAGE_SIZE);
+      }
     }
     break;
 
