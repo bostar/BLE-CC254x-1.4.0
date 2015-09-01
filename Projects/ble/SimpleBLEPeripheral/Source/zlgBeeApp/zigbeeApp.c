@@ -311,7 +311,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
               eventReportToGateway( cmdUnlockFailed );
           }
           else if( parkingState->lockState != cmdLockFailed && \
-                   parkingState->lockState != cmdUnlockFailed && (sen_v > 0.5) )
+                   parkingState->lockState != cmdUnlockFailed && (sen_v > 1.5) )
           {
             setMotorStop();
           }
@@ -827,7 +827,7 @@ static void eventReportToGateway( parkingEvent_t event )
 {
     eventReportData->event =  event ;
     eventReportData->reportSuccess = 0;
-    if( osal_get_timeoutEx( zigbee_TaskID, EVENT_REPORT_EVT ) > 0)
+    if( osal_get_timeoutEx( zigbee_TaskID, EVENT_REPORT_EVT ) > 0 )
       osal_stop_timerEx( zigbee_TaskID, EVENT_REPORT_EVT );
     osal_set_event( zigbee_TaskID, EVENT_REPORT_EVT);
 }
