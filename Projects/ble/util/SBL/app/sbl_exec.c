@@ -256,7 +256,7 @@ static void sblProc(void)
   uint16 t16 = BUILD_UINT16(sbBuf[SBL_REQ_ADDR_LSB], sbBuf[SBL_REQ_ADDR_MSB]) + HAL_SBL_IMG_BEG;
   uint8 len = 1, rsp = SBL_SUCCESS;
   uint16 crc[2];
-  long loop = 0;
+  uint32 loop = 0;
   static uint16 crcword = 0;
 
   switch (sbBuf[RPC_POS_CMD1])
@@ -312,6 +312,10 @@ static void sblProc(void)
   case SBL_HANDSHAKE_CMD:
     for(loop = 0x800 / 4;loop < (long)248 * 1024 / 4;loop ++)
     {
+      if((loop >= 0x7E800 / HAL_FLASH_WORD_SIZE) && (loop < 0x7F800 / HAL_FLASH_WORD_SIZE))
+      {
+        continue;
+      }
       if ((loop % SBL_PAGE_SIZE) == 0)
       {
         HalFlashErase(loop / SBL_PAGE_SIZE);
@@ -385,12 +389,16 @@ static uint8 sblResp(void)
  */
 static uint16 calcCRC(void)
 {
-  uint16 addr, crc = 0;
+  uint32 addr, crc = 0;
 
   for (addr = HAL_SBL_IMG_BEG; addr < HAL_SBL_IMG_END; addr++)
   {
     if (addr != HAL_SBL_IMG_CRC)
     {
+      if((addr >= 0x7E800 / HAL_FLASH_WORD_SIZE) && (addr < 0x7F800 / HAL_FLASH_WORD_SIZE))
+      {
+        continue;
+      }
       uint8 buf[HAL_FLASH_WORD_SIZE];
       HalFlashRead(addr / SBL_PAGE_SIZE,
                   (addr % SBL_PAGE_SIZE) << 2, buf, HAL_FLASH_WORD_SIZE);
