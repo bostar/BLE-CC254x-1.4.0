@@ -73,10 +73,14 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   static unsigned char applicatedForNetwork = 0;
   if ( events & ZIGBEE_START_DEVICE_EVT )
   {
+      uint8 keys;
       setMotorStop();
-      if( SK_LIMIT_UNLOCK != HalKeyRead() )
+      if( osal_snv_read( APPLY_NETWORK_FLAG_NV_ID, sizeof( uint8 ), &keys ) == SUCCESS )
       {
+        if( keys == SK_LIMIT_UNLOCK && SK_LIMIT_UNLOCK != HalKeyRead() )
           setMotorForward();
+        if( keys == SK_LIMIT_LOCKED && SK_LIMIT_LOCKED != HalKeyRead() )
+          setMotorReverse();
       }
       
       //init global variable
@@ -116,7 +120,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
      if( !applicatedForNetwork )
      {
         VOID osal_snv_read( APPLY_NETWORK_FLAG_NV_ID, sizeof( uint8 ), &applicatedForNetwork );
-        if( applicatedForNetwork )
+        if( applicatedForNetwork == 1 )
         {
           if( osal_snv_read( ZLG_ZIGBEE_CFG_NV_ID, sizeof( dev_info_t ), stDevInfo ) == SUCCESS )
           {
@@ -782,6 +786,7 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
   if ( keys == SK_LIMIT_UNLOCK )
   {
     setMotorStop();
+    VOID osal_snv_write( LOCK_STATE_NV_ID, sizeof( uint8 ), &keys );
     if( parkingState->lockState == cmdUnlocking )
     {
         eventReportToGateway( cmdUnlockSuccess );
@@ -792,6 +797,7 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
   else if ( keys == SK_LIMIT_LOCKED )
   { 
     setMotorStop();    
+    VOID osal_snv_write( LOCK_STATE_NV_ID, sizeof( uint8 ), &keys );
     if( parkingState->lockState == cmdLocking )
     {
         eventReportToGateway( cmdLockSuccess );
