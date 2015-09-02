@@ -10,7 +10,7 @@
 #include "OnBoard.h"
 
 const unsigned short broadcastAddr = 0xffff;
-const uint16 firmware_version @ "VERSION" = 0X0003;
+const uint16 firmware_version @ "VERSION" = 0X0001;
 //uint16 firmware_version = 0x0001;
 
 dev_info_t * stDevInfo;
@@ -538,14 +538,16 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
         switch( *(rbuf+3) )
         {
         case 0x00:
-            firmwareVersion = ( unsigned short )*(rbuf+4) << 8 | *(rbuf+5);
-            firmwareSize = ( unsigned short )*(rbuf+6) << 8 | *(rbuf+7);
-            extern const uint16 firmware_version;
-            if( firmwareVersion > firmware_version )
+            firmwareVersion = *(uint16*)(rbuf+4);
+            firmwareSize =  *(uint16*)(rbuf+6);
+            //if( firmwareVersion > firmware_version )
             {
               SET_ZM516X_WAKEUP();
-              HalFlashErase(0x800 / 4 / (2048 / 4));//SBL_PAGE_SIZE);// CHECKSUM & CRC_SHDW
-              Onboard_soft_reset();
+              osal_memset(rbuf,0,4);
+              HalFlashWrite(0x890 / 4,(uint8*)rbuf,1);
+              //HalFlashErase(0x800 / 4 / (2048 / 4));//SBL_PAGE_SIZE);// CHECKSUM & CRC_SHDW
+              HAL_SYSTEM_RESET();
+              //Onboard_soft_reset();
             }
             VOID firmwareVersion;
             VOID firmwareSize;
