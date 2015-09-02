@@ -304,8 +304,9 @@ uint16 HalUARTRead(uint8 port, uint8 *pBuffer, uint16 length)
   return 0;
 }
 
-uint16 HalUARTWrite(uint8 port, uint8 *pBuffer, uint16 length)
+/*uint16 HalUARTWrite(uint8 port, uint8 *pBuffer, uint16 length)
 {
+  
   (void)port;
   pTxBuf = pBuffer;
   txLen = length;
@@ -314,7 +315,7 @@ uint16 HalUARTWrite(uint8 port, uint8 *pBuffer, uint16 length)
   UxDBUF = *pBuffer;  // SBL does not generate messages asynchronously, so Tx will always be ready.
 
   return length;
-}
+}*/
 
 /**************************************************************************************************
 */

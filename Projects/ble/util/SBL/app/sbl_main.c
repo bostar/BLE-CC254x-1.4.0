@@ -104,11 +104,11 @@ void main(void)
     {
       // Simulate a reset for the Application code by an absolute jump to the expected INTVEC addr.
       asm("LJMP 0x0800");
-      HAL_SYSTEM_RESET();  // Should not get here.
+      //HAL_SYSTEM_RESET();  // Should not get here.
     }
   }
 
-  while (!HalAdcCheckVdd(VDD_MIN_NV));
+  //while (!HalAdcCheckVdd(VDD_MIN_NV));
   sblRun();
   HAL_SYSTEM_RESET();
 }

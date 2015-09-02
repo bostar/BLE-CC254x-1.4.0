@@ -475,7 +475,7 @@
         <option>
           <name>CCOptStrategy</name>
           <version>0</version>
-          <state>2</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCOptLevelSlave</name>
@@ -712,7 +712,7 @@
         </option>
         <option>
           <name>OutputFile</name>
-          <state>SBL.d51</state>
+          <state>sbl.d51</state>
         </option>
         <option>
           <name>OutputFormat</name>
