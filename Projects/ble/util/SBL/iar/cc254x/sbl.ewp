@@ -17,15 +17,15 @@
         <debug>1</debug>
         <option>
           <name>DerivativeDescriptionFile</name>
-          <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC2541F256.i51</state>
+          <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC2540F256.i51</state>
         </option>
         <option>
           <name>Previous Derivative File</name>
-          <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC2541F256.i51</state>
+          <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC2540F256.i51</state>
         </option>
         <option>
           <name>Showed Derivative</name>
-          <state>CC2541F256</state>
+          <state>CC2540F256</state>
         </option>
         <option>
           <name>CPU Core</name>
@@ -40,12 +40,12 @@
         <option>
           <name>Code Memory Model</name>
           <version>1</version>
-          <state>2</state>
+          <state>1</state>
         </option>
         <option>
           <name>Code Memory Model slave</name>
           <version>1</version>
-          <state>2</state>
+          <state>1</state>
         </option>
         <option>
           <name>Data Memory Model</name>
@@ -150,7 +150,7 @@
         </option>
         <option>
           <name>RTLibraryPath</name>
-          <state>$TOOLKIT_DIR$\LIB\CLIB\cl-pli-blxd-1e16x01.r51</state>
+          <state>$TOOLKIT_DIR$\LIB\CLIB\cl-pli-nlxd-1e16x01.r51</state>
         </option>
         <option>
           <name>Input variant</name>
