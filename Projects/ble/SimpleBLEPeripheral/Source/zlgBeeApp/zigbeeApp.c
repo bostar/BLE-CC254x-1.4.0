@@ -198,6 +198,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   
   if( events & UART1_READ_HMC5983_EVT )
   {
+      static uint8 time_count;
       Uart1_Send_Byte( "get", osal_strlen( "get" ) );
       if( !mag_xyz.checked )
       { 
@@ -211,6 +212,16 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
             {                
                 parkingState->vehicleState = cmdVehicleComming;
                 eventReportToGateway( cmdVehicleComming );
+                time_count = 0;
+            }
+            if( parkingState->vehicleState == cmdVehicleComming )
+            {
+                time_count ++;
+                if( time_count > 60 )//60s
+                {
+                  time_count = 0;
+                  eventReportToGateway( cmdVehicleComming );
+                }
             }
           }
           else
@@ -219,6 +230,16 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
             {
                 parkingState->vehicleState = cmdVehicleLeave;
                 eventReportToGateway( cmdVehicleLeave );
+                time_count = 0;
+            }
+            if( parkingState->vehicleState == cmdVehicleLeave )
+            {
+                time_count ++;
+                if( time_count > 60 )//60s
+                {
+                  time_count = 0;
+                  eventReportToGateway( cmdVehicleLeave );
+                }
             }
           }             
       }
