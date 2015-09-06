@@ -19,5 +19,6 @@ void TSTProcess(uint8 *cmd);
 uint16 XBeeLockState(parkingEventType LockState);
 uint16 XBeeParkState(parkingEventType CarState);
 uint16 SendString(uint8 in ,uint8 len );
+void ProcessAT(XBeeUartRecDataDef temp_rbuf);
 #endif
 

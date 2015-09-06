@@ -46,6 +46,7 @@
 #include "hal_drivers.h"
 #include "hal_types.h"
 #include "hal_uart.h"
+#include "XBeeApp.h"
 #if defined POWER_SAVING
 #include "OSAL.h"
 #include "OSAL_PwrMgr.h"
@@ -469,10 +470,10 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
         hmc5983Data.state = 0x88;       
         if(SenFlag == 0x88)
         {
-          SenFlag = 1;
-          hmc5983DataStandard.x = hmc5983Data.x;
-          hmc5983DataStandard.y = hmc5983Data.y;
-          hmc5983DataStandard.z = hmc5983Data.z;
+            SenFlag = 1;
+            hmc5983DataStandard.x = hmc5983Data.x;
+            hmc5983DataStandard.y = hmc5983Data.y;
+            hmc5983DataStandard.z = hmc5983Data.z;
         }
     }
   }

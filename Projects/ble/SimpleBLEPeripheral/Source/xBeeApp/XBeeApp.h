@@ -10,6 +10,7 @@ extern "C"
  * INCLUDES
  */
 #include "Hal_types.h"
+#include "hal_uart.h"
 /*********************************************************************
  * CONSTANTS
  */
@@ -33,18 +34,14 @@ extern "C"
 #define z8                         0x4000
 #define z7                         0x8000
   
-#define XBeeOpenBuzzer   XBeeSetIO(IO_P2,High)
-#define XBeeCloseBuzzer  XBeeSetIO(IO_P2,Low)
-#define XBeeOpenLED1     XBeeSetIO(IO_P1,High)
-#define XBeeCloseLED1    XBeeSetIO(IO_P1,Low)
-#define XBeeOpenLED2     XBeeSetIO(IO_D4,High)
-#define XBeeCloseLED2    XBeeSetIO(IO_D4,Low)
-#define XBeeOpenLED3     XBeeSetIO(IO_D5,High)
-#define XBeeCloseLED3    XBeeSetIO(IO_D5,Low)
-#define XBeeOpenLED4     XBeeSetIO(IO_D3,High)
-#define XBeeCloseLED4    XBeeSetIO(IO_D3,Low)
-#define XBeeOpenRDDILED  XBeeSetIO(IO_P2,High)
-#define XBeeCloseRSSILED XBeeSetIO(IO_P2,Low)
+#define XBeeOpenBuzzer()   XBeeSetIO(IO_P2,High)
+#define XBeeCloseBuzzer()  XBeeSetIO(IO_P2,Low)
+#define XBeeOpenLED1()     XBeeSetIO(IO_P1,High)
+#define XBeeCloseLED1()    XBeeSetIO(IO_P1,Low)
+#define XBeeOpenLED2()     XBeeSetIO(IO_D4,High)
+#define XBeeCloseLED2()    XBeeSetIO(IO_D4,Low)
+#define XBeeOpenLED3()     XBeeSetIO(IO_D5,High)
+#define XBeeCloseLED3()    XBeeSetIO(IO_D5,Low)
 
 #define XBEE_JN       13
 #define XBEE_NOT_JN   15
@@ -174,6 +171,12 @@ typedef struct
     uint8 data[256];
     uint8 num;
 }XBeeUartRecDataDef;
+   
+typedef struct
+{
+    LockCurrentStateType  LockCurrentState;
+    HMC5983DataType hmc5983Data;
+}FlashLockStateType;
 /***************************************************************/
 extern XBeeAdrType XBeeAdr;  //IEEE地址和当前的网络地址
 extern XBeeUartRecDataDef XBeeUartRec; //串口接收缓存数据  
@@ -183,6 +186,8 @@ extern uint8 UartCtl;
 extern uint8 SenFlag; 
 extern uint8 XBeeUartEn;
 extern LockCurrentStateType LockObjState;
+extern SetSleepModeType SetSleepMode;
+extern FlashLockStateType FlashLockState;
 /*********************************************************************
  * FUNCTIONS
  */

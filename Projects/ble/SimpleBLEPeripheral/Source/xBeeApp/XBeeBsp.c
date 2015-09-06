@@ -46,7 +46,7 @@ void XBeeLeaveNet(void)
 {
   uint8 panID[8],i;
   for(i=0;i<8;i++)
-    panID[i] = 0x00;
+    panID[i] = 0x88;
   XBeeSetPanID(panID,NO_RES);   //设置ID的值
 //  XbeeSendAC(NO_RES);
 //  XBeeReadAI();
@@ -135,15 +135,18 @@ void MotorLock(void)
 /**********************************************
 **brief motor复位
 **********************************************/
-void MotorInit(void)
+void MotorInit(LockCurrentStateType states)
 {
     LockCurrentStateType state=none;
     state = GetCurrentMotorState();
-    while(state != unlock)
+    while(state != states)
     {
-        MotorUnlock();
+        if(states == unlock)
+            MotorUnlock();
+        else if(states == lock)
+            MotorLock();
         state = GetCurrentMotorState();
-        if(state == unlock)
+        if(state == states)
             MotorStop();
         //检测马达是否阻塞
     }

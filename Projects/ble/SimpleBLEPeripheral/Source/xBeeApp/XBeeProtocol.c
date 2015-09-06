@@ -84,7 +84,81 @@ void OTAProcess(uint8 *cmd)
 {}
 void TSTProcess(uint8 *cmd)
 {}
-
+/*********************************************************
+**
+*********************************************************/
+void ProcessAT(XBeeUartRecDataDef temp_rbuf)
+{
+    if(temp_rbuf.data[5]=='N' && temp_rbuf.data[6]=='J')
+    {}
+    else if(temp_rbuf.data[5]=='A' && temp_rbuf.data[6]=='I')
+    {
+        if(temp_rbuf.data[7]==0 && temp_rbuf.data[8]==0)
+        {
+            FlagJionNet = GetSH;   
+            XBeeSetSM(PinCyc,NO_RES);
+            osal_stop_timerEx( XBeeTaskID,XBEE_JOIN_NET_EVT);
+            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
+        }
+    }
+    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='H')
+    {
+        if(temp_rbuf.data[7]==0)
+        {
+            uint8 cnt;
+            for(cnt=0;cnt<4;cnt++)
+                XBeeAdr.IEEEadr[cnt] = temp_rbuf.data[8+cnt];
+            FlagJionNet = GetSL;
+            osal_stop_timerEx( XBeeTaskID,XBEE_JOIN_NET_EVT);
+            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );      
+        }
+    }
+    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='L')
+    {
+        if(temp_rbuf.data[7]==0)
+        {
+            uint8 cnt;
+            for(cnt=0;cnt<4;cnt++)
+                XBeeAdr.IEEEadr[4+cnt] = temp_rbuf.data[8+cnt];
+            FlagJionNet = GetMY;
+            osal_stop_timerEx( XBeeTaskID,XBEE_JOIN_NET_EVT);
+            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );      
+        }                 
+    }
+    else if(temp_rbuf.data[5]=='M' && temp_rbuf.data[6]=='Y')
+    {
+        if(temp_rbuf.data[7]==0)
+        {
+            uint8 cnt;
+            for(cnt=0;cnt<2;cnt++)
+                XBeeAdr.netadr[cnt] = temp_rbuf.data[8+cnt];
+            FlagJionNet = JoinPark;
+            osal_stop_timerEx( XBeeTaskID,XBEE_JOIN_NET_EVT);
+            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );      
+        }
+    } 
+    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='M')
+    {
+        //if(temp_rbuf.data[7] == 0)
+        SetSleepMode = SetSP;
+    }
+    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='P')
+    {
+        if(temp_rbuf.data[7] == 0)
+        SetSleepMode = SetST;
+    }
+    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='T')
+    {
+        if(temp_rbuf.data[7] == 0)
+        {
+            FlagJionNet = JoinNet;
+            osal_stop_timerEx( XBeeTaskID, XBEE_START_DEVICE_EVT);
+            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
+        }
+    }
+    else if(temp_rbuf.data[5]=='M' && temp_rbuf.data[6]=='P')
+    {}
+}
 /*********************************************************
 **brief ·¢ËÍËø×´Ì¬º¯Êý
 *********************************************************/

@@ -34,7 +34,7 @@ void XBeeMode5Wake(void);
 LockCurrentStateType GetCurrentMotorState(void);
 void Delay1ms(void);		//@33.000MHz
 void Delay100us(void);		//@33.000MHz
-void MotorInit(void);
+void MotorInit(LockCurrentStateType states);
 uint8 GetCurrentMotorStateTest(void);
 #endif
 

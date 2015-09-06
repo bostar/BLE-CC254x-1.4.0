@@ -144,6 +144,8 @@ void XBeeSetIO(XBeeIOParam ioparam,IOStatus state)
       cmd->atCmd[0]         = 'D';
       cmd->atCmd[1]         = '8';
       break;
+    default:
+      break;  
   }
   cmd->param   = (state == Low)?4:5;
   //cmd->checksum = 0xff- i;

@@ -175,6 +175,12 @@ extern "C"
 // GATT Configuration NV Items - Range  0x70 - 0x79 - This must match the number of Bonding entries
 #define BLE_NVID_GATT_CFG_START         0x70  //!< Start of the GATT Configuration NV IDs
 #define BLE_NVID_GATT_CFG_END           0x79  //!< End of the GATT Configuration NV IDs
+
+// USER configuration NV Items - Range  0x80 - 0x89
+#define BLE_NVID_USER_CFG_STATRT        0x80
+#define BLE_NVID_USER_CFG_END           0x89
+#define BLE_NVID_USER_CFG_STATRT_2      0x90
+#define BLE_NVID_USER_CFG_END_2         0x99
 /** @} End BLE_NV_IDS */
 
 /*********************************************************************
