@@ -36,6 +36,9 @@ void Delay1ms(void);		//@33.000MHz
 void Delay100us(void);		//@33.000MHz
 void MotorInit(LockCurrentStateType states);
 uint8 GetCurrentMotorStateTest(void);
+void KeepLockState(void);
+void ControlMotor(void);
+
 #endif
 
 

@@ -11,7 +11,8 @@
 #include "hal_types.h"
 #include "hal_drivers.h"
 #include "osal.h"
-
+#include "XBeeApp.h"
+#include "XBeeProtocol.h"
 
 #if defined _XBEE_APP_
 /*******************************************
@@ -226,7 +227,75 @@ uint8 GetCurrentMotorStateTest(void)
         valve |= 0x04;
     return valve;
 }
-
+/****************************************************
+**brief keep current locker state
+****************************************************/
+void KeepLockState(void)
+{
+    LockCurrentStateType MotorCurrentState,LocalLockState;
+        
+    LocalLockState = LockObjState;
+    MotorCurrentState = GetCurrentMotorState();
+    if(MotorCurrentState == LocalLockState )
+        return;
+    switch(LocalLockState)
+    {
+        case lock:
+            if(MotorCurrentState == over_lock)
+            {
+                MotorUnlock();
+                if(MotorCurrentState == LocalLockState)
+                    MotorStop();
+            }
+            else
+            {
+                MotorLock();
+                if(MotorCurrentState == LocalLockState)
+                    MotorStop();
+            }
+            break;
+        case unlock:
+            MotorUnlock();
+            if(MotorCurrentState == LocalLockState)
+                MotorStop();
+            break;
+        default:
+            break;
+    }
+     
+}
+/***************************************************
+**brief conrtol motor
+***************************************************/
+void ControlMotor(void)
+{
+    LockCurrentStateType MotorCurrentState,LocalLockState;
+        
+    LocalLockState = LockObjState;
+    FlashLockState.LockCurrentState = LockObjState;
+    MotorCurrentState = GetCurrentMotorState();
+    switch(LocalLockState)
+    {
+        case lock:
+            MotorLock();
+            if(MotorCurrentState == LocalLockState || MotorCurrentState == over_lock)
+            {
+                MotorStop();
+                XBeeLockState(ParkLockSuccess);
+            }
+            break;
+        case unlock:
+            MotorUnlock();
+            if(MotorCurrentState == LocalLockState)
+            {
+                MotorStop();
+                XBeeLockState(ParkUnlockSuccess);
+            }
+            break;
+        default:
+            break;
+    }    
+}
 void Delay1ms(void)		//@33.000MHz
 {
 	unsigned char i, j;

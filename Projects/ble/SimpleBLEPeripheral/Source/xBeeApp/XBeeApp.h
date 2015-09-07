@@ -188,6 +188,7 @@ extern uint8 XBeeUartEn;
 extern LockCurrentStateType LockObjState;
 extern SetSleepModeType SetSleepMode;
 extern FlashLockStateType FlashLockState;
+extern ParkingStateType parkingState;              //当前车位状态
 /*********************************************************************
  * FUNCTIONS
  */
@@ -196,7 +197,7 @@ extern FlashLockStateType FlashLockState;
  * Task Initialization for the BLE Application
  */
 void XBeeInit( uint8 task_id );
-
+void ProcessSerial(XBeeUartRecDataDef temp_rbuf);
 /*
  * Task Event Processor for the BLE Application
  */

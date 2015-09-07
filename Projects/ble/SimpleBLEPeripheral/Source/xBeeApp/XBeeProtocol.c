@@ -7,7 +7,8 @@
 #include "XBeeApp.h"
 #include "XBeeBsp.h"
 #include "XBeeApp.h"
-
+#include <math.h>
+#include <stdlib.h>
 
 #if defined _XBEE_APP_
 /*****************************************************
@@ -160,6 +161,19 @@ void ProcessAT(XBeeUartRecDataDef temp_rbuf)
     {}
 }
 /*********************************************************
+**brief mode status process
+*********************************************************/
+void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf)
+{
+    if(temp_rbuf.data[4] == 0x03)
+    {
+        FlagJionNet = JoinNet;
+        osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
+        osal_stop_timerEx( XBeeTaskID,XBEE_HMC5983_EVT);
+        osal_stop_timerEx( XBeeTaskID,XBEE_VBT_CHENCK_EVT);
+    }
+}
+/*********************************************************
 **brief ·¢ËÍËø×´Ì¬º¯Êý
 *********************************************************/
 uint16 XBeeLockState(parkingEventType LockState)
@@ -203,6 +217,120 @@ uint16 XBeeBatPower(uint8 PowerVal)
   data[4]   =  PowerVal;
   return XBeeSendToCoor(data,5,NO_RES);
 }
+/**************************************************
+**brief set xbee sleep mode
+**************************************************/
+void SetXBeeSleepMode(void)
+{
+    if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
+    {
+        switch(SetSleepMode)
+        {
+            case SetMode:
+                //XBeeSetSM(PinCyc,RES);
+                XBeeSetSM(Disable,RES);
+                break;
+            case SetSP:
+                XBeeSetSP(100,RES);
+                break;
+            case SetST:
+                XBeeSetST(100,RES);
+                break;
+            case SetSN:
+                break;
+            default:
+                break;
+        }
+    }
+}
+/**********************************************************
+**brief jion park net
+**********************************************************/
+void JionParkNet(void)
+{
+    static uint8 XBeeReqJionParkIdx=0;
+    switch(FlagJionNet)
+    {
+        case JoinNet:
+            XBeeRourerJoinNet();
+            break;
+        case GetSH:
+            XBeeReadSH();
+            break;
+        case GetSL:
+            XBeeReadSL();
+            break;
+        case GetMY:
+            XBeeReadMY();
+            break;
+        case JoinPark:
+            XBeeReqJionParkIdx++;
+            if(XBeeReqJionParkIdx == 10)
+                FlagJionNet = JoinNet;
+            XBeeReqJionPark();
+            break;  
+        default:
+            break;
+    }
+}
+/**********************************************************
+**brief report senser data
+**********************************************************/
+uint16 ReportSenser(void)
+{
+    HMC5983DataType temp_hmc5983Data,temp_hmc5983DataStandard;
+ 
+    temp_hmc5983Data = hmc5983Data;
+    temp_hmc5983DataStandard = hmc5983DataStandard;
+    if(temp_hmc5983Data.state!=0x88)
+    {
+        Uart1_Send_Byte("get",osal_strlen("get"));
+        return 0;
+    }
+    hmc5983Data.state = 1;
+    if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > OFFSET \
+        || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > OFFSET \
+        || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > OFFSET)  
+    {   
+        if(parkingState.vehicleState == ParkingUnUsed)
+        {  
+            parkingState.vehicleState = ParkingUsed;
+            return XBeeParkState(ParkingUsed);               
+        }
+    } 
+    else if(parkingState.vehicleState == ParkingUsed)
+    {
+        parkingState.vehicleState = ParkingUnUsed;
+        return XBeeParkState(ParkingUnUsed);  
+    }
+    return 0;
+}
+/**********************************************************
+**brief report park state periodly
+**********************************************************/
+uint16 ReportStatePeriod(void)
+{
+    static uint8 cnt=0;
+    HMC5983DataType temp_hmc5983Data,temp_hmc5983DataStandard;
+ 
+    temp_hmc5983Data = hmc5983Data;
+    temp_hmc5983DataStandard = hmc5983DataStandard;
+    if(temp_hmc5983Data.state!=0x88)
+        return 0;
+    cnt++;
+    if(cnt > 2)
+    {
+        cnt = 0;
+        if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > OFFSET \
+            || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > OFFSET \
+            || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > OFFSET)                  
+            return XBeeParkState(ParkingUsed);
+        else
+            return XBeeParkState(ParkingUnUsed);
+    }
+    return 0;
+}
+
 /**********************************************************
 **brief ÏòÍø¹Ø·¢ËÍ×Ö·û´®
 **********************************************************/
