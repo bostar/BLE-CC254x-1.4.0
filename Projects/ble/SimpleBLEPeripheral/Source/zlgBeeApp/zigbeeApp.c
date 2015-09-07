@@ -340,6 +340,16 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
           {
             setMotorStop();
           }
+          else if( parkingState->lockState == cmdLockFailed )
+          {
+            parkingState->lockState = cmdLocking;
+            setMotorReverse();
+          }
+          else if( parkingState->lockState == cmdUnlockFailed )
+          {
+            parkingState->lockState = cmdUnlocking;
+            setMotorForward();
+          }
       }
       osal_start_reload_timer( zigbee_TaskID, READ_ZIGBEE_ADC_EVT, 1000 );
       return ( events ^ READ_ZIGBEE_ADC_EVT );
@@ -829,6 +839,10 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
   else if ( keys == SK_LIMIT_LOCKED_OVER )
   {  
     setMotorForward();
+  }
+  else if ( keys == SK_LIMIT_UNLOCK_OVER )
+  {
+    setMotorReverse();
   }
   else
   {
