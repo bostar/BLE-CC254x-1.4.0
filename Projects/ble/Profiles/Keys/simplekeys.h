@@ -70,7 +70,7 @@ extern "C"
 #define SK_LIMIT_LOCKED_OVER          0x01
 #define SK_LIMIT_LOCKED               0x00
 #define SK_LIMIT_UNLOCK               0x06
-     
+#define SK_LIMIT_UNLOCK_OVER          0x07
 // Simple Keys Profile Services bit fields
 #define SK_SERVICE                    0x00000001
 
