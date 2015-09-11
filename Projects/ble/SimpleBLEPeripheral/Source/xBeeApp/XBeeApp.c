@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include "hal_adc.h"
 #include <string.h>
+#include "hal_adc.h"
 
 //#define __TEST
 
@@ -55,13 +56,22 @@ SetSleepModeType SetSleepMode=SetMode;                       //
 FlashLockStateType FlashLockState;
 uint8 ReadFlashFlag;
 
+int16 vbt = 0,sen = 0,avdd = 0;
+float sen_v = 0,vbt_v = 0,avdd_v = 0;
 void XBeeInit( uint8 task_id )
 {
     XBeeTaskID = task_id;
     NPI_InitTransport(npiCBack_uart);         //初始化UART 
     InitUart1();  //初始化串口1
+    HalAdcSetReference ( HAL_ADC_REF_AVDD );
+    sen = HalAdcRead (HAL_ADC_CHANNEL_0, HAL_ADC_RESOLUTION_8);
+    vbt = HalAdcRead (HAL_ADC_CHANNEL_1, HAL_ADC_RESOLUTION_8);
+
+    sen_v = 3.482 * (float)sen / 0x7f;
+    vbt_v = 3.482 * (float)vbt / 0x7f;
+    vbt_v = vbt_v;
+    sen_v = sen_v;
     osal_snv_init();
-    HalAdcSetReference(HAL_ADC_REF_125V);
     RegisterForKeys( XBeeTaskID );
     parkingState.vehicleState = ParkingUnUsed;
     osal_set_event( XBeeTaskID, XBEE_START_DEVICE_EVT );  //触发事件

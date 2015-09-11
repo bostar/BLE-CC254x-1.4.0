@@ -120,9 +120,9 @@ void HalDriverInit (void)
 #endif
 
   /* ADC */
-#if (defined HAL_ADC) && (HAL_ADC == TRUE)
+//#if (defined HAL_ADC) && (HAL_ADC == TRUE)
   HalAdcInit();
-#endif
+//#endif
 
   /* DMA */
 #if (defined HAL_DMA) && (HAL_DMA == TRUE)

@@ -232,7 +232,7 @@ extern "C"
 	#define GPIO_XBEE_SLEEP_BV          BV(7)
 	#define GPIO_XBEE_MOTOR1_BV         BV(4)
 	#define GPIO_XBEE_MOTOR2_BV         BV(5)
-	#define GPIO_XBEE_MO_EN_BV          BV(5)
+	//#define GPIO_XBEE_MO_EN_BV          BV(5)
 	#define GPIO_XBEE_KEY1_BV           BV(0)
 	#define GPIO_XBEE_KEY2_BV           BV(1)
 	#define GPIO_XBEE_KEY3_BV           BV(4)   
@@ -247,7 +247,7 @@ extern "C"
 	#define GPIO_XBEE_SLEEP_SBIT        P0_7    //OUTPUT
 	#define GPIO_XBEE_MOTOR1_SBIT       P0_4    //OUTPUT
 	#define GPIO_XBEE_MOTOR2_SBIT       P0_5    //OUTPUT
-	#define GPIO_XBEE_MO_EN_SBIT        P1_5    //OUTPUT
+	//#define GPIO_XBEE_MO_EN_SBIT        P1_5    //OUTPUT
 	#define GPIO_XBEE_KEY1_SBIT         P1_0    //INPUT
 	#define GPIO_XBEE_KEY2_SBIT         P1_1    //INPUT
     #define GPIO_XBEE_KEY3_SBIT         P1_4    //INPUT
@@ -262,7 +262,7 @@ extern "C"
 	#define GPIO_XBEE_SLEEP_DDR         P0DIR
 	#define GPIO_XBEE_MOTOR1_DDR        P0DIR
 	#define GPIO_XBEE_MOTOR2_DDR        P0DIR
-	#define GPIO_XBEE_MO_EN_DDR         P1DIR
+	//#define GPIO_XBEE_MO_EN_DDR         P1DIR
 	#define GPIO_XBEE_KEY1_DDR          P1DIR
 	#define GPIO_XBEE_KEY2_DDR          P1DIR
     #define GPIO_XBEE_KEY3_DDR          P1DIR
@@ -277,7 +277,7 @@ extern "C"
 	#define GPIO_XBEE_SLEEP_TURN_HIGH()             GPIO_XBEE_SLEEP_SBIT = 1;
 	#define GPIO_XBEE_MOTOR1_TURN_HIGH()            GPIO_XBEE_MOTOR1_SBIT = 1;
 	#define GPIO_XBEE_MOTOR2_TURN_HIGH()            GPIO_XBEE_MOTOR2_SBIT = 1;
-	#define GPIO_XBEE_MO_EN_TURN_HIGH()             GPIO_XBEE_MO_EN_SBIT = 1;
+	//#define GPIO_XBEE_MO_EN_TURN_HIGH()             GPIO_XBEE_MO_EN_SBIT = 1;
 	#define GPIO_XBEE_KEY1_TURN_HIGH()              GPIO_XBEE_KEY1_SBIT = 1;
 	#define GPIO_XBEE_KEY2_TURN_HIGH()              GPIO_XBEE_KEY2_SBIT = 1;
     #define GPIO_XBEE_KEY3_TURN_HIGH()              GPIO_XBEE_KEY3_SBIT = 1;
@@ -290,7 +290,7 @@ extern "C"
 	#define GPIO_XBEE_SLEEP_TURN_LOW()              GPIO_XBEE_SLEEP_SBIT = 0;
 	#define GPIO_XBEE_MOTOR1_TURN_LOW()             GPIO_XBEE_MOTOR1_SBIT = 0;
 	#define GPIO_XBEE_MOTOR2_TURN_LOW()             GPIO_XBEE_MOTOR2_SBIT = 0;
-	#define GPIO_XBEE_MO_EN_TURN_LOW()              GPIO_XBEE_MO_EN_SBIT = 0;
+	//#define GPIO_XBEE_MO_EN_TURN_LOW()              GPIO_XBEE_MO_EN_SBIT = 0;
 	#define GPIO_XBEE_KEY1_TURN_LOW()               GPIO_XBEE_KEY1_SBIT = 0;
     #define GPIO_XBEE_KEY2_TURN_LOW()               GPIO_XBEE_KEY2_SBIT = 0;
     #define GPIO_XBEE_KEY3_TURN_LOW()               GPIO_XBEE_KEY3_SBIT = 0;
