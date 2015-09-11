@@ -86,7 +86,7 @@ void OTAProcess(uint8 *rf_data)
 /*********************************************************
 **
 *********************************************************/
-void ProcessAT(XBeeUartRecDataDef temp_rbuf)
+void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf)
 {
     uint8 i;
     if(temp_rbuf.data[5]=='A' && temp_rbuf.data[6]=='I')
@@ -151,7 +151,7 @@ void ProcessAT(XBeeUartRecDataDef temp_rbuf)
         if(temp_rbuf.data[7] == 0)
         {
             FlagJionNet = JoinNet;
-            osal_stop_timerEx( XBeeTaskID, XBEE_START_DEVICE_EVT);
+            SetSleepMode = SetOK;
             osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
         }
     }
@@ -247,9 +247,9 @@ uint8 SetXBeeSleepMode(void)
                 break;
             case SetST:
                 XBeeSetST(100,RES);
-                reval = 1;
                 break;
-            case SetSN:
+            case SetOK:
+                reval = 1;
                 break;
             default:
                 break;

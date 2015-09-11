@@ -38,7 +38,7 @@ __xdata XBeeUartRecDataDef XBeeUartRec;     //串口接收缓存数据
 __xdata FlagJionNetType FlagJionNet;        //加入网络标志
 __xdata uint8 FlagPowerON=0;                //启动标志
 //static uint8 FlagXBeeTrans=0;             //xbee数据发送状态
-__xdata uint8 SendTimes;                    //命令发送次数
+__xdata volatile uint8 SendTimes;                    //命令发送次数
 __xdata XBeeAdrType XBeeAdr;                //IEEE地址和当前的网络地址
 TaskSendType TaskSend;                      //数据发送次数
 ToReadUARTType ToReadUART=ReadHead;         //读取串口状态
@@ -79,6 +79,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         if(ReadFlashFlag == SUCCESS)
         {
             LockObjState = FlashLockState.LockState;
+            hmc5983DataStandard = FlashLockState.hmc5983Data;
             SenFlag=0;
         }
         else
@@ -103,7 +104,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         else
         {
             JionParkNet();
-            time_delay = 1000;
+            time_delay = 2000;
         }
         osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, time_delay );
         return (events ^ XBEE_JOIN_NET_EVT) ;

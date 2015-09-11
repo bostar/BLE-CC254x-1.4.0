@@ -72,7 +72,8 @@ typedef enum
     SetST       =   2,
     SetSO       =   3,
     SetSN       =   4,
-    None        =   5
+    SetOK       =   5,
+    None        =   6
 }SetSleepModeType;
 
 typedef enum

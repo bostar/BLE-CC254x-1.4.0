@@ -154,8 +154,8 @@ extern "C"
 #endif
 
 //#define VER0618    //pcb°æ±¾
-#define VER0721  
-//#define VER0806  
+//#define VER0721  
+#define VER0806  
 
 
 #if(defined HAL_XBEE_ZIGBEE && defined VER0721)

@@ -19,7 +19,7 @@ void TSTProcess(uint8 *rf_data);
 uint16 XBeeLockState(parkingEventType LockState);
 uint16 XBeeParkState(parkingEventType CarState);
 uint16 SendString(uint8 in ,uint8 len );
-void ProcessAT(XBeeUartRecDataDef temp_rbuf);
+void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf);
 void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf);
 uint8 SetXBeeSleepMode(void);
 void JionParkNet(void);

@@ -81,7 +81,7 @@
       <WATCH_1>
         <expressions>
           
-        <item>XBeeUartRec</item><item>ReadFlashFlag</item><item>hmc5983DataStandard</item><item>FlashLockState</item><item>LockObjState</item><item>MotorCurrentState</item><item>panID</item><item>temp_rbuf</item><item></item></expressions>
+        <item>XBeeUartRec</item><item>ReadFlashFlag</item><item>hmc5983DataStandard</item><item>FlashLockState</item><item>LockObjState</item><item>MotorCurrentState</item><item>panID</item><item>temp_rbuf</item><item/></expressions>
         <col-names>
           
           
