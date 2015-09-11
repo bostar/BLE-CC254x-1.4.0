@@ -13,6 +13,8 @@
 #include "osal.h"
 #include "XBeeApp.h"
 #include "XBeeProtocol.h"
+#include "bcomdef.h"
+#include "osal_snv.h"
 
 #if defined _XBEE_APP_
 /*******************************************
@@ -31,10 +33,20 @@ void ClearDMA(void)
 void XBeeRourerJoinNet(void)
 {
     uint8 panID[8],i;
-    for(i=0;i<8;i++)
-        panID[i] = 0;
+    static uint8 cnt=0;
+    if(ReadFlashFlag == SUCCESS && cnt<10)
+    {
+        cnt++;
+        for(i=0;i<8;i++)
+            panID[i] = FlashLockState.panID[i];
+    }
+    else
+    {
+        for(i=0;i<8;i++)
+            panID[i] = 0;
+    }
     XBeeSetPanID(panID,NO_RES);   //设置ID的值
-    XBeeSetChannel(NO_RES); //设置信道
+    XBeeSetChannel(0x0b0b,NO_RES); //设置信道
     XBeeSetZS(1,NO_RES);
     XbeeRunAC(NO_RES);
     XBeeRunWR(NO_RES);
@@ -133,25 +145,6 @@ void MotorLock(void)
    GPIO_XBEE_MOTOR1_TURN_HIGH();
    GPIO_XBEE_MOTOR2_TURN_LOW();
 }
-/**********************************************
-**brief motor复位
-**********************************************/
-void MotorInit(LockCurrentStateType states)
-{
-    LockCurrentStateType state=none;
-    state = GetCurrentMotorState();
-    while(state != states)
-    {
-        if(states == unlock)
-            MotorUnlock();
-        else if(states == lock)
-            MotorLock();
-        state = GetCurrentMotorState();
-        if(state == states)
-            MotorStop();
-        //检测马达是否阻塞
-    }
-}
 /**************************************************
 **brief xbee休眠初始化，设置为mode5
 **************************************************/
@@ -232,69 +225,73 @@ uint8 GetCurrentMotorStateTest(void)
 ****************************************************/
 void KeepLockState(void)
 {
-    LockCurrentStateType MotorCurrentState,LocalLockState;
-        
-    LocalLockState = LockObjState;
+    LockCurrentStateType MotorCurrentState;
     MotorCurrentState = GetCurrentMotorState();
-    if(MotorCurrentState == LocalLockState )
-        return;
-    switch(LocalLockState)
+    if(MotorCurrentState != LockObjState )
     {
-        case lock:
-            if(MotorCurrentState == over_lock)
-            {
+        switch(LockObjState)
+        {
+            case lock:
+                if(MotorCurrentState == over_lock)
+                    MotorUnlock();
+                else
+                    MotorLock();
+                if(MotorCurrentState == LockObjState)
+                    MotorStop();
+                break;
+            case unlock:
                 MotorUnlock();
-                if(MotorCurrentState == LocalLockState)
+                if(MotorCurrentState == LockObjState)
                     MotorStop();
-            }
-            else
-            {
-                MotorLock();
-                if(MotorCurrentState == LocalLockState)
-                    MotorStop();
-            }
-            break;
-        case unlock:
-            MotorUnlock();
-            if(MotorCurrentState == LocalLockState)
-                MotorStop();
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
+        }
     }
-     
+    else
+        MotorStop();
+    return; 
 }
 /***************************************************
 **brief conrtol motor
 ***************************************************/
-void ControlMotor(void)
+uint8 ControlMotor(void)
 {
-    LockCurrentStateType MotorCurrentState,LocalLockState;
-        
-    LocalLockState = LockObjState;
-    FlashLockState.LockCurrentState = LockObjState;
+    LockCurrentStateType MotorCurrentState;
+    uint8 reval=0;
+   
     MotorCurrentState = GetCurrentMotorState();
-    switch(LocalLockState)
+    switch(LockObjState)
     {
         case lock:
             MotorLock();
-            if(MotorCurrentState == LocalLockState || MotorCurrentState == over_lock)
+            if(MotorCurrentState == LockObjState || MotorCurrentState == over_lock)
             {
                 MotorStop();
-                XBeeLockState(ParkLockSuccess);
+                reval = 1;
             }
             break;
         case unlock:
             MotorUnlock();
-            if(MotorCurrentState == LocalLockState)
+            if(MotorCurrentState == LockObjState)
             {
                 MotorStop();
-                XBeeLockState(ParkUnlockSuccess);
+                reval = 2;
             }
             break;
         default:
             break;
-    }    
+    }
+    return reval;
+}
+/*****************************************************
+**brief 监测马达是否阻塞
+*****************************************************/
+uint8 CheckADC(void)
+{
+    uint8 reval=0;
+    
+    return reval;
 }
 void Delay1ms(void)		//@33.000MHz
 {

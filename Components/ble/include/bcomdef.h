@@ -179,8 +179,6 @@ extern "C"
 // USER configuration NV Items - Range  0x80 - 0x89
 #define BLE_NVID_USER_CFG_STATRT        0x80
 #define BLE_NVID_USER_CFG_END           0x89
-#define BLE_NVID_USER_CFG_STATRT_2      0x90
-#define BLE_NVID_USER_CFG_END_2         0x99
 /** @} End BLE_NV_IDS */
 
 /*********************************************************************

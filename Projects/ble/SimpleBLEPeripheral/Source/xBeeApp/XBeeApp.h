@@ -20,12 +20,12 @@ extern "C"
 #define XBEE_START_DEVICE_EVT                              0x0001
 #define XBEE_JOIN_NET_EVT                                  0x0002
 #define XBEE_KEEP_LOCK_STATE_EVT                           0x0004    
-#define z2                         0x0008
+#define XBEE_SAVE_FLASH_EVT                                0x0008
 #define XBEE_REC_DATA_PROCESS_EVT                          0x0010
 #define XBEE_TEST_EVT                                      0x0020
 #define XBEE_TEST2_EVT                                     0x0040
 #define XBEE_IDLE_EVT                                      0x0080
-#define XBEE_MOTOO_CTL_EVT                                 0x0100
+#define XBEE_MOTOR_CTL_EVT                                 0x0100
 #define XBEE_HMC5983_EVT                                   0x0200
 #define ZZ                         0x0400
 #define XBEE_VBT_CHENCK_EVT                                0x0800
@@ -174,8 +174,9 @@ typedef struct
    
 typedef struct
 {
-    LockCurrentStateType  LockCurrentState;
+    LockCurrentStateType  LockState;
     HMC5983DataType hmc5983Data;
+    uint8 panID[8];
 }FlashLockStateType;
 /***************************************************************/
 extern XBeeAdrType XBeeAdr;  //IEEE地址和当前的网络地址
@@ -189,6 +190,7 @@ extern LockCurrentStateType LockObjState;
 extern SetSleepModeType SetSleepMode;
 extern FlashLockStateType FlashLockState;
 extern ParkingStateType parkingState;              //当前车位状态
+extern uint8 ReadFlashFlag;
 /*********************************************************************
  * FUNCTIONS
  */
@@ -198,6 +200,7 @@ extern ParkingStateType parkingState;              //当前车位状态
  */
 void XBeeInit( uint8 task_id );
 void ProcessSerial(XBeeUartRecDataDef temp_rbuf);
+void DailyEvt(void);
 /*
  * Task Event Processor for the BLE Application
  */

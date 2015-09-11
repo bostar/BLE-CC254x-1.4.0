@@ -47,6 +47,7 @@
 #include "hal_types.h"
 #include "hal_uart.h"
 #include "XBeeApp.h"
+#include "OSAL.h"
 #if defined POWER_SAVING
 #include "OSAL.h"
 #include "OSAL_PwrMgr.h"
@@ -422,18 +423,6 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
   
   HAL_ENTER_ISR();
   URX1IF = 0; // 清中断标志 
-#if 0
-   if(index > 9)
-   {
-     index = 0;
-     while(1);
-   }
-   else
-   {
-     temp_uart[index++] = U1DBUF;
-   }
-#endif
-#if 1
   if(U1DBUF == 0xAA)
   {
     temp_uart[0] = U1DBUF; 
@@ -474,10 +463,10 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
             hmc5983DataStandard.x = hmc5983Data.x;
             hmc5983DataStandard.y = hmc5983Data.y;
             hmc5983DataStandard.z = hmc5983Data.z;
+            osal_set_event( XBeeTaskID, XBEE_SAVE_FLASH_EVT );
         }
     }
   }
-#endif
   HAL_EXIT_ISR();
 }
 /******************************************************************************

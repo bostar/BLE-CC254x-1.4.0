@@ -11,17 +11,17 @@
 
 
 
-void CFGProcess(uint8 *cmd);  //CFG处理函数
-void CTLProcess(uint8 *cmd);
-void SENProcess(uint8 *cmd);
-void OTAProcess(uint8 *cmd);
-void TSTProcess(uint8 *cmd);
+uint16 CFGProcess(uint8 *rf_data);  //CFG处理函数
+void CTLProcess(uint8 *rf_data);
+void SENProcess(uint8 *rf_data);
+void OTAProcess(uint8 *rf_data);
+void TSTProcess(uint8 *rf_data);
 uint16 XBeeLockState(parkingEventType LockState);
 uint16 XBeeParkState(parkingEventType CarState);
 uint16 SendString(uint8 in ,uint8 len );
 void ProcessAT(XBeeUartRecDataDef temp_rbuf);
 void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf);
-void SetXBeeSleepMode(void);
+uint8 SetXBeeSleepMode(void);
 void JionParkNet(void);
 uint16 ReportSenser(void);
 uint16 ReportStatePeriod(void);

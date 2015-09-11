@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "OnBoard.h"
 #include "XBeeBsp.h"
+#include <stdio.h>
 
 #if defined _XBEE_APP_
 
@@ -59,20 +60,26 @@ uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,
 **************************************************/
 uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes)
 {
-  uint8 wbuf[128],i;
-  XBeeApiATCmdType *cmd = (XBeeApiATCmdType*)wbuf;
-  cmd->start_delimiter  = 0x7E;
-  cmd->len_msb          = (uint8)((4+len)>>8);
-  cmd->len_lsb          = (uint8)(4+len);
-  cmd->frame_type       = 0x08;
-  cmd->frame_id         = IsRes;
-  cmd->atCmd[0]         = *atcmd;
-  cmd->atCmd[1]         = *(atcmd+1);
-  for(i=0;i<len;i++)
-   *(((uint8*)cmd)+7+i) = *(pparam+i);
-  *(((uint8*)cmd)+7+len) = XBeeApiChecksum(((uint8*)cmd)+3,4+len); 
-  XBeeMode5Wake();
-  return NPI_WriteTransport((uint8*)cmd,8+len);
+    uint8 wbuf[128],i;
+    XBeeApiATCmdType *cmd = (XBeeApiATCmdType*)wbuf;
+    cmd->start_delimiter  = 0x7E;
+    cmd->len_msb          = (uint8)((4+len)>>8);
+    cmd->len_lsb          = (uint8)(4+len);
+    cmd->frame_type       = 0x08;
+    cmd->frame_id         = IsRes;
+    cmd->atCmd[0]         = *atcmd;
+    cmd->atCmd[1]         = *(atcmd+1);
+    for(i=0;i<len;i++)
+        *(((uint8*)cmd)+7+i) = *(pparam+i);
+    *(((uint8*)cmd)+7+len) = XBeeApiChecksum(((uint8*)cmd)+3,4+len); 
+#if defined _PRINTF
+    printf("send AT command:\n");
+    for(i=0;i<8+len;i++)
+        printf("0x%02x ",wbuf[i]);
+    printf("\n");
+#endif
+    XBeeMode5Wake();
+    return NPI_WriteTransport((uint8*)cmd,8+len);
 }
 
 
@@ -89,7 +96,7 @@ void XBeeSetIO(XBeeIOParam ioparam,IOStatus state)
   cmd->len_msb          = 0x00;
   cmd->len_lsb          = 0x05;
   cmd->frame_type       = 0x08;
-  cmd->frame_id         = 0x52;
+  cmd->frame_id         = 0x00;
   switch(ioparam)
   {
     case IO_P0:
@@ -236,12 +243,12 @@ uint16 XBeeReadMY(void)
 /*************************************************************
 **brief  …Ë÷√–≈µ¿
 *************************************************************/
-uint16 XBeeSetChannel(IsResp IsRes)
+uint16 XBeeSetChannel(uint16 channel,IsResp IsRes)
 {
-  uint8 paramer[8],i=1;
+  uint8 paramer[2];
   int8 *cmd = "SC";
-  for(i=0;i<8;i++)
-     *(paramer+i) = 0x0B;
+  *paramer     = (uint8)(channel >> 8);
+  *(paramer+1) = (uint8)(channel);
   return XBeeSendATCmd(cmd,paramer,2,IsRes);
 }
 /*************************************************************

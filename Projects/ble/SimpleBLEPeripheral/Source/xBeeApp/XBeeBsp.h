@@ -3,6 +3,8 @@
 
 #include "XBeeApp.h"
 #include "hal_xbee.h"
+#include "hal_adc.h"
+
 
 #define XBee_GPIO_DIR        0x7C
 #define BEEPON         (unsigned char)(0x01 << 2)
@@ -34,11 +36,10 @@ void XBeeMode5Wake(void);
 LockCurrentStateType GetCurrentMotorState(void);
 void Delay1ms(void);		//@33.000MHz
 void Delay100us(void);		//@33.000MHz
-void MotorInit(LockCurrentStateType states);
 uint8 GetCurrentMotorStateTest(void);
 void KeepLockState(void);
-void ControlMotor(void);
-
+uint8 ControlMotor(void);
+uint8 CheckADC(void);
 #endif
 
 
