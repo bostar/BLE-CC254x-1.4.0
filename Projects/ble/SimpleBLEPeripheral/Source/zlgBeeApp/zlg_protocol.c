@@ -44,8 +44,9 @@ void dateRequset( void )
     wbuf[3] = cmdDataRequest;//cmd  
     wbuf[4] = stDevInfo->devLoacalNetAddr[0];
     wbuf[5] = stDevInfo->devLoacalNetAddr[1];
+    wbuf[6] = parkingState->lockState;
     
-    NPI_WriteTransport( (unsigned char *)wbuf , 6 );
+    NPI_WriteTransport( (unsigned char *)wbuf , 7 );
 }
 
 void eventReport( parkingEvent_t event )

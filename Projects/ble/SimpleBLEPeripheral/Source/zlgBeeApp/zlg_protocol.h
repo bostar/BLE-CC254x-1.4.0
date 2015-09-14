@@ -1,6 +1,8 @@
 #ifndef __ZLG_PROTOCOL_H__
 #define __ZLG_PROTOCOL_H__
 
+#include "zigbeeApp.h"
+
 typedef enum _parkingEvent_t {
     cmdVehicleComming = 0x00,
     cmdVehicleLeave = 0x01,
@@ -54,6 +56,7 @@ typedef struct _eventReport_t {
     unsigned char reportSuccess;
 } eventReport_t;
 
+extern parkingState_t * parkingState;
 extern eventReport_t * eventReportData;
 void applicateForNetwork( unsigned char *IEEEAddress );
 void ackLinkTest( unsigned char *IEEEAddress );
