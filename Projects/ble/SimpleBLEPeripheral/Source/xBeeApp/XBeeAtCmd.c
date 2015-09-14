@@ -252,6 +252,17 @@ uint16 XBeeSetChannel(uint16 channel,IsResp IsRes)
   return XBeeSendATCmd(cmd,paramer,2,IsRes);
 }
 /*************************************************************
+**brief  设置SD
+**param  time  0-7
+*************************************************************/
+uint16 XBeeSetSD(uint8 time,IsResp IsRes)
+{
+  uint8 paramer[1];
+  int8 *cmd = "SD";
+  *paramer     = time;
+  return XBeeSendATCmd(cmd,paramer,1,IsRes);
+}
+/*************************************************************
 **brief 连接/创建网络指示灯闪烁时间
 **param time   it should be 0x0A-0xFF or 0x00
 *************************************************************/

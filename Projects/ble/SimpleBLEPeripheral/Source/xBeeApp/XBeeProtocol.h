@@ -25,6 +25,6 @@ uint8 SetXBeeSleepMode(void);
 void JionParkNet(void);
 uint16 ReportSenser(void);
 uint16 ReportStatePeriod(void);
-
+void ReportVbat(void);
 #endif
 

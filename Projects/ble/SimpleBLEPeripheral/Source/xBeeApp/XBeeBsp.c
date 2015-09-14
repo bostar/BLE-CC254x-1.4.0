@@ -46,11 +46,13 @@ void XBeeRourerJoinNet(void)
             panID[i] = 0;
     }
     XBeeSetPanID(panID,NO_RES);   //设置ID的值
-    XBeeSetChannel(0x0b0b,NO_RES); //设置信道
+    XBeeSetChannel(0x0014,NO_RES); //设置信道
+    XBeeSetSD(6,NO_RES);
+    XbeeRunAC(NO_RES);
     XBeeSetZS(1,NO_RES);
     XbeeRunAC(NO_RES);
     XBeeRunWR(NO_RES);
-    XBeeReadAI();
+    XBeeReadAT("AI");
 }
 /*******************************************
 **brief 离开网络

@@ -10,7 +10,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include "hal_adc.h"
 #if defined _XBEE_APP_
 /*****************************************************
 **
@@ -19,7 +19,7 @@ uint16 CFGProcess(uint8 *rf_data)
 {
     switch(*rf_data)
     {
-        case 0x00:      //设置限时加入网络时限
+        case 0x00:      //设置限时加入网络时限,end device禁止该功能
             XBeeSetNJ(*(rf_data+1),NO_RES);
             break;
         case 0x02:      //入网响应
@@ -132,7 +132,7 @@ void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf)
     }
     else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='M')
     {
-        if(temp_rbuf.data[7] == 0)
+        if(temp_rbuf.data[7] == 0 || temp_rbuf.data[7] == 3)
         {
             SetSleepMode = SetSP;
             osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT ); 
@@ -168,7 +168,7 @@ void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf)
         else
             XBeeReadAT("OP");
     }
-    else if(temp_rbuf.data[5]=='M' && temp_rbuf.data[6]=='P')
+    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='C')
     {}
 }
 /*********************************************************
@@ -344,7 +344,28 @@ uint16 ReportStatePeriod(void)
     }
     return 0;
 }
-
+/**********************************************************
+**brief report Vbat to gateway
+**********************************************************/
+void ReportVbat(void)
+{
+    volatile static uint8 v_cnt=0;
+    volatile static float vbat=0;
+    //检测电压十次，取平均值
+    float vbt_v=0;
+    int16 vbt=0;
+    vbt = HalAdcRead (HAL_ADC_CHANNEL_1, HAL_ADC_RESOLUTION_8);
+    vbt_v = 3.482 * (float)vbt / 0x7f;
+    v_cnt++;
+    vbat += vbt_v;
+    if(v_cnt == 10)
+    {
+        v_cnt = 0;
+        vbat = vbat/(float)10;
+        //发送报告
+        vbat = 0;
+    }
+}
 /**********************************************************
 **brief 向网关发送字符串
 **********************************************************/

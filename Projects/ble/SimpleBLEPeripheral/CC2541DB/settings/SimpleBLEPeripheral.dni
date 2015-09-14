@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=1536192512
+Checksum=892841230
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -52,20 +52,23 @@ Enabled=0
 ShowSource=1
 [struct_types]
 Fmt0=dev_info_t-devChannel	3	0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
+[Breakpoints]
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.144.13" 0 0 0 0 "" 0 ""
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.148.16" 0 0 0 0 "" 0 ""
+Bp2=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.168.12" 0 0 0 0 "" 0 ""
+Bp3=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.c}.94.9" 0 0 0 0 "" 0 ""
+Bp4=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeBsp.c}.37.5" 0 0 0 0 "" 0 ""
+Count=5
+[ChipconEmu]
+Stop timers on halt=0
+Leave target running=1
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
-[Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.79.9" 0 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.c}.166.13" 0 0 0 0 "" 0 ""
-Count=2
-[ChipconEmu]
-Stop timers on halt=1
-Leave target running=1
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Aliases]
 Count=0
 SuppressDialog=0

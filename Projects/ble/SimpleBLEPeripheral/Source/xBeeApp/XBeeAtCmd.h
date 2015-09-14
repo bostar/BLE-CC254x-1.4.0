@@ -134,6 +134,7 @@ void XBeeSetIO(XBeeIOParam ioparam,IOStatus state);       //设置IO口状态
 uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes);   //发送at指令
 uint16 XBeeSetPanID(uint8 *panID,IsResp IsRes);   //设置ID的值
 uint16 XBeeSetChannel(uint16 channel,IsResp IsRes);  //设置信道   
+uint16 XBeeSetSD(uint8 time,IsResp IsRes);
 uint16 XBeeSetNJ(uint8 time, IsResp IsRes);
 uint16 XBeeSetLT(uint8 time,IsResp IsRes);
 uint16 XBeeSetZS(uint8 data,IsResp IsRes);

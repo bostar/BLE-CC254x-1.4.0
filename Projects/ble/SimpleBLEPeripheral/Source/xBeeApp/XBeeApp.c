@@ -56,21 +56,12 @@ SetSleepModeType SetSleepMode=SetMode;                       //
 FlashLockStateType FlashLockState;
 uint8 ReadFlashFlag;
 
-int16 vbt = 0,sen = 0,avdd = 0;
-float sen_v = 0,vbt_v = 0,avdd_v = 0;
 void XBeeInit( uint8 task_id )
 {
     XBeeTaskID = task_id;
     NPI_InitTransport(npiCBack_uart);         //初始化UART 
     InitUart1();  //初始化串口1
     HalAdcSetReference ( HAL_ADC_REF_AVDD );
-    sen = HalAdcRead (HAL_ADC_CHANNEL_0, HAL_ADC_RESOLUTION_8);
-    vbt = HalAdcRead (HAL_ADC_CHANNEL_1, HAL_ADC_RESOLUTION_8);
-
-    sen_v = 3.482 * (float)sen / 0x7f;
-    vbt_v = 3.482 * (float)vbt / 0x7f;
-    vbt_v = vbt_v;
-    sen_v = sen_v;
     osal_snv_init();
     RegisterForKeys( XBeeTaskID );
     parkingState.vehicleState = ParkingUnUsed;
@@ -89,8 +80,8 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         if(ReadFlashFlag == SUCCESS)
         {
             LockObjState = FlashLockState.LockState;
-            hmc5983DataStandard = FlashLockState.hmc5983Data;
-            SenFlag=0;
+            //hmc5983DataStandard = FlashLockState.hmc5983Data;
+            SenFlag=0x88;
         }
         else
         {
@@ -109,7 +100,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         {
             if(SetXBeeSleepMode() == 1) //设置休眠模式
                 soj = 1;
-            time_delay = 50;
+            time_delay = 70;
         }
         else
         {
@@ -137,36 +128,54 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     }
     if( events & XBEE_MOTOR_CTL_EVT )           //控制MOTOR动作
     {
+        static float sen_v_0=0,sen_v_1=0;
+        static uint8 cnt=0,cnt_state=11;
         osal_stop_timerEx( XBeeTaskID,XBEE_KEEP_LOCK_STATE_EVT);
-        //轮询马达是否阻塞，马达阻塞时，归位或停止在当前位置
-        //停止马达
-        //检查马达当前位置
-        //发送失败报告
-        if(ControlMotor() == 1 || ControlMotor() == 2)
+        cnt++;
+        if(cnt == 1)
+            sen_v_0 = ReadMotorSen();
+        else if(cnt == cnt_state)
+            sen_v_1 = ReadMotorSen();
+        if(sen_v_0 > SEN_MOTOR && sen_v_1 > SEN_MOTOR)
         {
-            if(ControlMotor() == 1)
-                XBeeLockState(ParkLockSuccess);
-            else
-                 XBeeLockState(ParkUnlockSuccess);
-            DailyEvt();
-            osal_set_event( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT );
+            MotorStop();
+            //检查马达当前位置
+            //发送失败报告
+            osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, 5000 );
         }
         else
-            osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, 10 );
+        {
+            if(ControlMotor() == 1 || ControlMotor() == 2)
+            {
+                if(ControlMotor() == 1)
+                    XBeeLockState(ParkLockSuccess);
+                else
+                    XBeeLockState(ParkUnlockSuccess);
+                DailyEvt();
+            }
+            else
+                osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, 10 );
+        }
+        if(cnt == cnt_state)
+        {
+            cnt = 0;
+            sen_v_0 = sen_v_1 =0;
+        }
         return (events ^ XBEE_MOTOR_CTL_EVT) ;
     }
     if(events & XBEE_KEEP_LOCK_STATE_EVT )      //保持锁位置
     {
-        KeepLockState();
-        //监测马达阻塞
+        if(ReadMotorSen() > SEN_MOTOR)
+            MotorStop();
+        else
+            KeepLockState();
         osal_start_timerEx( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT, 10 );
         return (events ^ XBEE_KEEP_LOCK_STATE_EVT);
     }
     if( events & XBEE_VBT_CHENCK_EVT )          //读取当前电压
     {
-        //static uint16 check_times=0;
-        //检测电压十次，取平均值
-        
+        ReportVbat();       //每执行10次上报一次电压
+        osal_start_timerEx( XBeeTaskID, XBEE_VBT_CHENCK_EVT, 1000 );
         return (events ^ XBEE_VBT_CHENCK_EVT) ;
     }
     if( events & XBEE_TEST_EVT )                //测试
@@ -292,9 +301,16 @@ void DailyEvt(void)
     osal_stop_timerEx( XBeeTaskID,XBEE_START_DEVICE_EVT);
     osal_stop_timerEx( XBeeTaskID,XBEE_JOIN_NET_EVT);
 }
-
-
-
+/************************************************************
+**brief read motor_sen 
+************************************************************/
+float ReadMotorSen(void)
+{
+    int16 sen=0;
+    
+    sen = HalAdcRead (HAL_ADC_CHANNEL_0, HAL_ADC_RESOLUTION_8);
+    return (3.482 * (float)sen / 0x7f);    
+}
 
 
 

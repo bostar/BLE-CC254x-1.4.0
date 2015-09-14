@@ -54,6 +54,7 @@ extern "C"
 #define UART_XBEE_EN   XBeeUartEn = 0
 #define UART_XBEE_DIS  XBeeUartEn = 1
 #define OFFSET        100
+#define SEN_MOTOR       0.7
 /*********************************************************************
  * MACROS
  */
@@ -202,6 +203,7 @@ extern uint8 ReadFlashFlag;
 void XBeeInit( uint8 task_id );
 void ProcessSerial(XBeeUartRecDataDef temp_rbuf);
 void DailyEvt(void);
+float ReadMotorSen(void);
 /*
  * Task Event Processor for the BLE Application
  */
