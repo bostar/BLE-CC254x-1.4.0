@@ -91,8 +91,8 @@ typedef enum
 
 typedef enum
 {
-    lock            =   0,
-    unlock          =   1,
+    unlock          =   0,
+    lock            =   1,
     lockTounlock    =   2,
     unlockTolock    =   3,
     over_lock       =   4,

@@ -165,11 +165,28 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     }
     if(events & XBEE_KEEP_LOCK_STATE_EVT )      //保持锁位置
     {
-        if(ReadMotorSen() > SEN_MOTOR)
+        static float sen_v_0=0,sen_v_1=0;
+        static uint8 cnt=0,cnt_state=11;
+        cnt++;
+        if(cnt == 1)
+            sen_v_0 = ReadMotorSen();
+        else if(cnt == cnt_state)
+            sen_v_1 = ReadMotorSen();
+        if(sen_v_0 > SEN_MOTOR && sen_v_1 > SEN_MOTOR)
+        {
             MotorStop();
+            osal_start_timerEx( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT, 5000 );
+        }
         else
+        {
             KeepLockState();
-        osal_start_timerEx( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT, 10 );
+            osal_start_timerEx( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT, 10 );
+        }
+        if(cnt == cnt_state)
+        {
+            cnt = 0;
+            sen_v_0 = sen_v_1 =0;
+        }
         return (events ^ XBEE_KEEP_LOCK_STATE_EVT);
     }
     if( events & XBEE_VBT_CHENCK_EVT )          //读取当前电压

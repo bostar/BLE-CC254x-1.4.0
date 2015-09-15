@@ -15,6 +15,7 @@
 #include "XBeeProtocol.h"
 #include "bcomdef.h"
 #include "osal_snv.h"
+#include "stdio.h"
 
 #if defined _XBEE_APP_
 /*******************************************
@@ -33,12 +34,14 @@ void ClearDMA(void)
 void XBeeRourerJoinNet(void)
 {
     uint8 panID[8],i;
-    static uint8 cnt=0;
-    if(ReadFlashFlag == SUCCESS && cnt<10)
+    static uint16 cnt=0;
+    if(ReadFlashFlag == SUCCESS && cnt<100)
     {
         cnt++;
         for(i=0;i<8;i++)
+        {
             panID[i] = FlashLockState.panID[i];
+        }
     }
     else
     {
