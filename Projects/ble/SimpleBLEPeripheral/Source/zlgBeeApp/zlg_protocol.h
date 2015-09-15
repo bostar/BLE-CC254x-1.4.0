@@ -51,13 +51,8 @@ enum motor_cmd {
 	cmdReverse = 0x02
 };
 
-typedef struct _eventReport_t {
-    unsigned char event;
-    unsigned char reportSuccess;
-} eventReport_t;
-
 extern parkingState_t * parkingState;
-extern eventReport_t * eventReportData;
+
 void applicateForNetwork( unsigned char *IEEEAddress );
 void ackLinkTest( unsigned char *IEEEAddress );
 void dateRequset( void );

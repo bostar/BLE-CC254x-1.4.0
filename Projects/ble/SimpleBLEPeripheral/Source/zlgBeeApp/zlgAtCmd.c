@@ -520,14 +520,6 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
         case cmdSensorCalibration:
             //开始标定
             break;
-        case 0x04:
-            if( ( stDevInfo->devLoacalNetAddr[0] == *(rbuf+5) && \
-                  stDevInfo->devLoacalNetAddr[1] == *(rbuf+6)) || \
-                   ( 0xff == *(rbuf+5) && 0xff == *(rbuf+6) ) )
-            {
-                eventReportData->reportSuccess = 1;
-            }
-            break;
         default:
             break;
         }

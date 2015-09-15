@@ -6,7 +6,6 @@
 
 #define  WBUF_LEN   12
 static char wbuf[ WBUF_LEN ];
-eventReport_t * eventReportData;
 
 void applicateForNetwork( unsigned char *IEEEAddress )
 {
@@ -45,23 +44,10 @@ void dateRequset( void )
     wbuf[4] = stDevInfo->devLoacalNetAddr[0];
     wbuf[5] = stDevInfo->devLoacalNetAddr[1];
     wbuf[6] = parkingState->lockState;
+    wbuf[7] = parkingState->vehicleState;
+//    wbuf[8] = eventReportData->event;
     
-    NPI_WriteTransport( (unsigned char *)wbuf , 7 );
-}
-
-void eventReport( parkingEvent_t event )
-{
-    osal_memset( wbuf, 0x00, WBUF_LEN );
-    
-    wbuf[0] = 'S';
-    wbuf[1] = 'E';
-    wbuf[2] = 'N';
-    wbuf[3] = cmdEventReport;
-    wbuf[4] = event;
-    wbuf[5] = stDevInfo->devLoacalNetAddr[0];
-    wbuf[6] = stDevInfo->devLoacalNetAddr[1];
-    
-    NPI_WriteTransport( (unsigned char *)wbuf , 7 );
+    NPI_WriteTransport( (unsigned char *)wbuf , 8 );
 }
 
 void batteryRemainingReport( unsigned char voltage )
