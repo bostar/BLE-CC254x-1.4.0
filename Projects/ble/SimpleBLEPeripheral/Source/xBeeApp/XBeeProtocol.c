@@ -20,7 +20,8 @@ uint16 CFGProcess(uint8 *rf_data)
     switch(*rf_data)
     {
         case 0x00:      //设置限时加入网络时限,end device禁止该功能
-            XBeeSetNJ(*(rf_data+1),NO_RES);
+            if(DevType == router)
+                XBeeSetNJ(*(rf_data+1),NO_RES);
             break;
         case 0x02:      //入网响应
             if(*(rf_data+1) == 0x01)   //允许入网
@@ -43,6 +44,14 @@ uint16 CFGProcess(uint8 *rf_data)
             XBeeLeaveNet();  
             FlagJionNet = NetOK;
             break;
+        case 0x04:
+            if(*(rf_data+1) == 0x01)
+                DevType = router;
+            else if(*(rf_data+1) == 0x02)
+            {
+                XBeeSetSM(PinCyc,NO_RES);
+                DevType = end_dev;
+            }
         default:
             break;
   }
@@ -90,7 +99,7 @@ void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf)
 {
     uint8 i;
     if(temp_rbuf.data[5]=='A' && temp_rbuf.data[6]=='I')
-    {
+    {         
         if(temp_rbuf.data[7]==0 && temp_rbuf.data[8]==0)
         {
             FlagJionNet = GetSH;
@@ -235,26 +244,27 @@ uint16 XBeeBatPower(uint8 PowerVal)
 uint8 SetXBeeSleepMode(void)
 {
     uint8 reval=0;
-    if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
+    switch(SetSleepMode)
     {
-        switch(SetSleepMode)
-        {
-            case SetMode:
-                XBeeSetSM(PinCyc,RES);
-                break;
-            case SetSP:
-                XBeeSetSP(100,RES);
-                break;
-            case SetST:
-                XBeeSetST(100,RES);
-                break;
-            case SetOK:
-                reval = 1;
-                break;
-            default:
-                break;
+        case SetMode:
+            if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
+            {
+                XBeeCloseBuzzer();
+                XBeeSetSM(NoSleep,RES);
+            }
+            break;
+        case SetSP:
+            XBeeSetSP(100,RES);
+            break;
+        case SetST:
+            XBeeSetST(100,RES);
+            break;
+        case SetOK:
+            reval = 1;
+            break;
+        default:
+            break;
         }
-    }
     return reval;
 }
 /**********************************************************
@@ -328,20 +338,25 @@ uint16 ReportStatePeriod(void)
  
     temp_hmc5983Data = hmc5983Data;
     temp_hmc5983DataStandard = hmc5983DataStandard;
-    if(temp_hmc5983Data.state==0x88)
+    cnt++;
+    if(cnt > 5)
     {
-        cnt++;
-        if(cnt > 2)
-        {
-            cnt = 0;
-            if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > OFFSET \
-                || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > OFFSET \
-                || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > OFFSET)                  
-                return XBeeParkState(ParkingUsed);
-            else
-                return XBeeParkState(ParkingUnUsed);
+        cnt = 0;
+        if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > OFFSET \
+            || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > OFFSET \
+            || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > OFFSET)                  
+            XBeeParkState(ParkingUsed);
+        else
+            XBeeParkState(ParkingUnUsed);
+        if(GetCurrentMotorState() == lock)
+            XBeeLockState(ParkLockSuccess);
+        else if(GetCurrentMotorState() == unlock )
+            XBeeLockState(ParkUnlockSuccess);
+    /*    else if(LockObjState == lock)
+            XBeeLockState(ParkLockFailed);
+        else if(LockObjState == unlock)
+            XBeeLockState(ParkLockFailed);  */
         }
-    }
     return 0;
 }
 /**********************************************************

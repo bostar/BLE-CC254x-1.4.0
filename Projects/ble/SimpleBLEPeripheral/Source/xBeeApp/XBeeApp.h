@@ -77,12 +77,6 @@ typedef enum
     None        =   6
 }SetSleepModeType;
 
-typedef enum
-{
-    ROUTOR     =      1,
-    ENDER      =      2,
-}DeviceTypeDef;
-
 typedef enum 
 {
     sleepState,
@@ -180,6 +174,13 @@ typedef struct
     HMC5983DataType hmc5983Data;
     uint8 panID[8];
 }FlashLockStateType;
+typedef enum
+{
+    coor    =   0x00,
+    router  =   0x01,
+    end_dev =   0x02,
+    notype  =   0x03
+}DeviceType;
 /***************************************************************/
 extern XBeeAdrType XBeeAdr;  //IEEE地址和当前的网络地址
 extern XBeeUartRecDataDef XBeeUartRec; //串口接收缓存数据  
@@ -193,6 +194,7 @@ extern SetSleepModeType SetSleepMode;
 extern FlashLockStateType FlashLockState;
 extern ParkingStateType parkingState;              //当前车位状态
 extern uint8 ReadFlashFlag;
+extern DeviceType DevType;
 /*********************************************************************
  * FUNCTIONS
  */

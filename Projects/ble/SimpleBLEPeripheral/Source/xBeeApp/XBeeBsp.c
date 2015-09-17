@@ -49,7 +49,7 @@ void XBeeRourerJoinNet(void)
             panID[i] = 0;
     }
     XBeeSetPanID(panID,NO_RES);   //设置ID的值
-    XBeeSetChannel(0x0014,NO_RES); //设置信道
+    XBeeSetChannel(SCAN_CHANNEL,NO_RES); //设置信道
     XBeeSetSD(6,NO_RES);
     XbeeRunAC(NO_RES);
     XBeeSetZS(1,NO_RES);
@@ -151,33 +151,20 @@ void MotorLock(void)
    GPIO_XBEE_MOTOR2_TURN_LOW();
 }
 /**************************************************
-**brief xbee休眠初始化，设置为mode5
-**************************************************/
-uint16 XBeeSleepMode5(void)
-{
-   return XBeeSetSM(PinSleep,RES);
-   //XBeeSetSP(0x64,NO_RES);
-}
-/*************************************************
-**brief 设置为pinsleep
-*************************************************/
-uint16 XBeeSleepMode1(void)
-{
-    return XBeeSetSM(PinSleep,NO_RES);
-}
-/**************************************************
 **brief pin脚唤醒
 **************************************************/
 void XBeePinWake(void)
-{
-    GPIO_XBEE_SLEEP_TURN_LOW();
+{   
+    if(DevType != router)
+        GPIO_XBEE_SLEEP_TURN_LOW();
 }
 /**************************************************
 **brief pin脚休眠
 **************************************************/
 void XBeePinSleep(void)
 {
-    GPIO_XBEE_SLEEP_TURN_HIGH();
+    if(DevType != router)
+        GPIO_XBEE_SLEEP_TURN_HIGH();
 }
 /**************************************************
 **brief 模式5 唤醒

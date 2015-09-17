@@ -27,7 +27,7 @@ typedef enum
 
 typedef enum
 {
-  Disable     =     0,
+  NoSleep     =     0,
   PinSleep    =     1,
   CycSleep    =     4,
   PinCyc      =     5,

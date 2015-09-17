@@ -4,14 +4,14 @@
 #include "XBeeApp.h"
 #include "hal_xbee.h"
 #include "hal_adc.h"
-
+#include "hal_types.h"
 
 #define XBee_GPIO_DIR        0x7C
 #define BEEPON         (unsigned char)(0x01 << 2)
 #define BEEPOFF        (unsigned char)(0x00)
-#include "hal_types.h"
 
-
+#define SCAN_CHANNEL 0x4210
+ 
 
 extern FlagJionNetType FlagJionNet;
 
