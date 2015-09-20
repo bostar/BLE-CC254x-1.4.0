@@ -22,11 +22,7 @@
 **brief 初始化IO
 ***********************************************/
 void HalXbeeInit (void)
-{
-    //P0SEL &= 0x0F;      //P0的4、5、6、7设为普通IO
-    //P1SEL &= 0xC0;      //P1的0、1、2、3、4、5设为普通IO
-    //P2SEL &= 0XFE;      //P2的0设为普通IO        
-      
+{          
     GPIO_XBEE_RTS_DDR           |=  GPIO_XBEE_RTS_BV;           
     GPIO_XBEE_RESET_DDR         |=  GPIO_XBEE_RESET_BV;  
 	GPIO_XBEE_SLEEP_DDR         |=  GPIO_XBEE_SLEEP_BV;  
@@ -41,8 +37,10 @@ void HalXbeeInit (void)
     GPIO_XBEE_VBT_SENSER_SBIT   &=  ~GPIO_XBEE_VBT_SENSER_BV;
     GPIO_XBEE_DIR_DDR |= GPIO_XBEE_DIR_BV;
     
-    GPIO_XBEE_RTS_TURN_HIGH();
+    GPIO_XBEE_RESET_TURN_LOW();
+    HAL_GPIO_CHANGE_DELAY();
     GPIO_XBEE_RESET_TURN_HIGH();
+    GPIO_XBEE_RTS_TURN_HIGH();
     GPIO_XBEE_SLEEP_TURN_LOW();
     GPIO_XBEE_DIR_TURN_LOW();
     GPIO_XBEE_MOTOR1_TURN_HIGH();

@@ -47,7 +47,7 @@ uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,
   for(cnt=0;cnt<len;cnt++)
     *((uint8*)frame + 17 + cnt) = *(rf_data + cnt);
   *(((uint8*)frame)+17+len) = XBeeApiChecksum(((uint8*)frame)+3,14+len);
-  XBeeMode5Wake();
+  XBeePinWake();
   return NPI_WriteTransport((uint8*)frame,18+len);
 }
 
@@ -78,7 +78,7 @@ uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes)
         printf("0x%02x ",wbuf[i]);
     printf("\n");
 #endif
-    XBeeMode5Wake();
+    XBeePinWake();
     return NPI_WriteTransport((uint8*)cmd,8+len);
 }
 
@@ -157,7 +157,7 @@ void XBeeSetIO(XBeeIOParam ioparam,IOStatus state)
   cmd->param   = (state == Low)?4:5;
   //cmd->checksum = 0xff- i;
   cmd->checksum = XBeeApiChecksum(((uint8*)cmd)+3,5);
-  XBeeMode5Wake();
+  XBeePinWake();
   NPI_WriteTransport((uint8*)cmd,9);
 }
 
@@ -230,6 +230,13 @@ uint16 XBeeSetST(uint16 num,IsResp IsRes)
   paramer[0] =(uint8)(num>>8);
   paramer[1] = (uint8)num;
   return XBeeSendATCmd(cmd,paramer,2,IsRes);
+}
+uint16 XBeeSetAR(uint8 num,IsResp IsRes)
+{
+    uint8 paramer[1];
+    int8 *cmd = "AR";
+    paramer[0] = num;
+    return XBeeSendATCmd(cmd,paramer,1,IsRes);
 }
 /*********************************************************
 **biref 发送MY命令
@@ -352,6 +359,16 @@ uint16 XBeeReadSL()
   return XBeeSendATCmd(cmd,paramer,0,RES);
 }
 /*********************************************************
+**biref 设置NO
+**********************************************************/
+uint16 XBeeSetNO(uint8 num,IsResp IsRes)
+{
+    uint8 paramer[1];
+    int8 *cmd = "NO";
+    paramer[0]=num;
+    return XBeeSendATCmd(cmd,paramer,1,IsRes);
+}
+/*********************************************************
 **biref 发送SM命令 休眠设置
 **********************************************************/
 uint16 XBeeSetSM(SleepType sleep,IsResp IsRes)
@@ -405,18 +422,27 @@ uint16 XBeeReadSM(void)
   return XBeeSendATCmd(cmd,paramer,0,RES);
 }
 /***********************************************************
+**brief 发送NT
+***********************************************************/
+uint16 XBeeSetNT(uint8 num,IsResp IsRes)
+{
+    uint8 paramer[1];
+    int8 *cmd = "NT";
+    paramer[0]=num;
+    return XBeeSendATCmd(cmd,paramer,1,IsRes);
+}
+/***********************************************************
 **brief 向coordinator发送数据
 **reval 发送的字节数
 ***********************************************************/
 uint16 XBeeSendToCoor(uint8 *data,uint16 len,IsResp IsRes)
 {
-  uint8 adr[8],net_adr[2],cnt;
-  for(cnt=0;cnt<8;cnt++)
-    adr[cnt] = 0;
-  net_adr[0] = 0xFF;
-  net_adr[1] = 0xFE;
-  
-  return XBeeTransReq(adr, net_adr, Default, data, len, IsRes);
+    uint8 adr[8],net_adr[2],cnt;
+    for(cnt=0;cnt<8;cnt++)
+        adr[cnt] = 0;
+    net_adr[0] = 0xFF;
+    net_adr[1] = 0xFE;
+    return XBeeTransReq(adr, net_adr, Default, data, len, IsRes);
 }
 /*********************************************************
 **biref 发送读取AT参数命令
@@ -428,6 +454,26 @@ uint16 XBeeReadAT(int8 *at_cmd)
 	cmd = at_cmd;
   	paramer[0]=0;
   	return XBeeSendATCmd(cmd,paramer,0,RES);	
+}
+/*********************************************************
+**biref 发送设置AT参数命令
+**********************************************************/
+uint16 XBeeSendAT(int8 *at_cmd)
+{
+    uint8 paramer[1];
+  	int8 *cmd;
+	cmd = at_cmd;
+  	paramer[0]=0;
+  	return XBeeSendATCmd(cmd,paramer,0,NO_RES);	
+}
+/*********************************************************
+**biref 设置AT参数命令
+**********************************************************/
+uint16 XBeeSetAT(int8 *at_cmd, uint8 *param, uint8 len, IsResp IsRes)
+{
+    int8 *cmd;
+	cmd = at_cmd;
+  	return XBeeSendATCmd(cmd,param,len,IsRes);	
 }
 /********************************************************
 **brief 单播发送
@@ -451,7 +497,47 @@ uint16 XBeeBoardcastTrans(uint8 *data,uint16 len,IsResp IsRes)
 	net_adr[1] = 0xfe;
 	return XBeeTransReq(adr,net_adr,ExtTimeout,data,len,IsRes);
 }
-
+/*********************************************************
+**brief 发送源路由请求
+**param mac_adr 目标的物理地址
+		net_adr 目标网络地址 比如 0xEEFF 对应网络地址 0xEE 0xFF
+		num 目标与发送者间的节点数量
+		mid_adr 指向中间节点网络地址的指针 
+			比如 从发送者A到目标E的节点顺序为 A B C D E
+			中间节点的网络地址	B	0xAABB
+							C	0xCCDD
+							D	0xEEFF
+			输入参数的排列顺序为	EE FF CC DD AA BB  
+*********************************************************/
+/*
+int16 XBeeCreatSourceRout(CoorRoutePathType CoorRoutePath)
+{
+	static uint8 wbuf_temp[128],wbuf_len=0,i=0;
+	uint16 lenth=0;
+	
+	wbuf_len = 18 + CoorRoutePath.num_mid_adr * 2;
+	lenth = wbuf_len - 4;
+	*(wbuf_temp) = 0x7E;		
+	*(wbuf_temp + 1) = (uint8)(lenth >> 8);
+	*(wbuf_temp + 2) = (uint8)lenth;
+	*(wbuf_temp + 3) = 0x21;
+	*(wbuf_temp + 4) = 0;
+	for(i=0;i<8;i++)
+		*(wbuf_temp + i +5) = CoorRoutePath.mac_adr[i];
+	*(wbuf_temp + 13) = CoorRoutePath.net_adr[0];
+	*(wbuf_temp + 14) = CoorRoutePath.net_adr[1];
+	*(wbuf_temp + 15) = 0;
+	*(wbuf_temp + 16) = CoorRoutePath.num_mid_adr;  	
+	for(i=0;i<CoorRoutePath.num_mid_adr*2;i++)
+		 *(wbuf_temp + 17 + i) = CoorRoutePath.num_mid_adr[i];
+	*(wbuf_temp + wbuf_len-1) = 0;
+	for(i=3;i<wbuf_len-1;i++)
+		*(wbuf_temp + wbuf_len-1) += *(wbuf_temp + i);
+	*(wbuf_temp + wbuf_len-1) = 0xff - *(wbuf_temp + wbuf_len-1);
+    XBeePinWake();
+	return WriteComPort(wbuf_temp,wbuf_len);
+}
+*/
 /************************************************************
 **brief 求chencksum和
 ************************************************************/

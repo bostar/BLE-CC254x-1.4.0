@@ -11,6 +11,7 @@ extern "C"
  */
 #include "Hal_types.h"
 #include "hal_uart.h"
+
 /*********************************************************************
  * CONSTANTS
  */
@@ -27,7 +28,7 @@ extern "C"
 #define XBEE_IDLE_EVT                                      0x0080
 #define XBEE_MOTOR_CTL_EVT                                 0x0100
 #define XBEE_HMC5983_EVT                                   0x0200
-#define ZZ                         0x0400
+#define XBEE_SCAN_ROUTE_PATH                               0x0400
 #define XBEE_VBT_CHENCK_EVT                                0x0800
 #define z5                         0x1000
 #define z6                         0x2000
@@ -66,16 +67,7 @@ typedef enum
 	ReFactory	=	 0x03
 }CREprotocolType;
 
-typedef enum
-{
-    SetMode     =   0,
-    SetSP       =   1,
-    SetST       =   2,
-    SetSO       =   3,
-    SetSN       =   4,
-    SetOK       =   5,
-    None        =   6
-}SetSleepModeType;
+
 
 typedef enum 
 {
@@ -101,21 +93,11 @@ typedef enum
 
 typedef enum
 {
-    InNone      =     0,
-    JoinNet     =     1,
-    GetSH       =     2,
-    GetSL       =     3,
-    GetMY       =     4,
-    JoinPark    =     5,
-    NetOK       =     6,
-}FlagJionNetType;
-
-typedef enum
-{
-    ReadHead    =    1,
-    ReadLen     =    2,
-    ReadData    =    3,
-    ReadNone    =    4,
+    ReadHead    =   1,
+    ReadLen     =   2,
+    ReadData    =   3,
+    ReadNone    =   4,  
+    None        =   5
 }ToReadUARTType;
 
 typedef enum 
@@ -150,11 +132,19 @@ typedef enum{
     stateNoWork = 0xff
 }state_t;
 
+typedef enum
+{
+    router  =   0x01,
+    end_dev =   0x02,
+    notype  =   0x03
+}DeviceType;
+
 typedef struct
 {
     uint8 IEEEadr[8];
     uint8 netadr[2];
-}XBeeAdrType;
+    uint8 DevType;
+}XBeeInfoType;
 
 typedef struct 
 {
@@ -174,27 +164,22 @@ typedef struct
     HMC5983DataType hmc5983Data;
     uint8 panID[8];
 }FlashLockStateType;
-typedef enum
-{
-    coor    =   0x00,
-    router  =   0x01,
-    end_dev =   0x02,
-    notype  =   0x03
-}DeviceType;
+
 /***************************************************************/
-extern XBeeAdrType XBeeAdr;  //IEEE地址和当前的网络地址
+extern XBeeInfoType XBeeInfo;  //IEEE地址和当前的网络地址
 extern XBeeUartRecDataDef XBeeUartRec; //串口接收缓存数据  
-extern __xdata FlagJionNetType FlagJionNet;
+extern uint8 FlagJionNet;
 extern __xdata uint8 XBeeTaskID;
 extern uint8 UartCtl; 
 extern uint8 SenFlag; 
 extern uint8 XBeeUartEn;
 extern LockCurrentStateType LockObjState;
-extern SetSleepModeType SetSleepMode;
+extern uint8 SetSleepMode;
 extern FlashLockStateType FlashLockState;
 extern ParkingStateType parkingState;              //当前车位状态
 extern uint8 ReadFlashFlag;
 extern DeviceType DevType;
+extern uint8 test_cnt;
 /*********************************************************************
  * FUNCTIONS
  */
@@ -206,6 +191,7 @@ void XBeeInit( uint8 task_id );
 void ProcessSerial(XBeeUartRecDataDef temp_rbuf);
 void DailyEvt(void);
 float ReadMotorSen(void);
+uint32 SleepAndJoinNet(void);
 /*
  * Task Event Processor for the BLE Application
  */

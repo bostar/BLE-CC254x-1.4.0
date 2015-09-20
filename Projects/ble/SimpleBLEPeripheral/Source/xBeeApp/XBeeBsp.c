@@ -34,10 +34,8 @@ void ClearDMA(void)
 void XBeeRourerJoinNet(void)
 {
     uint8 panID[8],i;
-    static uint16 cnt=0;
-    if(ReadFlashFlag == SUCCESS && cnt<100)
+    if(ReadFlashFlag == SUCCESS)
     {
-        cnt++;
         for(i=0;i<8;i++)
         {
             panID[i] = FlashLockState.panID[i];
@@ -50,12 +48,10 @@ void XBeeRourerJoinNet(void)
     }
     XBeeSetPanID(panID,NO_RES);   //设置ID的值
     XBeeSetChannel(SCAN_CHANNEL,NO_RES); //设置信道
-    XBeeSetSD(6,NO_RES);
-    XbeeRunAC(NO_RES);
-    XBeeSetZS(1,NO_RES);
+    XBeeSetSD(3,NO_RES);
+    //XBeeSetZS(1,NO_RES);
     XbeeRunAC(NO_RES);
     XBeeRunWR(NO_RES);
-    XBeeReadAT("AI");
 }
 /*******************************************
 **brief 离开网络
@@ -82,9 +78,9 @@ uint16 XBeeReqJionPark(void)
   data[2]  =  'G';
   data[3]  = 0X01;
   for(i=0;i<8;i++)
-    data[4+i] = XBeeAdr.IEEEadr[i];
+    data[4+i] = XBeeInfo.IEEEadr[i];
   for(i=0;i<2;i++)
-    data[12+i] = XBeeAdr.netadr[i];
+    data[12+i] = XBeeInfo.netadr[i];
   return XBeeSendToCoor(data,14,NO_RES);  
 }
 /***************************************************
@@ -155,15 +151,20 @@ void MotorLock(void)
 **************************************************/
 void XBeePinWake(void)
 {   
-    if(DevType != router)
+    if(XBeeInfo.DevType == end_dev)
+    {
+        GPIO_XBEE_SLEEP_TURN_HIGH();
+        Delay100us();	
         GPIO_XBEE_SLEEP_TURN_LOW();
+        while(HalGpioGet(GPIO_XBEE_SLEEP_INDER) != 1);
+    }
 }
 /**************************************************
 **brief pin脚休眠
 **************************************************/
 void XBeePinSleep(void)
 {
-    if(DevType != router)
+    if(DevType == end_dev)
         GPIO_XBEE_SLEEP_TURN_HIGH();
 }
 /**************************************************

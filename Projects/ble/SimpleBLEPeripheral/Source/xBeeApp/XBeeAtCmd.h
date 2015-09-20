@@ -2,6 +2,7 @@
 #define _XBee_At_Cmd_h
 
 #include "hal_types.h"
+#include "XBeeProtocol.h"
 
 typedef enum
 {
@@ -142,6 +143,9 @@ uint16 XBeeSetSM(SleepType sleep,IsResp IsRes);
 uint16 XBeeSetSP(uint16 num,IsResp IsRes);
 uint16 XBeeSetSN(uint16 num,IsResp IsRes);
 uint16 XBeeSetST(uint16 num,IsResp IsRes);
+uint16 XBeeSetAR(uint8 num,IsResp IsRes);
+uint16 XBeeSetNO(uint8 num,IsResp IsRes);
+uint16 XBeeSetNT(uint8 num,IsResp IsRes);
 
 uint16 XbeeRunFR(IsResp IsRes);  
 uint16 XBeeRunWR(IsResp IsRes);
@@ -156,6 +160,8 @@ uint16 XBeeReadSL(void);
 uint16 XBeeReadDL(void);
 uint16 XBeeReadSM(void);
 uint16 XBeeReadAT(int8 *at_cmd);
+uint16 XBeeSendAT(int8 *at_cmd);
+uint16 XBeeSetAT(int8 *at_cmd, uint8 *param, uint8 len, IsResp IsRes);
 
 uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len, IsResp IsRes); //xbee发送数据请求
 uint16 XBeeSendToCoor(uint8 *data,uint16 len,IsResp IsRes);  //向coordinator发送数据

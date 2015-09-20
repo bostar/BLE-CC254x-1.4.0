@@ -27,15 +27,18 @@ uint16 CFGProcess(uint8 *rf_data)
             if(*(rf_data+1) == 0x01)   //允许入网
             {
                 FlagJionNet = NetOK;
-                XBeeCloseBuzzer();
                 XBeeCloseLED1();
                 XBeeCloseLED2();
-                XBeeReadAT("OP");
+                XBeeSetSP(0x64,RES);
+                XBeeSetST(0x64,RES);
+                XBeeSendAT("AC");
+                XBeeSendAT("WR");
                 DailyEvt();
+                XBeeReadAT("OP");
             }
             else if(*(rf_data+1) == 0x00)   //禁止入网
             {
-                XBeeLeaveNet();  
+                XBeeLeaveNet();
                 FlagJionNet = JoinNet;
                 osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 5000 );
             }
@@ -44,18 +47,10 @@ uint16 CFGProcess(uint8 *rf_data)
             XBeeLeaveNet();  
             FlagJionNet = NetOK;
             break;
-        case 0x04:
-            if(*(rf_data+1) == 0x01)
-                DevType = router;
-            else if(*(rf_data+1) == 0x02)
-            {
-                XBeeSetSM(PinCyc,NO_RES);
-                DevType = end_dev;
-            }
         default:
             break;
-  }
-  return 0;
+    }
+    return 0;
 }
 /*****************************************************
 **
@@ -95,14 +90,14 @@ void OTAProcess(uint8 *rf_data)
 /*********************************************************
 **
 *********************************************************/
-void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf)
+void ProcessAT(XBeeUartRecDataDef temp_rbuf)
 {
     uint8 i;
     if(temp_rbuf.data[5]=='A' && temp_rbuf.data[6]=='I')
-    {         
+    {   
         if(temp_rbuf.data[7]==0 && temp_rbuf.data[8]==0)
         {
-            FlagJionNet = GetSH;
+            FlagJionNet = GetMY;
             osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
         }
     }
@@ -112,8 +107,8 @@ void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf)
         {
             uint8 cnt;
             for(cnt=0;cnt<4;cnt++)
-                XBeeAdr.IEEEadr[cnt] = temp_rbuf.data[8+cnt];
-            FlagJionNet = GetSL;
+                XBeeInfo.IEEEadr[cnt] = temp_rbuf.data[8+cnt];
+            SetSleepMode = GetSL;
             osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );      
         }
     }
@@ -123,10 +118,23 @@ void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf)
         {
             uint8 cnt;
             for(cnt=0;cnt<4;cnt++)
-                XBeeAdr.IEEEadr[4+cnt] = temp_rbuf.data[8+cnt];
-            FlagJionNet = GetMY;
+                XBeeInfo.IEEEadr[4+cnt] = temp_rbuf.data[8+cnt];
+            SetSleepMode = SendND;
             osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );      
         }                 
+    }
+    else if(temp_rbuf.data[5]=='N' && temp_rbuf.data[6]=='D')
+    {
+        uint8 mac_adr[8];
+        static uint8 read_nd = 0;
+        connectarr(temp_rbuf.data+10,temp_rbuf.data+14,mac_adr);
+        if(arrncmp(mac_adr,XBeeInfo.IEEEadr,8) == 0 && read_nd == 0)
+        {
+            read_nd++;
+            XBeeInfo.DevType = temp_rbuf.data[22];
+            SetSleepMode = SetSleep;
+            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
+        }
     }
     else if(temp_rbuf.data[5]=='M' && temp_rbuf.data[6]=='Y')
     {
@@ -134,34 +142,17 @@ void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf)
         {
             uint8 cnt;
             for(cnt=0;cnt<2;cnt++)
-                XBeeAdr.netadr[cnt] = temp_rbuf.data[8+cnt];
+                XBeeInfo.netadr[cnt] = temp_rbuf.data[8+cnt];
             FlagJionNet = JoinPark;
             osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );      
         }
     }
     else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='M')
     {
-        if(temp_rbuf.data[7] == 0 || temp_rbuf.data[7] == 3)
+        if(temp_rbuf.data[7] == 0 || XBeeInfo.DevType == router)
         {
-            SetSleepMode = SetSP;
+            FlagJionNet = SetOK;
             osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT ); 
-        }
-    }
-    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='P')
-    {
-        if(temp_rbuf.data[7] == 0)
-        {
-            SetSleepMode = SetST;
-            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
-        }
-    }
-    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='T')
-    {
-        if(temp_rbuf.data[7] == 0)
-        {
-            FlagJionNet = JoinNet;
-            SetSleepMode = SetOK;
-            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
         }
     }
     else if(temp_rbuf.data[5]=='O' && temp_rbuf.data[6]=='P')
@@ -177,8 +168,6 @@ void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf)
         else
             XBeeReadAT("OP");
     }
-    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='C')
-    {}
 }
 /*********************************************************
 **brief mode status process
@@ -244,23 +233,37 @@ uint16 XBeeBatPower(uint8 PowerVal)
 uint8 SetXBeeSleepMode(void)
 {
     uint8 reval=0;
+    static uint8 ND_s=0;
     switch(SetSleepMode)
-    {
-        case SetMode:
+    {   
+        case GetSH:
             if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
             {
+                XBeeSendAT("RE");
+                XBeeSetST(0xfff0,NO_RES);
                 XBeeCloseBuzzer();
-                XBeeSetSM(NoSleep,RES);
+                XBeeSetNT(0x20,NO_RES);
+                XBeeSetNO(2,NO_RES);
+                XBeeReadSH();   
             }
             break;
-        case SetSP:
-            XBeeSetSP(100,RES);
+        case GetSL:
+            XBeeReadSL();
             break;
-        case SetST:
-            XBeeSetST(100,RES);
+        case SendND:
+            if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1 /*&& ND_s == 0*/)  //high--wake  low--sleep
+            {
+                XBeeReadAT("ND");
+                ND_s++;
+            }
             break;
-        case SetOK:
-            reval = 1;
+        case SetSleep:
+            if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
+            {
+                if(XBeeInfo.DevType == end_dev)
+                    XBeeSetSM(PinCyc,NO_RES);
+                reval = 1;
+            }
             break;
         default:
             break;
@@ -270,32 +273,31 @@ uint8 SetXBeeSleepMode(void)
 /**********************************************************
 **brief jion park net
 **********************************************************/
-void JionParkNet(void)
+uint8 JionParkNet(void)
 {
-    static uint8 XBeeReqJionParkIdx=0;
+    static uint8 join_net=0;
+    uint8 reval=1;
+    if(join_net == 0)
+        XBeeRourerJoinNet();
+    join_net++;
     switch(FlagJionNet)
     {
         case JoinNet:
-            XBeeRourerJoinNet();
-            break;
-        case GetSH:
-            XBeeReadSH();
-            break;
-        case GetSL:
-            XBeeReadSL();
+            XBeeReadAT("AI");
+            reval = 20;
             break;
         case GetMY:
-            XBeeReadMY();
+            XBeeReadAT("MY");
+            reval = 1;
             break;
         case JoinPark:
             XBeeReqJionPark();
-            XBeeReqJionParkIdx++;
-            if(XBeeReqJionParkIdx == 10)
-                FlagJionNet = JoinNet;
+            reval = 40;
             break;  
         default:
             break;
     }
+    return reval;
 }
 /**********************************************************
 **brief report senser data
@@ -339,7 +341,7 @@ uint16 ReportStatePeriod(void)
     temp_hmc5983Data = hmc5983Data;
     temp_hmc5983DataStandard = hmc5983DataStandard;
     cnt++;
-    if(cnt > 5)
+    if(cnt > 9)
     {
         cnt = 0;
         if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > OFFSET \
@@ -351,12 +353,12 @@ uint16 ReportStatePeriod(void)
         if(GetCurrentMotorState() == lock)
             XBeeLockState(ParkLockSuccess);
         else if(GetCurrentMotorState() == unlock )
-            XBeeLockState(ParkUnlockSuccess);
-    /*    else if(LockObjState == lock)
+            XBeeLockState(ParkUnlockSuccess);   
+        else if(LockObjState == lock)
             XBeeLockState(ParkLockFailed);
         else if(LockObjState == unlock)
-            XBeeLockState(ParkLockFailed);  */
-        }
+            XBeeLockState(ParkLockFailed);  
+    }
     return 0;
 }
 /**********************************************************
@@ -392,8 +394,32 @@ uint16 SendString(uint8 in ,uint8 len )
     data[i] = in;
   return XBeeSendToCoor(data,len,NO_RES);
 }
-
-
+/*************************************************************
+**brief	比较数组是否相等
+*************************************************************/
+int8 arrncmp(uint8 *arr1,uint8 *arr2,uint8 n)
+{
+	uint8 i;
+	for(i=0;i<n;i++)
+	{
+		if(*(arr1+i) != *(arr2+i))
+			return 1;
+	}
+	return 0;
+}
+/**************************************************************
+**broef 合并数组
+**************************************************************/
+void connectarr(uint8 *arr1,uint8 *arr2,uint8 *arr)
+{
+    uint8 i;
+    for(i=0;i<4;i++)
+    {
+        arr[i]   = *(arr1+i);
+        arr[i+4] = *(arr2+i);
+    }
+    return;
+}
 
 
 
