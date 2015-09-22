@@ -19,7 +19,8 @@ typedef enum
     SetSO       =   0x10,
     SetSN       =   0x11,
     SetOK       =   0x12,
-    SendND      =   0x13
+    SendND      =   0x13,
+    GetAI       =   0X14
 }_type__;
 
 uint16 CFGProcess(uint8 *rf_data);  //CFG´¦Àíº¯Êý
@@ -30,6 +31,7 @@ void TSTProcess(uint8 *rf_data);
 uint16 XBeeLockState(parkingEventType LockState);
 uint16 XBeeParkState(parkingEventType CarState);
 uint16 SendString(uint8 in ,uint8 len );
+uint16 ProcessTransmitStatus(XBeeUartRecDataDef temp_rbuf);
 void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf);
 void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf);
 uint8 SetXBeeSleepMode(void);

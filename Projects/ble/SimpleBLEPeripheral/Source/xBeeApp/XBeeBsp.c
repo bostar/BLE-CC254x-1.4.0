@@ -81,7 +81,7 @@ uint16 XBeeReqJionPark(void)
     data[4+i] = XBeeInfo.IEEEadr[i];
   for(i=0;i<2;i++)
     data[12+i] = XBeeInfo.netadr[i];
-  return XBeeSendToCoor(data,14,NO_RES);  
+  return XBeeSendToCoor(data,14,RES);  
 }
 /***************************************************
 **brief ½âËø/Ëø¶¨OKÖÕ¶ËÓ¦´ð
@@ -94,7 +94,7 @@ uint16 XBeeEndDeviceLockRepOK(void)
   data[1]  =  'L';
   data[3]  =  0x01;
   data[4]  =  0x01;
-  return XBeeSendToCoor(data,5,NO_RES);
+  return XBeeSendToCoor(data,5,RES);
 }
 /***************************************************
 **brief ½âËøNGÖÕ¶ËÓ¦´ð
@@ -107,7 +107,7 @@ uint16 XBeeEndDeviceUnlockRepNG(void)
   data[1]  =  'L';
   data[3]  =  0x01;
   data[4]  =  0x02;
-  return XBeeSendToCoor(data,5,NO_RES);
+  return XBeeSendToCoor(data,5,RES);
 }
 /***************************************************
 **brief Ëø¶¨NGÖÕ¶ËÓ¦´ð
@@ -120,7 +120,7 @@ uint16 XBeeEndDeviceLockRepNG(void)
   data[1]  =  'L';
   data[3]  =  0x01;
   data[4]  =  0x03;
-  return XBeeSendToCoor(data,5,NO_RES);
+  return XBeeSendToCoor(data,5,RES);
 }
 /**********************************************
 **brief Í£Ö¹Âí´ï
@@ -277,6 +277,14 @@ uint8 ControlMotor(void)
     }
     return reval;
 }
+void XBeeReset(void)
+{
+    GPIO_XBEE_RESET_TURN_LOW();
+    HAL_GPIO_CHANGE_DELAY();
+    GPIO_XBEE_RESET_TURN_HIGH();
+    HAL_GPIO_CHANGE_DELAY();
+}
+
 /*****************************************************
 **brief ¼à²âÂí´ïÊÇ·ñ×èÈû
 *****************************************************/

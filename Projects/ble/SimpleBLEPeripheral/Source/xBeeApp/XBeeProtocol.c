@@ -26,11 +26,12 @@ uint16 CFGProcess(uint8 *rf_data)
         case 0x02:      //入网响应
             if(*(rf_data+1) == 0x01)   //允许入网
             {
+                XBeeInfo.NetState =9;
                 FlagJionNet = NetOK;
                 XBeeCloseLED1();
                 XBeeCloseLED2();
-                XBeeSetSP(0x64,RES);
-                XBeeSetST(0x64,RES);
+                XBeeSetSP(200,RES);
+                XBeeSetST(150,RES);
                 XBeeSendAT("AC");
                 XBeeSendAT("WR");
                 DailyEvt();
@@ -170,17 +171,26 @@ void ProcessAT(XBeeUartRecDataDef temp_rbuf)
     }
 }
 /*********************************************************
+**brief 
+*********************************************************/
+uint16 ProcessTransmitStatus(XBeeUartRecDataDef temp_rbuf)
+{
+    static uint8 time_out_cnt=0;
+    if(temp_rbuf.data[8] != 0)
+    {
+        time_out_cnt++;
+        if(time_out_cnt >= 3)
+            HAL_SYSTEM_RESET();
+    }
+    return 0;
+}
+/*********************************************************
 **brief mode status process
 *********************************************************/
 void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf)
 {
     if(temp_rbuf.data[4] == 0x03)
     {
-        FlagJionNet = JoinNet;
-        osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
-        osal_stop_timerEx( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT );
-        osal_stop_timerEx( XBeeTaskID, XBEE_HMC5983_EVT );
-        osal_stop_timerEx( XBeeTaskID, XBEE_VBT_CHENCK_EVT );
     }
 }
 /*********************************************************
@@ -196,7 +206,7 @@ uint16 XBeeLockState(parkingEventType LockState)
   data[3]   =  0x01;
   data[4]   =  LockState;
   
-  return XBeeSendToCoor(data,5,NO_RES);
+  return XBeeSendToCoor(data,5,RES);
 }
 /*********************************************************
 **brief 发送车位状态
@@ -212,7 +222,6 @@ uint16 XBeeParkState(parkingEventType ParkState)
   data[4]   =  ParkState;
   
   return XBeeSendToCoor(data,5,RES);
-  //return XBeeSendToCoor(data,5,NO_RES);
 }
 /*********************************************************
 **brief 发送电池电量
@@ -225,7 +234,7 @@ uint16 XBeeBatPower(uint8 PowerVal)
   data[2]   =   'N';
   data[3]   =  0x02;
   data[4]   =  PowerVal;
-  return XBeeSendToCoor(data,5,NO_RES);
+  return XBeeSendToCoor(data,5,RES);
 }
 /**************************************************
 **brief set xbee sleep mode
@@ -240,15 +249,19 @@ uint8 SetXBeeSleepMode(void)
             if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
             {
                 XBeeSendAT("RE");
+                //XBeeReset();
                 XBeeSetST(0xfff0,NO_RES);
                 XBeeCloseBuzzer();
                 XBeeSetNT(0x20,NO_RES);
                 XBeeSetNO(2,NO_RES);
+                XBeeSendAT("AC");
                 XBeeReadSH();   
             }
+            XBeeInfo.NetState =1;
             break;
         case GetSL:
             XBeeReadSL();
+            XBeeInfo.NetState =2;
             break;
         case SendND:
             if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1 /*&& ND_s == 0*/)  //high--wake  low--sleep
@@ -256,6 +269,7 @@ uint8 SetXBeeSleepMode(void)
                 XBeeReadAT("ND");
                 ND_s++;
             }
+            XBeeInfo.NetState =3;
             break;
         case SetSleep:
             if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
@@ -264,6 +278,7 @@ uint8 SetXBeeSleepMode(void)
                     XBeeSetSM(PinCyc,NO_RES);
                 reval = 1;
             }
+            XBeeInfo.NetState =4;
             break;
         default:
             break;
@@ -275,24 +290,36 @@ uint8 SetXBeeSleepMode(void)
 **********************************************************/
 uint8 JionParkNet(void)
 {
-    static uint8 join_net=0;
     uint8 reval=1;
-    if(join_net == 0)
-        XBeeRourerJoinNet();
-    join_net++;
+    uint8 nr_param[3];
     switch(FlagJionNet)
     {
         case JoinNet:
+            nr_param[0] = 0;
+            XBeeSetAT("NR",nr_param ,1, NO_RES);
+            nr_param[0] = 0x00;
+            nr_param[0] = 0x01;
+            XBeeSetAT("NW",nr_param ,2, NO_RES);
+            XBeeRourerJoinNet();
+            XBeeReadAT("AI");
+            FlagJionNet = GetAI;
+            reval = 20;
+            XBeeInfo.NetState =5;
+            break;
+        case GetAI:
             XBeeReadAT("AI");
             reval = 20;
+            XBeeInfo.NetState =6;
             break;
         case GetMY:
             XBeeReadAT("MY");
             reval = 1;
+            XBeeInfo.NetState =7;
             break;
         case JoinPark:
             XBeeReqJionPark();
             reval = 40;
+            XBeeInfo.NetState =8;
             break;  
         default:
             break;
@@ -341,7 +368,7 @@ uint16 ReportStatePeriod(void)
     temp_hmc5983Data = hmc5983Data;
     temp_hmc5983DataStandard = hmc5983DataStandard;
     cnt++;
-    if(cnt > 9)
+    if(cnt > 4)
     {
         cnt = 0;
         if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > OFFSET \
@@ -392,7 +419,7 @@ uint16 SendString(uint8 in ,uint8 len )
   uint8 data[10];
   for(i=0;i<len;i++)
     data[i] = in;
-  return XBeeSendToCoor(data,len,NO_RES);
+  return XBeeSendToCoor(data,len,RES);
 }
 /*************************************************************
 **brief	比较数组是否相等

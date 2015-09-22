@@ -144,6 +144,7 @@ typedef struct
     uint8 IEEEadr[8];
     uint8 netadr[2];
     uint8 DevType;
+    uint8 NetState;
 }XBeeInfoType;
 
 typedef struct 

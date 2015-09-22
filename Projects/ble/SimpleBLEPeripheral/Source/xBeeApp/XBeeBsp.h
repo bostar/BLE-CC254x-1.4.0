@@ -40,6 +40,7 @@ uint8 GetCurrentMotorStateTest(void);
 void KeepLockState(void);
 uint8 ControlMotor(void);
 uint8 CheckADC(void);
+void XBeeReset(void);
 #endif
 
 

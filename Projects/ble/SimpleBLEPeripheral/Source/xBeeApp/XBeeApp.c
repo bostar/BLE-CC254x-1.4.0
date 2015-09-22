@@ -224,6 +224,7 @@ uint32 SleepAndJoinNet(void)
 {
     static uint8 soj=0;
     uint32 time_delay;
+    static uint32 timeout=0;
     if(soj == 0)
     {
         if(SetXBeeSleepMode() == 1) //设置休眠模式
@@ -231,7 +232,12 @@ uint32 SleepAndJoinNet(void)
         time_delay = 100;
     }
     else
+    {
+        if(timeout >= 4000)
+            FlagJionNet = JoinNet;
         time_delay = JionParkNet() * 100;
+        timeout = time_delay;
+    }
     return time_delay;
 }
 /**********************************************************
@@ -264,12 +270,16 @@ void ProcessSerial(XBeeUartRecDataDef temp_rbuf)
         case at_command_response:  //处理收到的AT指令返回值
             ProcessAT(temp_rbuf);
             break;
+        case transmit_status:
+            ProcessTransmitStatus(temp_rbuf);
+            break;
         case modem_status:         //Zigbee模块状态
             ProcessModeStatus(temp_rbuf);
             break;
         case mto_route_request_indcator:
             break;
         case route_record_indicator:
+            break;
         default:
             break;
     }  
