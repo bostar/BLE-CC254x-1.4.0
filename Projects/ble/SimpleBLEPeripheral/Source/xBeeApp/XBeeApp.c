@@ -78,8 +78,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     
     if ( events & XBEE_START_DEVICE_EVT )       //起始任务
     {
-        //ReadFlashFlag = osal_snv_read( BLE_NVID_USER_CFG_STATRT,sizeof(FlashLockStateType), &FlashLockState);
-        ReadFlashFlag = 11;
+        ReadFlashFlag = osal_snv_read( BLE_NVID_USER_CFG_STATRT,sizeof(FlashLockStateType), &FlashLockState);
         if(ReadFlashFlag == SUCCESS)
         {
             LockObjState = FlashLockState.LockState;
@@ -162,7 +161,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     if(events & XBEE_KEEP_LOCK_STATE_EVT )      //保持锁位置
     {
         static float sen_v_0=0,sen_v_1=0;
-        static uint8 cnt=0,cnt_state=11;
+        static uint8 cnt=0,cnt_state=9;
         cnt++;
         if(cnt == 1)
             sen_v_0 = ReadMotorSen();
@@ -176,7 +175,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         else
         {
             KeepLockState();
-            osal_start_timerEx( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT, 10 );
+            osal_start_timerEx( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT, 3 );
         }
         if(cnt == cnt_state)
         {

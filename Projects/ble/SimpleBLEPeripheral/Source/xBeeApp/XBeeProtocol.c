@@ -145,7 +145,7 @@ void ProcessAT(XBeeUartRecDataDef temp_rbuf)
             for(cnt=0;cnt<2;cnt++)
                 XBeeInfo.netadr[cnt] = temp_rbuf.data[8+cnt];
             FlagJionNet = JoinPark;
-            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );      
+            osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 5000 );
         }
     }
     else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='M')
@@ -177,11 +177,11 @@ uint16 ProcessTransmitStatus(XBeeUartRecDataDef temp_rbuf)
 {
     static uint8 time_out_cnt=0;
     if(temp_rbuf.data[8] != 0)
-    {
         time_out_cnt++;
-        if(time_out_cnt >= 3)
-            HAL_SYSTEM_RESET();
-    }
+    else
+        time_out_cnt = 0;
+    if(time_out_cnt >= 3)
+        HAL_SYSTEM_RESET();
     return 0;
 }
 /*********************************************************
@@ -297,9 +297,9 @@ uint8 JionParkNet(void)
         case JoinNet:
             nr_param[0] = 0;
             XBeeSetAT("NR",nr_param ,1, NO_RES);
-            nr_param[0] = 0x00;
-            nr_param[0] = 0x01;
-            XBeeSetAT("NW",nr_param ,2, NO_RES);
+            /*nr_param[0] = 0x00;
+            nr_param[1] = 0x01;
+            XBeeSetAT("NW",nr_param ,2, NO_RES);*/
             XBeeRourerJoinNet();
             XBeeReadAT("AI");
             FlagJionNet = GetAI;
@@ -340,9 +340,9 @@ uint16 ReportSenser(void)
         Uart1_Send_Byte("get",osal_strlen("get"));
         return 0;
     }
-    if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > OFFSET \
-        || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > OFFSET \
-        || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > OFFSET)  
+    if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > SEN_THR \
+        || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > SEN_THR \
+        || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > SEN_THR)  
     {   
         if(parkingState.vehicleState == ParkingUnUsed)
         {  
@@ -371,9 +371,9 @@ uint16 ReportStatePeriod(void)
     if(cnt > 4)
     {
         cnt = 0;
-        if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > OFFSET \
-            || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > OFFSET \
-            || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > OFFSET)                  
+        if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > SEN_THR \
+            || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > SEN_THR \
+            || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > SEN_THR)                  
             XBeeParkState(ParkingUsed);
         else
             XBeeParkState(ParkingUnUsed);

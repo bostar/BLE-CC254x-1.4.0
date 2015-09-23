@@ -34,7 +34,7 @@ void ClearDMA(void)
 void XBeeRourerJoinNet(void)
 {
     uint8 panID[8],i;
-    if(ReadFlashFlag == SUCCESS)
+/*    if(ReadFlashFlag == SUCCESS)
     {
         for(i=0;i<8;i++)
         {
@@ -43,13 +43,12 @@ void XBeeRourerJoinNet(void)
     }
     else
     {
-        for(i=0;i<8;i++)
+*/        for(i=0;i<8;i++)
             panID[i] = 0;
-    }
+//    }
     XBeeSetPanID(panID,NO_RES);   //设置ID的值
     XBeeSetChannel(SCAN_CHANNEL,NO_RES); //设置信道
     XBeeSetSD(3,NO_RES);
-    //XBeeSetZS(1,NO_RES);
     XbeeRunAC(NO_RES);
     XBeeRunWR(NO_RES);
 }

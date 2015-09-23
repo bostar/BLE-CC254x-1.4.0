@@ -54,7 +54,7 @@ extern "C"
 #define FAIL_TRANS    2
 #define UART_XBEE_EN   XBeeUartEn = 0
 #define UART_XBEE_DIS  XBeeUartEn = 1
-#define OFFSET        100
+#define SEN_THR       100
 #define SEN_MOTOR       0.7
 /*********************************************************************
  * MACROS
