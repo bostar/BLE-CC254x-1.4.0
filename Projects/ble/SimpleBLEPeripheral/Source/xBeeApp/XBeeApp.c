@@ -57,6 +57,9 @@ FlashLockStateType FlashLockState;
 uint8 ReadFlashFlag;
 DeviceType DevType=notype;
 uint8 test_cnt=0;
+uint8 CoorMAC[8];
+uint8 JoinNetMsg=0;
+uint32 BuzzerTime=200;
 
 void XBeeInit( uint8 task_id )
 {
@@ -78,29 +81,22 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     
     if ( events & XBEE_START_DEVICE_EVT )       //起始任务
     {
-        ReadFlashFlag = osal_snv_read( BLE_NVID_USER_CFG_STATRT,sizeof(FlashLockStateType), &FlashLockState);
-        if(ReadFlashFlag == SUCCESS)
-        {
-            LockObjState = FlashLockState.LockState;
-            //hmc5983DataStandard = FlashLockState.hmc5983Data;
-            SenFlag=0x88;
-        }
-        else
-        {
-             LockObjState = unlock;
-             FlashLockState.LockState = LockObjState;
-             SenFlag=0x88;
-        }
-        SetSleepMode = GetSH;
+        SenFlag=0x88;
+        SetSleepMode = SetRE;
         FlagJionNet  = JoinNet;
+        //osal_set_event( XBeeTaskID, XBEE_BUZZER_CTL );
+        osal_set_event( XBeeTaskID, XBEE_MOTOR_CTL_EVT );
         osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
         return (events ^ XBEE_START_DEVICE_EVT) ;
     }
     if( events & XBEE_JOIN_NET_EVT)             //加入网络、设置休眠
     {
         uint32 time_delay;
-        time_delay = SleepAndJoinNet();
-        osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, time_delay );
+        if(JoinNetMsg == 0)
+        {
+            time_delay = SleepAndJoinNet();
+            osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, time_delay );
+        }
         return (events ^ XBEE_JOIN_NET_EVT) ;
     }
     if(events & XBEE_HMC5983_EVT)               //处理传感器数据
@@ -123,7 +119,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     {
         static float sen_v_0=0,sen_v_1=0;
         static uint8 cnt=0,cnt_state=11;
-        osal_stop_timerEx( XBeeTaskID,XBEE_KEEP_LOCK_STATE_EVT);
+        osal_stop_timerEx( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT );
         cnt++;
         if(cnt == 1)
             sen_v_0 = ReadMotorSen();
@@ -146,7 +142,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
                     XBeeLockState(ParkLockSuccess);
                 else
                     XBeeLockState(ParkUnlockSuccess);
-                DailyEvt();
+                osal_set_event( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT );
             }
             else
                 osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, 10 );
@@ -175,7 +171,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         else
         {
             KeepLockState();
-            osal_start_timerEx( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT, 3 );
+            osal_start_timerEx( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT, 10 );
         }
         if(cnt == cnt_state)
         {
@@ -190,19 +186,6 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         osal_start_timerEx( XBeeTaskID, XBEE_VBT_CHENCK_EVT, 1000 );
         return (events ^ XBEE_VBT_CHENCK_EVT) ;
     }
-    if( events & XBEE_SCAN_ROUTE_PATH )
-    {
-        //XBeeReadAT("ND");
-        osal_start_timerEx( XBeeTaskID, XBEE_SCAN_ROUTE_PATH, 1000 );
-        return (events ^ XBEE_SCAN_ROUTE_PATH) ;
-    }
-    if( events & XBEE_SAVE_FLASH_EVT )         
-    { 
-        FlashLockState.hmc5983Data = hmc5983DataStandard;
-        FlashLockState.LockState = LockObjState;
-        osal_snv_write( BLE_NVID_USER_CFG_STATRT,sizeof(FlashLockStateType), &FlashLockState);
-        return (events ^ XBEE_SAVE_FLASH_EVT);
-    }
     if( events & XBEE_TEST_EVT )                //测试
     {   static uint8 asd=0;
         if(asd == 0)
@@ -214,6 +197,22 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         osal_start_timerEx( XBeeTaskID, XBEE_TEST_EVT, 1000 );
         return (events ^ XBEE_TEST_EVT) ;
     }
+    if( events & XBEE_BUZZER_CTL )
+    {
+        static  uint8 bzzer_fr=0;
+        if(bzzer_fr == 0)
+        {
+            bzzer_fr = 1;
+            XBeeOpenBuzzer();
+        }
+        else if(bzzer_fr == 1)
+        {
+            bzzer_fr = 0;
+            XBeeCloseBuzzer();
+        }
+        osal_start_timerEx( XBeeTaskID, XBEE_TEST_EVT, BuzzerTime );
+        return (events ^ XBEE_BUZZER_CTL) ;
+    }
     return events;
 }
 /************************************************************
@@ -223,12 +222,14 @@ uint32 SleepAndJoinNet(void)
 {
     static uint8 soj=0;
     uint32 time_delay;
+    uint8 reval;
     static uint32 timeout=0;
     if(soj == 0)
     {
-        if(SetXBeeSleepMode() == 1) //设置休眠模式
+        reval = SetXBeeSleepMode();
+        if(reval == 7) //设置休眠模式
             soj = 1;
-        time_delay = 100;
+        time_delay = reval * 10;
     }
     else
     {
@@ -239,6 +240,7 @@ uint32 SleepAndJoinNet(void)
     }
     return time_delay;
 }
+
 /**********************************************************
 **brief process serial data
 **********************************************************/
@@ -354,7 +356,7 @@ static void npiCBack_uart( uint8 port, uint8 events )
 ********************************************************/
 void DailyEvt(void)
 {
-    osal_set_event( XBeeTaskID, XBEE_KEEP_LOCK_STATE_EVT );
+    osal_set_event( XBeeTaskID, XBEE_VBT_CHENCK_EVT );
     osal_set_event( XBeeTaskID, XBEE_HMC5983_EVT );
     osal_set_event( XBeeTaskID, XBEE_VBT_CHENCK_EVT );
     osal_stop_timerEx( XBeeTaskID,XBEE_START_DEVICE_EVT);

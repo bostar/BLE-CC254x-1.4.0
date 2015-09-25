@@ -22,7 +22,7 @@ void setBeepOn(void);
 void setBeepOff(void);
 void setLedBit(unsigned char bits);
 uint16 XBeeUartRead(uint8* buff);
-void XBeeRourerJoinNet(void);  //加入网络
+void XBeeJoinNet(void);  //加入网络
 void XBeeLeaveNet(void);       //离开网络
 uint16 XBeeReqJionPark(void);  // 加入停车场
 void MotorLock(void);
@@ -41,6 +41,11 @@ void KeepLockState(void);
 uint8 ControlMotor(void);
 uint8 CheckADC(void);
 void XBeeReset(void);
+void NetReset(uint8 param);
+void XBeeBuzzer(uint8 times);
+void Delay1ms(void);
+void Delay100us(void);
+void XBeeDevInit(void);
 #endif
 
 

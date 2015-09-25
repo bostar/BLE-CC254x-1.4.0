@@ -36,7 +36,7 @@ typedef enum
 
 typedef enum
 {
-  RES       =       0x52,
+  RES       =       0x01,
   NO_RES    =       0x00,
 }IsResp;        //应答模式
 
@@ -165,6 +165,7 @@ uint16 XBeeSetAT(int8 *at_cmd, uint8 *param, uint8 len, IsResp IsRes);
 
 uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len, IsResp IsRes); //xbee发送数据请求
 uint16 XBeeSendToCoor(uint8 *data,uint16 len,IsResp IsRes);  //向coordinator发送数据
+uint16 XBeeSendToCoorByMac(uint8 *data,uint16 len,IsResp IsRes);
 uint16 XBeeUnicastTrans(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len,IsResp IsRes);
 uint16 XBeeBoardcastTrans(uint8 *data,uint16 len,IsResp IsRes);
 //uint16 XBee

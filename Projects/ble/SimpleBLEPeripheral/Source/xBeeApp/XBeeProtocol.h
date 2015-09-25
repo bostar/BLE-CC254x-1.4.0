@@ -20,7 +20,9 @@ typedef enum
     SetSN       =   0x11,
     SetOK       =   0x12,
     SendND      =   0x13,
-    GetAI       =   0X14
+    GetAI       =   0X14,
+    SetInit     =   0x15,
+    SetRE       =   0x16
 }_type__;
 
 uint16 CFGProcess(uint8 *rf_data);  //CFG´¦Àíº¯Êý
@@ -34,6 +36,7 @@ uint16 SendString(uint8 in ,uint8 len );
 uint16 ProcessTransmitStatus(XBeeUartRecDataDef temp_rbuf);
 void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf);
 void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf);
+void ProcessAR(XBeeUartRecDataDef temp_rbuf);
 uint8 SetXBeeSleepMode(void);
 uint8 JionParkNet(void);
 uint16 ReportSenser(void);

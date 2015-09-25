@@ -30,7 +30,7 @@ extern "C"
 #define XBEE_HMC5983_EVT                                   0x0200
 #define XBEE_SCAN_ROUTE_PATH                               0x0400
 #define XBEE_VBT_CHENCK_EVT                                0x0800
-#define z5                         0x1000
+#define XBEE_BUZZER_CTL                                    0x1000
 #define z6                         0x2000
 #define z8                         0x4000
 #define z7                         0x8000
@@ -145,6 +145,7 @@ typedef struct
     uint8 netadr[2];
     uint8 DevType;
     uint8 NetState;
+    uint8 channel;
 }XBeeInfoType;
 
 typedef struct 
@@ -181,6 +182,9 @@ extern ParkingStateType parkingState;              //当前车位状态
 extern uint8 ReadFlashFlag;
 extern DeviceType DevType;
 extern uint8 test_cnt;
+extern uint8 CoorMAC[8];
+extern uint8 JoinNetMsg;
+extern uint32 BuzzerTime;
 /*********************************************************************
  * FUNCTIONS
  */

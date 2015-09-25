@@ -31,39 +31,36 @@ void ClearDMA(void)
 /*******************************************
 **brief 加入网络
 *******************************************/
-void XBeeRourerJoinNet(void)
+void XBeeJoinNet(void)
 {
     uint8 panID[8],i;
-/*    if(ReadFlashFlag == SUCCESS)
-    {
-        for(i=0;i<8;i++)
-        {
-            panID[i] = FlashLockState.panID[i];
-        }
-    }
-    else
-    {
-*/        for(i=0;i<8;i++)
-            panID[i] = 0;
-//    }
-    XBeeSetPanID(panID,NO_RES);   //设置ID的值
-    XBeeSetChannel(SCAN_CHANNEL,NO_RES); //设置信道
+    
+    for(i=0;i<8;i++)
+        panID[i] = 0;
+    XBeeSetPanID(panID,NO_RES);             //设置ID的值
+    XBeeSetChannel(SCAN_CHANNEL,NO_RES);    //设置信道
     XBeeSetSD(3,NO_RES);
     XbeeRunAC(NO_RES);
     XBeeRunWR(NO_RES);
+}
+/*******************************************
+**brief reset网络
+********************************************/
+void NetReset(uint8 param)
+{
+    uint8 nr_param[3];
+    nr_param[0] = param;
+    XBeeSetAT("NR",nr_param ,1, NO_RES);
 }
 /*******************************************
 **brief 离开网络
 ********************************************/
 void XBeeLeaveNet(void)
 {
-  uint8 panID[8],i;
-  for(i=0;i<8;i++)
-    panID[i] = 0x88;
-  XBeeSetPanID(panID,NO_RES);   //设置ID的值
-//  XbeeSendAC(NO_RES);
-//  XBeeReadAI();
-//  FlagJionNet = NetOK;
+    uint8 param[1];
+    param[0] = 4;
+    int8 *cmd = "CB";
+    XBeeSetAT(cmd, param, 1, RES);   
 }
 /*******************************************
 **brief 申请加入停车网络
@@ -80,7 +77,11 @@ uint16 XBeeReqJionPark(void)
     data[4+i] = XBeeInfo.IEEEadr[i];
   for(i=0;i<2;i++)
     data[12+i] = XBeeInfo.netadr[i];
-  return XBeeSendToCoor(data,14,RES);  
+#if defined BY_MAC
+  return XBeeSendToCoorByMac(data,14,RES);
+#else
+  return XBeeSendToCoor(data,14,RES);
+#endif
 }
 /***************************************************
 **brief 解锁/锁定OK终端应答
@@ -93,7 +94,11 @@ uint16 XBeeEndDeviceLockRepOK(void)
   data[1]  =  'L';
   data[3]  =  0x01;
   data[4]  =  0x01;
+#if defined BY_MAC
+  return XBeeSendToCoorByMac(data,5,RES);
+#else
   return XBeeSendToCoor(data,5,RES);
+#endif
 }
 /***************************************************
 **brief 解锁NG终端应答
@@ -106,7 +111,11 @@ uint16 XBeeEndDeviceUnlockRepNG(void)
   data[1]  =  'L';
   data[3]  =  0x01;
   data[4]  =  0x02;
+#if defined BY_MAC
+  return XBeeSendToCoorByMac(data,5,RES);
+#else
   return XBeeSendToCoor(data,5,RES);
+#endif
 }
 /***************************************************
 **brief 锁定NG终端应答
@@ -119,7 +128,11 @@ uint16 XBeeEndDeviceLockRepNG(void)
   data[1]  =  'L';
   data[3]  =  0x01;
   data[4]  =  0x03;
+#if defined BY_MAC
+  return XBeeSendToCoorByMac(data,5,RES);
+#else
   return XBeeSendToCoor(data,5,RES);
+#endif
 }
 /**********************************************
 **brief 停止马达
@@ -276,14 +289,32 @@ uint8 ControlMotor(void)
     }
     return reval;
 }
+/*****************************************************
+**brief XBeeReset
+*****************************************************/
 void XBeeReset(void)
-{
+{   
+    uint8 i;
     GPIO_XBEE_RESET_TURN_LOW();
-    HAL_GPIO_CHANGE_DELAY();
+    for(i=0;i<5;i++)
+        HAL_GPIO_CHANGE_DELAY();
     GPIO_XBEE_RESET_TURN_HIGH();
-    HAL_GPIO_CHANGE_DELAY();
+    for(i=0;i<9;i++)
+        HAL_GPIO_CHANGE_DELAY();
 }
-
+/*****************************************************
+**brief 初始化xbee参数
+*****************************************************/
+void XBeeDevInit(void)
+{
+    uint8 i;
+    XBeeSendAT("RE");
+//    for(i=0;i<5;i++)
+        HAL_GPIO_CHANGE_DELAY();
+    XBeeLeaveNet();
+    for(i=0;i<7;i++)
+        HAL_GPIO_CHANGE_DELAY();
+}
 /*****************************************************
 **brief 监测马达是否阻塞
 *****************************************************/
