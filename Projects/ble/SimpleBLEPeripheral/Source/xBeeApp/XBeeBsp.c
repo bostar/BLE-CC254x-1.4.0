@@ -176,7 +176,7 @@ void XBeePinWake(void)
 **************************************************/
 void XBeePinSleep(void)
 {
-    if(DevType == end_dev)
+    if(XBeeInfo.DevType == end_dev)
         GPIO_XBEE_SLEEP_TURN_HIGH();
 }
 /**************************************************

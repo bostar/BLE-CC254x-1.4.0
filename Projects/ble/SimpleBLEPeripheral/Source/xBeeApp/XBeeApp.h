@@ -20,19 +20,19 @@ extern "C"
 // Simple BLE Peripheral Task Events
 #define XBEE_START_DEVICE_EVT                              0x0001
 #define XBEE_JOIN_NET_EVT                                  0x0002
-#define XBEE_KEEP_LOCK_STATE_EVT                           0x0004    
-#define XBEE_SAVE_FLASH_EVT                                0x0008
+#define XBEE_REPORT_EVT                                    0x0004    
+#define XBEE_READ_SENSER_EVT                               0x0008
 #define XBEE_REC_DATA_PROCESS_EVT                          0x0010
 #define XBEE_TEST_EVT                                      0x0020
-#define XBEE_TEST2_EVT                                     0x0040
-#define XBEE_IDLE_EVT                                      0x0080
+#define z3                                     0x0040
+#define z4                                      0x0080
 #define XBEE_MOTOR_CTL_EVT                                 0x0100
 #define XBEE_HMC5983_EVT                                   0x0200
-#define XBEE_SCAN_ROUTE_PATH                               0x0400
+#define z5                               0x0400
 #define XBEE_VBT_CHENCK_EVT                                0x0800
-#define XBEE_BUZZER_CTL                                    0x1000
+#define z8                                    0x1000
 #define z6                         0x2000
-#define z8                         0x4000
+#define z9                         0x4000
 #define z7                         0x8000
   
 #define XBeeOpenBuzzer()   XBeeSetIO(IO_P2,High)
@@ -148,6 +148,8 @@ typedef struct
     uint8 channel;
     uint8 XBeeAI;
     uint8 InPark;
+    uint8 panID[8];
+    uint8 FlagReadFlash;
 }XBeeInfoType;
 
 typedef struct 
@@ -181,7 +183,6 @@ extern uint8 SetSleepMode;
 extern FlashLockStateType FlashLockState;
 extern ParkingStateType parkingState;              //当前车位状态
 extern uint8 ReadFlashFlag;
-extern DeviceType DevType;
 extern uint8 test_cnt;
 extern uint8 CoorMAC[8];
 extern uint32 BuzzerTime;
@@ -197,6 +198,7 @@ void ProcessSerial(XBeeUartRecDataDef temp_rbuf);
 void DailyEvt(void);
 float ReadMotorSen(void);
 uint32 SleepAndJoinNet(void);
+uint8 CheckMotor(void);
 /*
  * Task Event Processor for the BLE Application
  */

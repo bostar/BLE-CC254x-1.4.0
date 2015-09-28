@@ -463,7 +463,6 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
             hmc5983DataStandard.x = hmc5983Data.x;
             hmc5983DataStandard.y = hmc5983Data.y;
             hmc5983DataStandard.z = hmc5983Data.z;
-            osal_set_event( XBeeTaskID, XBEE_SAVE_FLASH_EVT );
         }
     }
   }

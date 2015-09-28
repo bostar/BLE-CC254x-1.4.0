@@ -43,7 +43,7 @@ void ProcessAR(XBeeUartRecDataDef temp_rbuf);
 uint8 SetXBeeSleepMode(void);
 uint8 JionParkNet(void);
 uint16 ReportSenser(void);
-uint16 ReportStatePeriod(void);
+uint16 ReportLockState(void);
 void ReportVbat(void);
 int8 arrncmp(uint8 *arr1,uint8 *arr2,uint8 n);
 void connectarr(uint8 *arr1,uint8 *arr2,uint8 *arr);

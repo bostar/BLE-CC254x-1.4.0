@@ -11,6 +11,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "hal_adc.h"
+#include "osal_snv.h"
+#include "bcomdef.h"
+
 #if defined _XBEE_APP_
 
 static uint8 my_msg=0;
@@ -22,7 +25,7 @@ uint16 CFGProcess(uint8 *rf_data)
     switch(*rf_data)
     {
         case 0x00:      //设置限时加入网络时限,end device禁止该功能
-            if(DevType == router)
+            if(XBeeInfo.DevType == router)
                 XBeeSetNJ(*(rf_data+1),NO_RES);
             break;
         case 0x02:      //入网响应
@@ -35,6 +38,7 @@ uint16 CFGProcess(uint8 *rf_data)
                 XBeeSetST(100,RES);
                 XBeeSendAT("AC");
                 XBeeSendAT("WR");
+                XBeeInfo.InPark = 1;
                 DailyEvt();
             }
             else if(*(rf_data+1) == 0x00)   //禁止入网
@@ -88,11 +92,9 @@ void OTAProcess(uint8 *rf_data)
 void ProcessAT(XBeeUartRecDataDef temp_rbuf)
 {
     if(temp_rbuf.data[5]=='A' && temp_rbuf.data[6]=='I')
-    {   
+    {
         if(temp_rbuf.data[7]==0 && temp_rbuf.data[8]==0)
             XBeeInfo.XBeeAI = 1;
-        else
-            XBeeInfo.XBeeAI = 0;
     }
     else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='H')
     {
@@ -110,15 +112,20 @@ void ProcessAT(XBeeUartRecDataDef temp_rbuf)
             uint8 cnt;
             for(cnt=0;cnt<4;cnt++)
                 XBeeInfo.MacAdr[4+cnt] = temp_rbuf.data[8+cnt];    
-        }                 
+        }
     }
     else if(temp_rbuf.data[5]=='M' && temp_rbuf.data[6]=='Y')
     {
-        if(temp_rbuf.data[7]==0)
+        if(temp_rbuf.data[7]==0 && XBeeInfo.InPark != 1)
         {
             uint8 cnt;
             for(cnt=0;cnt<2;cnt++)
                 XBeeInfo.NetAdr[cnt] = temp_rbuf.data[8+cnt];
+        }
+        else if(temp_rbuf.data[7]==0 && XBeeInfo.InPark == 1)
+        {
+            if(XBeeInfo.NetAdr[0] != temp_rbuf.data[8] || XBeeInfo.NetAdr[1] != temp_rbuf.data[9])
+                HAL_SYSTEM_RESET();
         }
     }
     else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='M')
@@ -340,11 +347,11 @@ uint16 ReportSenser(void)
         || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > SEN_THR)  
     {   
         if(parkingState.vehicleState == ParkingUnUsed)
-        {  
+        {
             parkingState.vehicleState = ParkingUsed;
             return XBeeParkState(ParkingUsed);               
         }
-    } 
+    }
     else if(parkingState.vehicleState == ParkingUsed)
     {
         parkingState.vehicleState = ParkingUnUsed;
@@ -355,32 +362,17 @@ uint16 ReportSenser(void)
 /**********************************************************
 **brief report park state periodly
 **********************************************************/
-uint16 ReportStatePeriod(void)
+uint16 ReportLockState(void)
 {
-    static uint8 cnt=0;
-    HMC5983DataType temp_hmc5983Data,temp_hmc5983DataStandard;
- 
-    temp_hmc5983Data = hmc5983Data;
-    temp_hmc5983DataStandard = hmc5983DataStandard;
-    cnt++;
-    if(cnt > 4)
-    {
-        cnt = 0;
-        if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > SEN_THR \
-            || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > SEN_THR \
-            || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > SEN_THR)                  
-            XBeeParkState(ParkingUsed);
-        else
-            XBeeParkState(ParkingUnUsed);
-        if(GetCurrentMotorState() == lock)
-            XBeeLockState(ParkLockSuccess);
-        else if(GetCurrentMotorState() == unlock )
-            XBeeLockState(ParkUnlockSuccess);   
-        else if(LockObjState == lock)
-            XBeeLockState(ParkLockFailed);
-        else if(LockObjState == unlock)
-            XBeeLockState(ParkLockFailed);  
-    }
+    if(GetCurrentMotorState() == lock)
+        XBeeLockState(ParkLockSuccess);
+    else if(GetCurrentMotorState() == unlock )
+        XBeeLockState(ParkUnlockSuccess);   
+    else if(LockObjState == lock)
+        XBeeLockState(ParkLockFailed);
+    else if(LockObjState == unlock)
+        XBeeLockState(ParkLockFailed);
+    XBeeReadAT("MY");
     return 0;
 }
 /**********************************************************
