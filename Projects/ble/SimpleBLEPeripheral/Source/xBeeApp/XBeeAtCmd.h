@@ -36,7 +36,7 @@ typedef enum
 
 typedef enum
 {
-  RES       =       0x01,
+  RES       =       0x52,
   NO_RES    =       0x00,
 }IsResp;        //Ó¦´ðÄ£Ê½
 

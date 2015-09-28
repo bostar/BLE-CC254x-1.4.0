@@ -13,7 +13,6 @@
 #define SCAN_CHANNEL 0x4210
  
 
-extern uint8 FlagJionNet;
 
 
 void ClearDMA(void);

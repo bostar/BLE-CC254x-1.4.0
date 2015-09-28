@@ -35,30 +35,19 @@
 
 
 
-__xdata uint8 XBeeTaskID;                   // Task ID for internal task/event processing       
-__xdata XBeeUartRecDataDef XBeeUartRec;     //串口接收缓存数据  
-__xdata uint8 FlagPowerON=0;                //启动标志
-//static uint8 FlagXBeeTrans=0;             //xbee数据发送状态
-__xdata volatile uint8 SendTimes;                    //命令发送次数
-__xdata XBeeInfoType XBeeInfo;                //IEEE地址和当前的网络地址
-TaskSendType TaskSend;                      //数据发送次数
+uint8 XBeeTaskID;                           // Task ID for internal task/event processing       
+XBeeUartRecDataDef XBeeUartRec;             //串口接收缓存数据  
+XBeeInfoType XBeeInfo;                
 ToReadUARTType ToReadUART=ReadHead;         //读取串口状态
 ToReadUARTType CtlToReadUART=ReadNone;      //控制读取串口状态
-uint8 XBeeUartEn=0;                            //串口读取使能
+uint8 XBeeUartEn=0;                         //串口读取使能
 uint8 LcokState;                            //锁状态标志
 ParkingStateType parkingState;              //当前车位状态
-uint8 XBeeSOW;                              //xbee休眠标志
-uint8 SenFlag=0x88;                              //传感器初值标志
-uint8 test123;
+uint8 SenFlag=0x88;                         //传感器初值
 LockCurrentStateType LockObjState;
-uint8 SetSleepMode;
-uint8 FlagJionNet;        //加入网络标志
 FlashLockStateType FlashLockState;
 uint8 ReadFlashFlag;
 DeviceType DevType=notype;
-uint8 test_cnt=0;
-uint8 CoorMAC[8];
-uint8 JoinNetMsg=0;
 uint32 BuzzerTime=200;
 
 void XBeeInit( uint8 task_id )
@@ -82,8 +71,6 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     if ( events & XBEE_START_DEVICE_EVT )       //起始任务
     {
         SenFlag=0x88;
-        SetSleepMode = SetRE;
-        FlagJionNet  = JoinNet;
         //osal_set_event( XBeeTaskID, XBEE_BUZZER_CTL );
         osal_set_event( XBeeTaskID, XBEE_MOTOR_CTL_EVT );
         osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
@@ -92,9 +79,9 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     if( events & XBEE_JOIN_NET_EVT)             //加入网络、设置休眠
     {
         uint32 time_delay;
-        if(JoinNetMsg == 0)
+        if(XBeeInfo.InPark != 1)
         {
-            time_delay = SleepAndJoinNet();
+            time_delay = SleepModeAndJoinNet();
             osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, time_delay );
         }
         return (events ^ XBEE_JOIN_NET_EVT) ;
@@ -215,32 +202,6 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     }
     return events;
 }
-/************************************************************
-**brief 休眠和入网
-************************************************************/
-uint32 SleepAndJoinNet(void)
-{
-    static uint8 soj=0;
-    uint32 time_delay;
-    uint8 reval;
-    static uint32 timeout=0;
-    if(soj == 0)
-    {
-        reval = SetXBeeSleepMode();
-        if(reval == 7) //设置休眠模式
-            soj = 1;
-        time_delay = reval * 10;
-    }
-    else
-    {
-        if(timeout >= 4000)
-            FlagJionNet = JoinNet;
-        time_delay = JionParkNet() * 100;
-        timeout = time_delay;
-    }
-    return time_delay;
-}
-
 /**********************************************************
 **brief process serial data
 **********************************************************/

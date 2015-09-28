@@ -74,9 +74,9 @@ uint16 XBeeReqJionPark(void)
   data[2]  =  'G';
   data[3]  = 0X01;
   for(i=0;i<8;i++)
-    data[4+i] = XBeeInfo.IEEEadr[i];
+    data[4+i] = XBeeInfo.MacAdr[i];
   for(i=0;i<2;i++)
-    data[12+i] = XBeeInfo.netadr[i];
+    data[12+i] = XBeeInfo.NetAdr[i];
 #if defined BY_MAC
   return XBeeSendToCoorByMac(data,14,RES);
 #else
@@ -294,13 +294,10 @@ uint8 ControlMotor(void)
 *****************************************************/
 void XBeeReset(void)
 {   
-    uint8 i;
     GPIO_XBEE_RESET_TURN_LOW();
-    for(i=0;i<5;i++)
-        HAL_GPIO_CHANGE_DELAY();
+    HAL_GPIO_CHANGE_DELAY();
     GPIO_XBEE_RESET_TURN_HIGH();
-    for(i=0;i<9;i++)
-        HAL_GPIO_CHANGE_DELAY();
+    HAL_GPIO_CHANGE_DELAY();
 }
 /*****************************************************
 **brief 初始化xbee参数

@@ -141,11 +141,13 @@ typedef enum
 
 typedef struct
 {
-    uint8 IEEEadr[8];
-    uint8 netadr[2];
+    uint8 MacAdr[8];
+    uint8 NetAdr[2];
     uint8 DevType;
     uint8 NetState;
     uint8 channel;
+    uint8 XBeeAI;
+    uint8 InPark;
 }XBeeInfoType;
 
 typedef struct 
@@ -168,10 +170,9 @@ typedef struct
 }FlashLockStateType;
 
 /***************************************************************/
-extern XBeeInfoType XBeeInfo;  //IEEE地址和当前的网络地址
+extern XBeeInfoType XBeeInfo;  
 extern XBeeUartRecDataDef XBeeUartRec; //串口接收缓存数据  
-extern uint8 FlagJionNet;
-extern __xdata uint8 XBeeTaskID;
+extern uint8 XBeeTaskID;
 extern uint8 UartCtl; 
 extern uint8 SenFlag; 
 extern uint8 XBeeUartEn;
@@ -183,7 +184,6 @@ extern uint8 ReadFlashFlag;
 extern DeviceType DevType;
 extern uint8 test_cnt;
 extern uint8 CoorMAC[8];
-extern uint8 JoinNetMsg;
 extern uint32 BuzzerTime;
 /*********************************************************************
  * FUNCTIONS

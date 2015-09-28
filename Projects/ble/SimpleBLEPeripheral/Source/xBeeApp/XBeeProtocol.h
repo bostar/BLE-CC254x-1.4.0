@@ -22,7 +22,10 @@ typedef enum
     SendND      =   0x13,
     GetAI       =   0X14,
     SetInit     =   0x15,
-    SetRE       =   0x16
+    SetRE       =   0x16,
+    SetCB       =   0x17,
+    SetSM       =   0x18,
+    GetSM       =   0x19
 }_type__;
 
 uint16 CFGProcess(uint8 *rf_data);  //CFG´¦Àíº¯Êý
@@ -44,5 +47,6 @@ uint16 ReportStatePeriod(void);
 void ReportVbat(void);
 int8 arrncmp(uint8 *arr1,uint8 *arr2,uint8 n);
 void connectarr(uint8 *arr1,uint8 *arr2,uint8 *arr);
+uint32 SleepModeAndJoinNet(void);
 #endif
 

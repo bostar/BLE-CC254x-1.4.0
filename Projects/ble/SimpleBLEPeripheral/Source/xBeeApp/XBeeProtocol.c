@@ -29,14 +29,12 @@ uint16 CFGProcess(uint8 *rf_data)
             if(*(rf_data+1) == 0x01)   //允许入网
             {
                 XBeeInfo.NetState =9;
-                FlagJionNet = NetOK;
                 XBeeCloseLED1();
                 XBeeCloseLED2();
-                XBeeSetSP(200,RES);
-                XBeeSetST(200,RES);
+                XBeeSetSP(100,RES);
+                XBeeSetST(100,RES);
                 XBeeSendAT("AC");
                 XBeeSendAT("WR");
-                JoinNetMsg=1;
                 DailyEvt();
             }
             else if(*(rf_data+1) == 0x00)   //禁止入网
@@ -89,15 +87,12 @@ void OTAProcess(uint8 *rf_data)
 *********************************************************/
 void ProcessAT(XBeeUartRecDataDef temp_rbuf)
 {
-    uint8 i;
     if(temp_rbuf.data[5]=='A' && temp_rbuf.data[6]=='I')
     {   
         if(temp_rbuf.data[7]==0 && temp_rbuf.data[8]==0)
-        {
-            FlagJionNet = GetMY;
-            BuzzerTime=500;
-            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
-        }
+            XBeeInfo.XBeeAI = 1;
+        else
+            XBeeInfo.XBeeAI = 0;
     }
     else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='H')
     {
@@ -105,9 +100,7 @@ void ProcessAT(XBeeUartRecDataDef temp_rbuf)
         {
             uint8 cnt;
             for(cnt=0;cnt<4;cnt++)
-                XBeeInfo.IEEEadr[cnt] = temp_rbuf.data[8+cnt];
-            SetSleepMode = GetSL;
-            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );      
+                XBeeInfo.MacAdr[cnt] = temp_rbuf.data[8+cnt];
         }
     }
     else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='L')
@@ -116,23 +109,8 @@ void ProcessAT(XBeeUartRecDataDef temp_rbuf)
         {
             uint8 cnt;
             for(cnt=0;cnt<4;cnt++)
-                XBeeInfo.IEEEadr[4+cnt] = temp_rbuf.data[8+cnt];
-            SetSleepMode = SendND;
-            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );      
+                XBeeInfo.MacAdr[4+cnt] = temp_rbuf.data[8+cnt];    
         }                 
-    }
-    else if(temp_rbuf.data[5]=='N' && temp_rbuf.data[6]=='D')
-    {
-        uint8 mac_adr[8];
-        static uint8 read_nd = 0;
-        connectarr(temp_rbuf.data+10,temp_rbuf.data+14,mac_adr);
-        if(arrncmp(mac_adr,XBeeInfo.IEEEadr,8) == 0 && read_nd == 0)
-        {
-            read_nd++;
-            XBeeInfo.DevType = temp_rbuf.data[22];
-            SetSleepMode = SetSleep;
-            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
-        }
     }
     else if(temp_rbuf.data[5]=='M' && temp_rbuf.data[6]=='Y')
     {
@@ -140,56 +118,32 @@ void ProcessAT(XBeeUartRecDataDef temp_rbuf)
         {
             uint8 cnt;
             for(cnt=0;cnt<2;cnt++)
-                XBeeInfo.netadr[cnt] = temp_rbuf.data[8+cnt];
-            FlagJionNet = JoinPark;
-            my_msg = 1;
-            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
-            //osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 5000 );
+                XBeeInfo.NetAdr[cnt] = temp_rbuf.data[8+cnt];
         }
     }
     else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='M')
     {
-        if(temp_rbuf.data[7] == 0 || XBeeInfo.DevType == router)
-        {
-            FlagJionNet = SetOK;
-            osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT ); 
-        }
-    }
-    else if(temp_rbuf.data[5]=='O' && temp_rbuf.data[6]=='P')
-    {
         if(temp_rbuf.data[7] == 0)
         {
-            for(i=0;i<8;i++)
-            {
-                FlashLockState.panID[i] = temp_rbuf.data[8+i];
-            }
-            osal_set_event( XBeeTaskID, XBEE_SAVE_FLASH_EVT );
+            if(temp_rbuf.data[8] == 0)
+                XBeeInfo.DevType = router;
+            else if(temp_rbuf.data[8] == 4)
+                XBeeInfo.DevType = end_dev;
         }
-        else
-            XBeeReadAT("OP");
     }
     else if(temp_rbuf.data[5]=='C' && temp_rbuf.data[6]=='H')
-    {
         XBeeInfo.channel = temp_rbuf.data[8];
-    }
-    else if(temp_rbuf.data[5]=='I' && temp_rbuf.data[6]=='D')
-    {
-    }
-    else if(temp_rbuf.data[5]=='C' && temp_rbuf.data[6]=='B')
-    {
-        
-    }
 }
 /*********************************************************
 **brief 
 *********************************************************/
 uint16 ProcessTransmitStatus(XBeeUartRecDataDef temp_rbuf)
-{
+{    
     static uint8 time_out_cnt=0;
-
+    
     if(temp_rbuf.data[8] != 0)
         time_out_cnt++;
-    else if(temp_rbuf.data[8] == 0)
+    else
         time_out_cnt = 0;
     if(time_out_cnt >= 5)
         HAL_SYSTEM_RESET();
@@ -218,9 +172,6 @@ void ProcessAR(XBeeUartRecDataDef temp_rbuf)
 *********************************************************/
 void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf)
 {
-    if(temp_rbuf.data[4] == 0x03)
-    {
-    }
 }
 /*********************************************************
 **brief 发送锁状态函数
@@ -275,108 +226,96 @@ uint16 XBeeBatPower(uint8 PowerVal)
   return XBeeSendToCoor(data,5,RES);
 #endif
 }
-/**************************************************
-**brief set xbee sleep mode
-**************************************************/
-uint8 SetXBeeSleepMode(void)
+/**********************************************************
+**brief 设置休眠，入网
+**********************************************************/
+uint32 SleepModeAndJoinNet(void)
 {
-    uint8 reval=0;
-    static uint8 ND_s=0;
-    switch(SetSleepMode)
-    {   
+    uint32 reval=10;   //单位ms
+    static uint8 JoinState = SetRE;
+    switch(JoinState)
+    {
         case SetRE:
             XBeeReset();
             if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
             {
-                XBeeReadAT("RE");
-                SetSleepMode = SetInit;
-                reval = 50;
+                XBeeSendAT("RE");
+                JoinState = SetCB;
+                reval = 500;
             }
             break;
-        case SetInit:
+        case SetCB:
             if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
             {
                 XBeeLeaveNet();
-                SetSleepMode = GetSH;
-                reval = 100;
+                JoinState = GetSM;
+                reval = 1000;
             }
-            else
-                reval = 1;
             break;
-        case GetSH:
+        case GetSM:
             if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
             {
-                XBeeSetST(0xfff0,NO_RES);
                 XBeeCloseBuzzer();
-                XBeeSetNT(0x20,NO_RES);
-                XBeeSetNO(2,NO_RES);
-                XBeeSendAT("AC");
-                XBeeReadSH();
-                reval = 10;
+                XBeeReadAT("SM");
+                JoinState = SetSM;
+                reval = 500;
             }
-            XBeeInfo.NetState =1;
             break;
-        case GetSL:
-            if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)
-            {
-                XBeeReadSL();
-                reval = 10;
-            }
-            XBeeInfo.NetState =2;
-            break;
-        case SendND:
-            if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1 /*&& ND_s == 0*/)  //high--wake  low--sleep
-            {
-                XBeeReadAT("ND");
-                ND_s++;
-                reval = 10;
-            }
-            XBeeInfo.NetState =3;
-            break;
-        case SetSleep:
+        case SetSM:
             if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
             {
                 if(XBeeInfo.DevType == end_dev)
+                {
                     XBeeSetSM(PinCyc,NO_RES);
-                reval = 7;
+                    JoinState = JoinNet;
+                }
+                else if(XBeeInfo.DevType == router)
+                    JoinState = JoinNet;
+                else
+                {
+                    XBeeReadAT("SM");
+                    JoinState = SetSM;
+                }
+                reval = 500;
             }
-            XBeeInfo.NetState =4;
             break;
-        default:
-            break;
-        }
-    return reval;
-}
-/**********************************************************
-**brief jion park net
-**********************************************************/
-uint8 JionParkNet(void)
-{
-    uint8 reval=1;
-    switch(FlagJionNet)
-    {
         case JoinNet:
             XBeeJoinNet();
             XBeeReadAT("AI");
-            FlagJionNet = GetAI;
-            reval = 20;
-            XBeeInfo.NetState =5;
+            JoinState = GetAI;
+            reval = 2000;
             break;
         case GetAI:
-            XBeeReadAT("AI");
-            reval = 20;
-            XBeeInfo.NetState =6;
+            if(XBeeInfo.XBeeAI == 1)
+                JoinState = GetSH;
+            else
+            {
+                XBeeReadAT("AI");
+                reval = 500;
+            }
+            break;
+        case GetSH:
+            XBeeReadAT("SH");
+            JoinState = GetSL;
+            reval = 100;
+            break;
+        case GetSL:
+            XBeeReadAT("SL");
+            JoinState = GetMY;
+            reval = 100;
             break;
         case GetMY:
             XBeeReadAT("MY");
-            reval = 1;
-            XBeeInfo.NetState =7;
+            JoinState = JoinPark;
+            reval = 100;
             break;
         case JoinPark:
-            XBeeReqJionPark();
-            reval = 50;
-            XBeeInfo.NetState =8;
-            break;  
+            if(XBeeInfo.InPark != 1)
+            {
+                XBeeReqJionPark();
+                reval = 1500;
+            }
+            break;
         default:
             break;
     }
