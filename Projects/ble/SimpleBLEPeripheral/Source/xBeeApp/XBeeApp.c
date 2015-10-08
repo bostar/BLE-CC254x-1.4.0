@@ -64,8 +64,11 @@ void XBeeInit( uint8 task_id )
 uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
 {
     VOID  task_id;    
+    uint8 i;
     if ( events & XBEE_START_DEVICE_EVT )       //起始任务
     {
+        for(i=0;i<8;i++)
+            XBeeInfo.panID[i] = 0;
         SenFlag=0x88;
         parkingState.vehicleState = ParkingUnUsed;
         LockObjState = unlock;
@@ -91,8 +94,11 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
                 osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, 10 );
         }
         else
+        {
+            MotorStop();
             osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, 4000 );
-        return (events ^ XBEE_MOTOR_CTL_EVT) ;
+        }
+        return (events ^ XBEE_MOTOR_CTL_EVT);
     }
     if(events & XBEE_HMC5983_EVT)               //处理传感器数据
     {
@@ -117,7 +123,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     }
     if( events & XBEE_VBT_CHENCK_EVT )          //读取当前电压
     {
-        ReportVbat();       //每执行10次上报一次电压
+        //ReportVbat();       //每执行10次上报一次电压
         osal_start_timerEx( XBeeTaskID, XBEE_VBT_CHENCK_EVT, 1000 );
         return (events ^ XBEE_VBT_CHENCK_EVT) ;
     }
@@ -144,7 +150,6 @@ uint8 CheckMotor(void)
     cnt++;
     if(sen_v_0 > SEN_MOTOR && sen_v_1 > SEN_MOTOR)
     {
-        MotorStop();
         cnt = 0;
         sen_v_0 = sen_v_1 =0;
         reval = 1;
@@ -172,6 +177,8 @@ void ProcessSerial(XBeeUartRecDataDef temp_rbuf)
                 SENProcess((uint8*)&temp_rbuf.data[18]);
             else if(temp_rbuf.data[15]=='O' && temp_rbuf.data[16]=='T' && temp_rbuf.data[17]=='A')
             {}
+            else if(temp_rbuf.data[15]=='T' && temp_rbuf.data[16]=='S' && temp_rbuf.data[17]=='T')
+                TSTProcess(temp_rbuf);
             break;
         case explicit_rx_indeicator:
             if(temp_rbuf.data[21]=='C' && temp_rbuf.data[22]=='F' && temp_rbuf.data[23]=='G')

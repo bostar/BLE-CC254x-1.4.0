@@ -1,0 +1,2 @@
+October 8, 2015
+When the End Devivice rejoins the netwrk,the NJ should be less than 0xff. 

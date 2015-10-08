@@ -25,8 +25,7 @@ uint16 CFGProcess(uint8 *rf_data)
     switch(*rf_data)
     {
         case 0x00:      //设置限时加入网络时限,end device禁止该功能
-            if(XBeeInfo.DevType == router)
-                XBeeSetNJ(*(rf_data+1),NO_RES);
+            XBeeSetNJ(*(rf_data+1),NO_RES);
             break;
         case 0x02:      //入网响应
             if(*(rf_data+1) == 0x01)   //允许入网
@@ -34,11 +33,12 @@ uint16 CFGProcess(uint8 *rf_data)
                 XBeeInfo.NetState =9;
                 XBeeCloseLED1();
                 XBeeCloseLED2();
-                XBeeSetSP(100,RES);
-                XBeeSetST(100,RES);
+                XBeeSetSP(100,NO_RES);
+                XBeeSetST(100,NO_RES);
                 XBeeSendAT("AC");
                 XBeeSendAT("WR");
                 XBeeInfo.InPark = 1;
+                XBeeReadAT("OP");
                 DailyEvt();
             }
             else if(*(rf_data+1) == 0x00)   //禁止入网
@@ -86,15 +86,32 @@ void SENProcess(uint8 *rf_data)
 }
 void OTAProcess(uint8 *rf_data)
 {}
+uint16 TSTProcess(XBeeUartRecDataDef rf_data)
+{
+    int8 data[4];
+    data[0] = 'T';
+    data[1] = 'E';
+    data[2] = 'S';
+    data[3] = 'T';
+    if(rf_data.data[18] == 'T' && rf_data.data[18] == 'E' && rf_data.data[18] == 'S' && rf_data.data[18] == 'T')
+        return XBeeSendToCoor((uint8*)data,4,RES);
+    return 0;
+}
 /*********************************************************
 **
 *********************************************************/
 void ProcessAT(XBeeUartRecDataDef temp_rbuf)
 {
+    uint8 i;
     if(temp_rbuf.data[5]=='A' && temp_rbuf.data[6]=='I')
     {
         if(temp_rbuf.data[7]==0 && temp_rbuf.data[8]==0)
             XBeeInfo.XBeeAI = 1;
+        else if(temp_rbuf.data[7]==0 && temp_rbuf.data[8]==0x22)
+        {
+            //for(i=0;i<8;i++)
+                //XBeeInfo.panID[i] = 0;
+        }
     }
     else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='H')
     {
@@ -122,11 +139,6 @@ void ProcessAT(XBeeUartRecDataDef temp_rbuf)
             for(cnt=0;cnt<2;cnt++)
                 XBeeInfo.NetAdr[cnt] = temp_rbuf.data[8+cnt];
         }
-        else if(temp_rbuf.data[7]==0 && XBeeInfo.InPark == 1)
-        {
-            if(XBeeInfo.NetAdr[0] != temp_rbuf.data[8] || XBeeInfo.NetAdr[1] != temp_rbuf.data[9])
-                HAL_SYSTEM_RESET();
-        }
     }
     else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='M')
     {
@@ -137,6 +149,16 @@ void ProcessAT(XBeeUartRecDataDef temp_rbuf)
             else if(temp_rbuf.data[8] == 4)
                 XBeeInfo.DevType = end_dev;
         }
+    }
+    else if(temp_rbuf.data[5]=='O' && temp_rbuf.data[6]=='P')
+    {
+        if(temp_rbuf.data[7] == 0)
+        {
+            for(i=0;i<8;i++)
+                XBeeInfo.panID[i] = temp_rbuf.data[8+i];
+        }
+        else
+            XBeeReadAT("OP");
     }
     else if(temp_rbuf.data[5]=='C' && temp_rbuf.data[6]=='H')
         XBeeInfo.channel = temp_rbuf.data[8];
@@ -179,6 +201,16 @@ void ProcessAR(XBeeUartRecDataDef temp_rbuf)
 *********************************************************/
 void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf)
 {
+    if(temp_rbuf.data[4] == 3)
+    {
+        XBeeInfo.ParentLost = 1;
+        XBeeInfo.InPark = 0;
+        XBeeInfo.XBeeAI = 0;
+        osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
+        osal_stop_timerEx( XBeeTaskID, XBEE_HMC5983_EVT );
+        osal_stop_timerEx( XBeeTaskID, XBEE_VBT_CHENCK_EVT );
+        osal_stop_timerEx( XBeeTaskID, XBEE_REPORT_EVT );
+    }
 }
 /*********************************************************
 **brief 发送锁状态函数
@@ -240,6 +272,11 @@ uint32 SleepModeAndJoinNet(void)
 {
     uint32 reval=10;   //单位ms
     static uint8 JoinState = SetRE;
+    if(XBeeInfo.ParentLost == 1)
+    {
+        XBeeInfo.ParentLost = 0;
+        JoinState = GetAI;
+    }
     switch(JoinState)
     {
         case SetRE:
@@ -372,7 +409,6 @@ uint16 ReportLockState(void)
         XBeeLockState(ParkLockFailed);
     else if(LockObjState == unlock)
         XBeeLockState(ParkLockFailed);
-    XBeeReadAT("MY");
     return 0;
 }
 /**********************************************************

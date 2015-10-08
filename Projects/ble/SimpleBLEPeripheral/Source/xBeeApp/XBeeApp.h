@@ -150,6 +150,7 @@ typedef struct
     uint8 InPark;
     uint8 panID[8];
     uint8 FlagReadFlash;
+    uint8 ParentLost;
 }XBeeInfoType;
 
 typedef struct 

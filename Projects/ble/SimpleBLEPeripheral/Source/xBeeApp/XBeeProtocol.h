@@ -32,7 +32,7 @@ uint16 CFGProcess(uint8 *rf_data);  //CFG´¦Àíº¯Êý
 void CTLProcess(uint8 *rf_data);
 void SENProcess(uint8 *rf_data);
 void OTAProcess(uint8 *rf_data);
-void TSTProcess(uint8 *rf_data);
+uint16 TSTProcess(XBeeUartRecDataDef rf_data);
 uint16 XBeeLockState(parkingEventType LockState);
 uint16 XBeeParkState(parkingEventType CarState);
 uint16 SendString(uint8 in ,uint8 len );
