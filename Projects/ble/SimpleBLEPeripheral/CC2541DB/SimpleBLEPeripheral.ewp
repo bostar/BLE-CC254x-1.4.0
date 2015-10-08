@@ -7565,13 +7565,22 @@
       </file>
     </group>
     <file>
+      <name>$PROJ_DIR$\..\Source\hidapp.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\Source\OSAL_SimpleBLEPeripheral.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\Source\simpleBLEPeripheral.c</name>
+      <excluded>
+        <configuration>CC2541DK-MINI Keyfob</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\Source\simpleBLEPeripheral.h</name>
+      <excluded>
+        <configuration>CC2541DK-MINI Keyfob</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\Source\SimpleBLEPeripheral_Main.c</name>
