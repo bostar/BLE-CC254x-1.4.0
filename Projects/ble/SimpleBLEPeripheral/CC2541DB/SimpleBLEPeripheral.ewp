@@ -265,7 +265,7 @@
         </option>
         <option>
           <name>CCDefines</name>
-          <state>INT_HEAP_LEN=3072</state>
+          <state>INT_HEAP_LEN=2852</state>
           <state>HALNODEBUG</state>
           <state>OSAL_CBTIMER_NUM_TASKS=1</state>
           <state>HAL_AES_DMA=TRUE</state>
@@ -282,6 +282,8 @@
           <state>HAL_I2C=FALSE</state>
           <state>HAL_KEY=TRUE</state>
           <state>STARBO_BOARD</state>
+          <state>NANO_DONGLE</state>
+          <state>HCI_DISABLE_UART</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -7755,6 +7757,9 @@
       <name>$PROJ_DIR$\..\..\..\..\Components\ble\controller\include\ll.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\..\Components\ble\controller\include\ll_sleep.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\common\npi\npi_np\npi.h</name>
     </file>
     <file>
@@ -7767,7 +7772,13 @@
   <group>
     <name>LIB</name>
     <file>
-      <name>$PROJ_DIR$\..\..\Libraries\CC2541DB\bin\CC2541_BLE_peri.lib</name>
+      <name>$PROJ_DIR$\..\..\Libraries\CC2541DB\bin\CC2541_BLE.lib</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\Libraries\Common\bin\CC254x_BLE_HCI_TL_Full.lib</name>
+      <excluded>
+        <configuration>CC2541DK-MINI Keyfob</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Libraries\Common\bin\CC254x_BLE_HCI_TL_None.lib</name>
@@ -7812,10 +7823,22 @@
   <group>
     <name>PROFILES</name>
     <file>
+      <name>$PROJ_DIR$\..\..\Profiles\Roles\central.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\Profiles\Roles\central.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\Profiles\DevInfo\devinfoservice.c</name>
+      <excluded>
+        <configuration>CC2541DK-MINI Keyfob</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Profiles\DevInfo\devinfoservice.h</name>
+      <excluded>
+        <configuration>CC2541DK-MINI Keyfob</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Profiles\Roles\gap.c</name>
@@ -7861,9 +7884,15 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Profiles\Roles\peripheral.c</name>
+      <excluded>
+        <configuration>CC2541DK-MINI Keyfob</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Profiles\Roles\peripheral.h</name>
+      <excluded>
+        <configuration>CC2541DK-MINI Keyfob</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Profiles\Roles\peripheralBroadcaster.c</name>
@@ -7891,13 +7920,20 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Profiles\SimpleProfile\simpleGATTprofile.c</name>
+      <excluded>
+        <configuration>CC2541DK-MINI Keyfob</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Profiles\SimpleProfile\simpleGATTprofile.h</name>
+      <excluded>
+        <configuration>CC2541DK-MINI Keyfob</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Profiles\Keys\simplekeys.c</name>
       <excluded>
+        <configuration>CC2541DK-MINI Keyfob</configuration>
         <configuration>CC2541</configuration>
         <configuration>CC2541-OAD-ImgA</configuration>
         <configuration>CC2541-OAD-ImgB</configuration>
@@ -7908,6 +7944,7 @@
     <file>
       <name>$PROJ_DIR$\..\..\Profiles\Keys\simplekeys.h</name>
       <excluded>
+        <configuration>CC2541DK-MINI Keyfob</configuration>
         <configuration>CC2541</configuration>
         <configuration>CC2541-OAD-ImgA</configuration>
         <configuration>CC2541-OAD-ImgB</configuration>

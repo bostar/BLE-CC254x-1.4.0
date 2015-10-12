@@ -53,10 +53,10 @@
 #include "hal_led.h"
 
 // HID includes
-#include "usb_framework.h"
-#include "usb_hid.h"
-#include "usb_hid_reports.h"
-#include "usb_suspend.h"
+//#include "usb_framework.h"
+//#include "usb_hid.h"
+//#include "usb_hid_reports.h"
+//#include "usb_suspend.h"
 
 // OSAL includes
 #include "OSAL.h"
@@ -86,6 +86,8 @@
 /* Application */
 #include "hidapp.h"
 
+#include "zlg_bsp.h"
+
 /* ------------------------------------------------------------------------------------------------
  *                                           Constants
  * ------------------------------------------------------------------------------------------------
@@ -111,7 +113,7 @@
 #define INIT_CONNECT_TIMEOUT                  1000
 
 // Number of scans when device not bonded
-#define MAX_NUM_SCANS                         5
+#define MAX_NUM_SCANS                         50
 
 // Default passcode
 #define DEFAULT_PASSCODE                      0
@@ -329,7 +331,7 @@ void Hidapp_Init( uint8 taskId )
   // Setup the GAP Bond Manager
   {
     uint32 passkey = DEFAULT_PASSCODE;
-    uint8 pairMode = GAPBOND_PAIRING_MODE_WAIT_FOR_REQ;
+    uint8 pairMode = GAPBOND_PAIRING_MODE_INITIATE;
     uint8 mitm = DEFAULT_MITM_MODE;
     uint8 ioCap = DEFAULT_IO_CAPABILITIES;
     uint8 bonding = DEFAULT_BONDING_MODE;
@@ -346,8 +348,8 @@ void Hidapp_Init( uint8 taskId )
   }
 
   // USB suspend entry/exit hook function setup
-  pFnSuspendEnterHook = hidappSuspendEnter;
-  pFnSuspendExitHook = hidappSuspendExit;
+  //pFnSuspendEnterHook = hidappSuspendEnter;
+  //pFnSuspendExitHook = hidappSuspendExit;
 
   // Initialize GATT Client
   VOID GATT_InitClient();
@@ -371,7 +373,7 @@ void Hidapp_Init( uint8 taskId )
   GAPBondMgr_Register( &gapBondCBs );
 
   //HalKeyConfig(HAL_KEY_INTERRUPT_ENABLE, hidappHandleKeys);
-  RegisterForKeys( hidappTaskId );
+  //RegisterForKeys( hidappTaskId );
 
   // set up continued initialization from within OSAL task loop
   VOID osal_start_timerEx( taskId, HIDAPP_EVT_START, 100 );
@@ -436,7 +438,40 @@ uint16 Hidapp_ProcessEvent(uint8 taskId, uint16 events)
   if ( events & HIDAPP_EVT_START )
   {
     hidappStart();
+  //if (keys & HAL_KEY_SW_1)
+  {
+    // If bonds exist, erase all of them
+    if ( ( hidappBondCount() > 0 ) && ( hidappBLEState != BLE_STATE_CONNECTED ) )
+    {
+      if ( hidappBLEState == BLE_STATE_CONNECTING )
+      {
+        hidappBLEState = BLE_STATE_DISCONNECTING;
+        VOID GAPCentralRole_TerminateLink( GAP_CONNHANDLE_INIT );
+      }
 
+      VOID GAPBondMgr_SetParameter( GAPBOND_ERASE_ALLBONDS, 0, NULL );
+    }
+  }
+
+  //if (keys & HAL_KEY_SW_2)
+  {
+    if ( hidappBLEState == BLE_STATE_CONNECTED )
+    {
+      hidappBLEState = BLE_STATE_DISCONNECTING;
+      VOID GAPCentralRole_TerminateLink( connHandle );
+    }
+    else if ( hidappBLEState == BLE_STATE_IDLE )
+    {
+      #if defined ( NANO_DONGLE )
+
+      HalLedSet( HAL_LED_2, HAL_LED_MODE_OFF ); // red led
+
+      // Notify our task to start initial discovey
+      osal_set_event( hidappTaskId, HIDAPP_EVT_START_DISCOVERY );
+
+      #endif //  #if defined ( NANO_DONGLE )
+    }
+  }
     return (events ^ HIDAPP_EVT_START);
   }
 
@@ -611,10 +646,22 @@ void hidappSuspendExit( void )
 
 static void hidappProcessGATTMsg( gattMsgEvent_t *pPkt )
 {
+  static uint8 temp = 0;
   // Build the message first
   switch ( pPkt->method )
   {
     case ATT_HANDLE_VALUE_NOTI:
+      if(temp == 0)
+      {
+      setMotorForward();
+      temp = 1;
+      }
+      else
+      {
+        setMotorReverse();
+        temp = 0;
+      }
+#if 0
       // First try to send out pending HID report
       if ( reportRetries > 0 )
       {
@@ -633,6 +680,7 @@ static void hidappProcessGATTMsg( gattMsgEvent_t *pPkt )
         reportRetries = 1;
         osal_start_timerEx( hidappTaskId, HIDAPP_EVT_REPORT_RETRY, HIDAPP_INPUT_RETRY_TIMEOUT );
       }
+#endif
       break;
 
     case ATT_FIND_BY_TYPE_VALUE_RSP:
@@ -798,17 +846,17 @@ static uint8 hidappSendInReport( attHandleValueNoti_t *pNoti )
   if( pNoti->handle == keyCharHandle )
   {
     // Keyboard report
-    endPoint = USB_HID_KBD_EP;
+    //endPoint = USB_HID_KBD_EP;
   }
   else if (pNoti->handle == mouseCharHandle )
   {
     // Mouse report
-    endPoint = USB_HID_MOUSE_EP;
+    //endPoint = USB_HID_MOUSE_EP;
   }
   else if ( pNoti->handle == consumerCtrlCharHandle )
   {
     // Consumer Control report
-    endPoint = USB_HID_CC_EP;
+    //endPoint = USB_HID_CC_EP;
   }
   else
   {
@@ -818,7 +866,7 @@ static uint8 hidappSendInReport( attHandleValueNoti_t *pNoti )
 
   HalLedSet( HAL_LED_2, HAL_LED_MODE_BLINK );
 
-  return ( hidSendHidInReport(pNoti->value, endPoint, pNoti->len) );
+  return 1;//( hidSendHidInReport(pNoti->value, endPoint, pNoti->len) );
 }
 
 /*********************************************************************
@@ -890,10 +938,13 @@ static void hidappCentralEventCB( gapCentralRoleEvent_t *pEvent )
       }
 
       if ( ( peerDeviceFound == TRUE ) &&
-           ( pEvent->deviceInfo.eventType == GAP_ADRPT_SCAN_RSP ) &&
-           hidappFindHIDRemote( pEvent->deviceInfo.pEvtData,
-                                pEvent->deviceInfo.dataLen ) )
+           ( pEvent->deviceInfo.eventType == GAP_ADRPT_SCAN_RSP ))
+            // &&
+           //hidappFindHIDRemote( pEvent->deviceInfo.pEvtData,
+           //                     pEvent->deviceInfo.dataLen ) )
       {
+        if(hidappFindHIDRemote( pEvent->deviceInfo.pEvtData,
+                                pEvent->deviceInfo.dataLen ))
         // End device discovery
         VOID GAPCentralRole_CancelDiscovery();
       }
@@ -1168,7 +1219,8 @@ static void hidappPairStateCB( uint16 connHandle, uint8 state, uint8 status )
 
         // Begin Service Discovery of GATT Service
         serviceToDiscover = GATT_SERVICE_UUID;
-        hidappDiscoverService( connHandle, GATT_SERVICE_UUID );
+        hidappDiscoverService( connHandle, HID_SERV_UUID);//GATT_SERVICE_UUID );
+        //GATT_DiscAllPrimaryServices(connHandle,hidappTaskId);
       }
       break;
 
@@ -1303,28 +1355,24 @@ static uint8 hidappFindHIDRemote( uint8* pData, uint8 length )
 {
   static uint8 remoteName[] =
   {
-    'H',
-    'I',
+    'C',
+    'O',
     'D',
-    ' ',
     'A',
-    'd',
-    'v',
-    'R',
+    'W',
+    'h',
     'e',
-    'm',
-    'o',
-    't',
-    'e'
+    'e',
+    'l',
   };
 
   // move pointer to the start of the scan response data.
-  pData += 2;
+  pData += 5;
 
   // adjust length as well
   length -= 2;
 
-  return osal_memcmp( remoteName, pData, length );
+  return osal_memcmp( remoteName, pData, 9);//length );
 }
 
 /*********************************************************************

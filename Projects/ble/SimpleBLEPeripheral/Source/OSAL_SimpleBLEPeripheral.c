@@ -72,10 +72,10 @@
 
 /* Profiles */
 #include "peripheral.h"
-
+#include "central.h"
 
 /* Application */
-#include "simpleBLEPeripheral.h"
+#include "hidapp.h"
 #include "OnBoard.h"
 #if defined ( ZIGBEE_APP )
 #if defined (_USE_ZM516X_)
@@ -102,14 +102,14 @@ const pTaskEventHandlerFn tasksArr[] =
   GAP_ProcessEvent,                                                 // task 5
   GATT_ProcessEvent,                                                // task 6
   SM_ProcessEvent,                                                  // task 7
-  GAPRole_ProcessEvent,                                             // task 8
+  GAPCentralRole_ProcessEvent,                                             // task 8
   GAPBondMgr_ProcessEvent,                                          // task 9
-  GATTServApp_ProcessEvent,                                         // task 10
-#if defined ( ZIGBEE_APP )
-  Zigbee_ProcessEvent                                              // task 11
-#else 
-  SimpleBLEPeripheral_ProcessEvent                                  // task 12
-#endif
+  //GATTServApp_ProcessEvent,                                         // task 10
+//#if defined ( ZIGBEE_APP )
+  Zigbee_ProcessEvent,                                              // task 11
+//#else 
+  Hidapp_ProcessEvent                                  // task 12
+//#endif
 };
 
 const uint8 tasksCnt = sizeof( tasksArr ) / sizeof( tasksArr[0] );
@@ -163,17 +163,17 @@ void osalInitTasks( void )
   SM_Init( taskID++ );
 
   /* Profiles */
-  GAPRole_Init( taskID++ );
+  GAPCentralRole_Init( taskID++ );
   GAPBondMgr_Init( taskID++ );
 
-  GATTServApp_Init( taskID++ );
+  //GATTServApp_Init( taskID++ );
 
   /* Application */
-#if defined ( ZIGBEE_APP )
-  Zigbee_Init( taskID );
-#else
-  SimpleBLEPeripheral_Init( taskID ); 
-#endif
+//#if defined ( ZIGBEE_APP )
+  Zigbee_Init( taskID ++ );
+//#else
+  Hidapp_Init( taskID ); 
+//#endif
 }
 
 /*********************************************************************
