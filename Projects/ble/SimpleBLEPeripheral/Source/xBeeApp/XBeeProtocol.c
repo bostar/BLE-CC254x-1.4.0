@@ -285,7 +285,7 @@ uint32 SleepModeAndJoinNet(void)
             {
                 XBeeSendAT("RE");
                 JoinState = SetCB;
-                reval = 500;
+                reval = 1000;
             }
             break;
         case SetCB:
@@ -293,7 +293,7 @@ uint32 SleepModeAndJoinNet(void)
             {
                 XBeeLeaveNet();
                 JoinState = GetSM;
-                reval = 1000;
+                reval = 2000;
             }
             break;
         case GetSM:
@@ -357,7 +357,7 @@ uint32 SleepModeAndJoinNet(void)
             if(XBeeInfo.InPark != 1)
             {
                 XBeeReqJionPark();
-                reval = 1500;
+                reval = 4000;
             }
             break;
         default:
@@ -405,10 +405,10 @@ uint16 ReportLockState(void)
         XBeeLockState(ParkLockSuccess);
     else if(GetCurrentMotorState() == unlock )
         XBeeLockState(ParkUnlockSuccess);   
-    else if(LockObjState == lock)
-        XBeeLockState(ParkLockFailed);
-    else if(LockObjState == unlock)
-        XBeeLockState(ParkLockFailed);
+    //else if(LockObjState == lock)
+       // XBeeLockState(ParkLockFailed);
+    //else if(LockObjState == unlock)
+        //XBeeLockState(ParkLockFailed);
     return 0;
 }
 /**********************************************************

@@ -39,7 +39,8 @@ void XBeeJoinNet(void)
         panID[i] = XBeeInfo.panID[i];
     XBeeSetPanID(panID,NO_RES);             //设置ID的值
     XBeeSetChannel(SCAN_CHANNEL,NO_RES);    //设置信道
-    XBeeSetSD(3,NO_RES);
+    //XBeeSetSD(3,NO_RES);
+    XBeeSetZS(1,NO_RES);
     XbeeRunAC(NO_RES);
     XBeeRunWR(NO_RES);
 }

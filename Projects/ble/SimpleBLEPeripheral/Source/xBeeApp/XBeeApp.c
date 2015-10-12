@@ -96,6 +96,10 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         else
         {
             MotorStop();
+            if(LockObjState == lock)
+                XBeeLockState(ParkLockFailed);
+            else if(LockObjState == unlock)
+                XBeeLockState(ParkLockFailed);
             osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, 4000 );
         }
         return (events ^ XBEE_MOTOR_CTL_EVT);
