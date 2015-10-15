@@ -87,6 +87,7 @@
 #include "hidapp.h"
 
 #include "zlg_bsp.h"
+#include "zlg_protocol.h"
 
 /* ------------------------------------------------------------------------------------------------
  *                                           Constants
@@ -656,8 +657,9 @@ static void hidappProcessGATTMsg( gattMsgEvent_t *pPkt )
     case ATT_HANDLE_VALUE_NOTI:
       if(temp == 0)
       {
-      setMotorForward();
-      temp += 1;
+        setMotorReverse();
+        parkingState->lockState = cmdLocking;
+        temp += 1;
       }
       else if(temp == 1)
       {
@@ -666,7 +668,8 @@ static void hidappProcessGATTMsg( gattMsgEvent_t *pPkt )
       }
       else if(temp == 2)
       {
-        setMotorReverse();
+        setMotorForward();
+        parkingState->lockState = cmdUnlocking;
         temp += 1;
       }
       else if(temp == 3)
