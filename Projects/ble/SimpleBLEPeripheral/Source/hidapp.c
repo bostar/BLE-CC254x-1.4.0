@@ -438,6 +438,7 @@ uint16 Hidapp_ProcessEvent(uint8 taskId, uint16 events)
   if ( events & HIDAPP_EVT_START )
   {
     hidappStart();
+#if 0
   //if (keys & HAL_KEY_SW_1)
   {
     // If bonds exist, erase all of them
@@ -472,6 +473,8 @@ uint16 Hidapp_ProcessEvent(uint8 taskId, uint16 events)
       #endif //  #if defined ( NANO_DONGLE )
     }
   }
+#endif
+  osal_set_event( hidappTaskId, HIDAPP_EVT_START_DISCOVERY );
     return (events ^ HIDAPP_EVT_START);
   }
 
@@ -654,12 +657,27 @@ static void hidappProcessGATTMsg( gattMsgEvent_t *pPkt )
       if(temp == 0)
       {
       setMotorForward();
-      temp = 1;
+      temp += 1;
       }
-      else
+      else if(temp == 1)
+      {
+        //setMotorReverse();
+        temp += 1;
+      }
+      else if(temp == 2)
       {
         setMotorReverse();
+        temp += 1;
+      }
+      else if(temp == 3)
+      {
+        //setMotorReverse();
         temp = 0;
+      }
+      else if(temp == 4)
+      {
+        setMotorReverse();
+        temp += 1;
       }
 #if 0
       // First try to send out pending HID report
@@ -959,17 +977,17 @@ static void hidappCentralEventCB( gapCentralRoleEvent_t *pEvent )
         peerDeviceFound = FALSE;
         numScans = 0;
       }
-      else if ( numScans > 0 )
+      //else if ( numScans > 0 )
       {
-        numScans--;
+        //numScans--;
 
         // Scan again
         hidappDiscoverDevices();
       }
-      else
+      //else
       {
         // Go idle
-        hidappSetIdle();
+        //hidappSetIdle();
       }
       break;
 
@@ -1355,6 +1373,7 @@ static uint8 hidappFindHIDRemote( uint8* pData, uint8 length )
 {
   static uint8 remoteName[] =
   {
+#if 1
     'C',
     'O',
     'D',
@@ -1364,6 +1383,22 @@ static uint8 hidappFindHIDRemote( uint8* pData, uint8 length )
     'e',
     'e',
     'l',
+#else
+    'M',
+    'i',
+    'l',
+    'a',
+    'k',
+    'a',
+    ' ',
+    'S',
+    'h',
+    'u',
+    't',
+    't',
+    'e',
+    'r',
+#endif
   };
 
   // move pointer to the start of the scan response data.
