@@ -6,20 +6,20 @@
       <Debug-Log>
         
         
-      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1307</ColumnWidth1></Debug-Log>
+      <PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Build</Factory></Window><Window><Factory>Find-in-Files</Factory></Window><Window><Factory>Select-Ambiguous-Definitions</Factory></Window><Window><Factory>Find-All-References</Factory></Window><Window><Factory>WATCH_1</Factory></Window></Windows></PreferedWindows><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1307</ColumnWidth1></Debug-Log>
       <Build>
         
         
         
         
-      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>980</ColumnWidth1><ColumnWidth2>261</ColumnWidth2><ColumnWidth3>65</ColumnWidth3></Build>
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>980</ColumnWidth1><ColumnWidth2>261</ColumnWidth2><ColumnWidth3>65</ColumnWidth3><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Debug-Log</Factory></Window><Window><Factory>Find-in-Files</Factory></Window><Window><Factory>Select-Ambiguous-Definitions</Factory></Window><Window><Factory>Find-All-References</Factory></Window><Window><Factory>WATCH_1</Factory></Window></Windows></PreferedWindows></Build>
       <Workspace>
         <ColumnWidths>
           
           
           
           
-        <Column0>182</Column0><Column1>27</Column1><Column2>27</Column2><Column3>0</Column3></ColumnWidths>
+        <Column0>187</Column0><Column1>27</Column1><Column2>27</Column2><Column3>0</Column3></ColumnWidths>
       <PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></Workspace>
       <Disassembly>
         <PreferedWindows>
@@ -81,7 +81,7 @@
       <WATCH_1>
         <expressions>
           
-        <item>XBeeInfo</item><item>ReadFlashFlag</item><item>hmc5983DataStandard</item><item>FlashLockState</item><item>LockObjState</item><item>MotorCurrentState</item><item>panID</item><item>temp_rbuf</item><item>hmc5983Data</item><item>sen</item><item>sen</item><item>sen_v_0</item><item>sen_v_1</item><item>temp_rbuf</item><item>[11]</item><item>FlashLockState</item><item>panID</item><item>rf_data</item><item>XBeeUartRec</item><item>temp_rbuf</item><item>time_delay</item><item>panID</item><item></item></expressions>
+        <item>XBeeInfo</item><item>ReadFlashFlag</item><item>hmc5983DataStandard</item><item>FlashLockState</item><item>LockObjState</item><item>MotorCurrentState</item><item>panID</item><item>temp_rbuf</item><item>hmc5983Data</item><item>sen</item><item>sen</item><item>sen_v_0</item><item>sen_v_1</item><item>temp_rbuf</item><item>[11]</item><item>FlashLockState</item><item>panID</item><item>rf_data</item><item>XBeeUartRec</item><item>temp_rbuf</item><item>time_delay</item><item>panID</item><item/></expressions>
         <col-names>
           
           
@@ -94,7 +94,7 @@
           
           
         <item>92</item><item>150</item><item>100</item><item>99</item></col-widths>
-      <PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></WATCH_1>
+      <PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Debug-Log</Factory></Window><Window><Factory>Build</Factory></Window><Window><Factory>Find-in-Files</Factory></Window><Window><Factory>Select-Ambiguous-Definitions</Factory></Window><Window><Factory>Find-All-References</Factory></Window></Windows></PreferedWindows></WATCH_1>
       <WATCH_2>
         <expressions>
           
@@ -132,7 +132,7 @@
       <WATCH_4>
         <expressions>
           
-        <item>JoinState</item><item>XBeeUartRec</item><item>hmc5983Data</item><item>XBeeInfo</item><item>XBeeInfo</item><item>XBeeInfo</item><item>time</item><item></item></expressions>
+        <item>JoinState</item><item>XBeeUartRec</item><item>hmc5983Data</item><item>XBeeInfo</item><item>XBeeInfo</item><item>XBeeInfo</item><item>time</item><item>panID</item><item>sen_v_0</item><item>sen_v_1</item><item>cnt</item><item>sen</item><item>cnt_state</item><item></item></expressions>
         <col-names>
           
           
@@ -146,28 +146,12 @@
           
         <item>100</item><item>159</item><item>100</item><item>100</item></col-widths>
       <PreferedWindows><Position>4</Position><ScreenPosX>7</ScreenPosX><ScreenPosY>300</ScreenPosY><Windows/></PreferedWindows></WATCH_4>
-    <Find-in-Files><ColumnWidth0>378</ColumnWidth0><ColumnWidth1>54</ColumnWidth1><ColumnWidth2>649</ColumnWidth2><ColumnWidth3>251</ColumnWidth3></Find-in-Files><TerminalIO><PreferedWindows><Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows><InputSource>1</InputSource><InputMode>10</InputMode><Filename>$PROJ_DIR$\TermIOInput.txt</Filename><InputEcho>1</InputEcho><ShowReset>0</ShowReset></TerminalIO><QuickWatch><col-names><item>Expression</item><item>Location</item><item>Type</item><item>Value</item></col-names><col-widths><item>100</item><item>150</item><item>100</item><item>100</item></col-widths><QWatchHistory><item>FlashLockState</item><item>hmc5983DataStandard</item><item>FlashLockState.hmc5983Data</item><item>temp_rbuf</item><item>numBytes</item><item>XBeeUartEn</item></QWatchHistory><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></QuickWatch><Memory><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows><FindAsHex>0</FindAsHex></Memory><Select-Ambiguous-Definitions><ColumnWidth0>313</ColumnWidth0><ColumnWidth1>44</ColumnWidth1><ColumnWidth2>537</ColumnWidth2></Select-Ambiguous-Definitions><Find-All-References><ColumnWidth0>171</ColumnWidth0><ColumnWidth1>24</ColumnWidth1><ColumnWidth2>294</ColumnWidth2></Find-All-References></Static>
+    <Find-in-Files><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Debug-Log</Factory></Window><Window><Factory>Build</Factory></Window><Window><Factory>Select-Ambiguous-Definitions</Factory></Window><Window><Factory>Find-All-References</Factory></Window><Window><Factory>WATCH_1</Factory></Window></Windows></PreferedWindows><ColumnWidth0>378</ColumnWidth0><ColumnWidth1>54</ColumnWidth1><ColumnWidth2>649</ColumnWidth2><ColumnWidth3>251</ColumnWidth3></Find-in-Files><TerminalIO><PreferedWindows><Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows><InputSource>1</InputSource><InputMode>10</InputMode><Filename>$PROJ_DIR$\TermIOInput.txt</Filename><InputEcho>1</InputEcho><ShowReset>0</ShowReset></TerminalIO><QuickWatch><col-names><item>Expression</item><item>Location</item><item>Type</item><item>Value</item></col-names><col-widths><item>100</item><item>150</item><item>100</item><item>100</item></col-widths><QWatchHistory><item>FlashLockState</item><item>hmc5983DataStandard</item><item>FlashLockState.hmc5983Data</item><item>temp_rbuf</item><item>numBytes</item><item>XBeeUartEn</item></QWatchHistory><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></QuickWatch><Memory><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows><FindAsHex>0</FindAsHex></Memory><Select-Ambiguous-Definitions><ColumnWidth0>313</ColumnWidth0><ColumnWidth1>44</ColumnWidth1><ColumnWidth2>537</ColumnWidth2><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Debug-Log</Factory></Window><Window><Factory>Build</Factory></Window><Window><Factory>Find-in-Files</Factory></Window><Window><Factory>Find-All-References</Factory></Window><Window><Factory>WATCH_1</Factory></Window></Windows></PreferedWindows></Select-Ambiguous-Definitions><Find-All-References><ColumnWidth0>171</ColumnWidth0><ColumnWidth1>24</ColumnWidth1><ColumnWidth2>294</ColumnWidth2><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Debug-Log</Factory></Window><Window><Factory>Build</Factory></Window><Window><Factory>Find-in-Files</Factory></Window><Window><Factory>Select-Ambiguous-Definitions</Factory></Window><Window><Factory>WATCH_1</Factory></Window></Windows></PreferedWindows></Find-All-References></Static>
     <Windows>
       
       
       
-    <Wnd0>
-        <Tabs>
-          <Tab>
-            <Identity>TabID-5062-14632</Identity>
-            <TabName>Debug Log</TabName>
-            <Factory>Debug-Log</Factory>
-            <Session/>
-          </Tab>
-          <Tab>
-            <Identity>TabID-4540-14641</Identity>
-            <TabName>Build</TabName>
-            <Factory>Build</Factory>
-            <Session/>
-          </Tab>
-        <Tab><Identity>TabID-21103-9485</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab><Tab><Identity>TabID-23683-20285</Identity><TabName>Watch 4</TabName><Factory>WATCH_4</Factory></Tab><Tab><Identity>TabID-27553-2922</Identity><TabName>Ambiguous Definitions</TabName><Factory>Select-Ambiguous-Definitions</Factory><Session/></Tab><Tab><Identity>TabID-2263-18440</Identity><TabName>References</TabName><Factory>Find-All-References</Factory><Session/></Tab><Tab><Identity>TabID-11977-22924</Identity><TabName>Watch 1</TabName><Factory>WATCH_1</Factory></Tab></Tabs>
-        
-      <SelectedTab>0</SelectedTab></Wnd0><Wnd1><Tabs><Tab><Identity>TabID-20014-16398</Identity><TabName>Breakpoints</TabName><Factory>Breakpoints</Factory></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd1><Wnd2><Tabs><Tab><Identity>TabID-26538-25734</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>SimpleBLEPeripheral</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/APP</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/APP/xBeeApp</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd2><Wnd4><Tabs><Tab><Identity>TabID-9901-16371</Identity><TabName>Disassembly</TabName><Factory>Disassembly</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd4></Windows>
+    <Wnd5><Tabs><Tab><Identity>TabID-20014-16398</Identity><TabName>Breakpoints</TabName><Factory>Breakpoints</Factory></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd5><Wnd6><Tabs><Tab><Identity>TabID-26538-25734</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>SimpleBLEPeripheral</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/APP</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/APP/xBeeApp</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd6><Wnd7><Tabs><Tab><Identity>TabID-9901-16371</Identity><TabName>Disassembly</TabName><Factory>Disassembly</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd7><Wnd8><Tabs><Tab><Identity>TabID-23683-20285</Identity><TabName>Watch 4</TabName><Factory>WATCH_4</Factory></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd8><Wnd9><Tabs><Tab><Identity>TabID-9607-31944</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab><Tab><Identity>TabID-13473-31546</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd9></Windows>
     <Editor>
       
       
@@ -180,7 +164,7 @@
       
       
       
-    <Top><Row0><Sizes><Toolbar-03C871E0><key>iaridepm.enu1</key></Toolbar-03C871E0></Sizes></Row0><Row1><Sizes><Toolbar-0A1D07F8><key>debuggergui.enu1</key></Toolbar-0A1D07F8></Sizes></Row1><Row2><Sizes/></Row2></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>276</Bottom><Right>273</Right><x>-2</x><y>-2</y><xscreen>230</xscreen><yscreen>188</yscreen><sizeHorzCX>179688</sizeHorzCX><sizeHorzCY>293750</sizeHorzCY><sizeVertCX>214844</sizeVertCX><sizeVertCY>434375</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>295</Bottom><Right>278</Right><x>-2</x><y>-2</y><xscreen>280</xscreen><yscreen>297</yscreen><sizeHorzCX>218750</sizeHorzCX><sizeHorzCY>464063</sizeHorzCY><sizeVertCX>912500</sizeVertCX><sizeVertCY>1315625</sizeVertCY></Rect></Wnd1><Wnd0><Rect><Top>0</Top><Left>0</Left><Bottom>42</Bottom><Right>-1</Right><x>276</x><y>-2</y><xscreen>935</xscreen><yscreen>297</yscreen><sizeHorzCX>730469</sizeHorzCX><sizeHorzCY>464063</sizeHorzCY><sizeVertCX>912500</sizeVertCX><sizeVertCY>1315625</sizeVertCY></Rect></Wnd0><Wnd4><Rect><Top>0</Top><Left>0</Left><Bottom>42</Bottom><Right>-1</Right><x>1209</x><y>-2</y><xscreen>73</xscreen><yscreen>297</yscreen><sizeHorzCX>57031</sizeHorzCX><sizeHorzCY>464063</sizeHorzCY><sizeVertCX>29688</sizeVertCX><sizeVertCY>293750</sizeVertCY></Rect></Wnd4></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-011871E0><key>iaridepm.enu1</key></Toolbar-011871E0></Sizes></Row0><Row1><Sizes><Toolbar-0C20E208><key>debuggergui.enu1</key></Toolbar-0C20E208></Sizes></Row1><Row2><Sizes/></Row2></Top><Left><Row0><Sizes><Wnd6><Rect><Top>-2</Top><Left>-2</Left><Bottom>339</Bottom><Right>278</Right><x>-2</x><y>-2</y><xscreen>110</xscreen><yscreen>166</yscreen><sizeHorzCX>85938</sizeHorzCX><sizeHorzCY>259375</sizeHorzCY><sizeVertCX>218750</sizeVertCX><sizeVertCY>532813</sizeVertCY></Rect></Wnd6></Sizes></Row0></Left><Right><Row0><Sizes><Wnd8><Rect><Top>-2</Top><Left>-2</Left><Bottom>339</Bottom><Right>371</Right><x>-2</x><y>-2</y><xscreen>296</xscreen><yscreen>177</yscreen><sizeHorzCX>231250</sizeHorzCX><sizeHorzCY>276563</sizeHorzCY><sizeVertCX>291406</sizeVertCX><sizeVertCY>532813</sizeVertCY></Rect></Wnd8></Sizes></Row0></Right><Bottom><Row0><Sizes><Wnd5><Rect><Top>-2</Top><Left>-2</Left><Bottom>232</Bottom><Right>357</Right><x>-2</x><y>-2</y><xscreen>359</xscreen><yscreen>234</yscreen><sizeHorzCX>280469</sizeHorzCX><sizeHorzCY>365625</sizeHorzCY><sizeVertCX>437500</sizeVertCX><sizeVertCY>1164063</sizeVertCY></Rect></Wnd5><Wnd9><Rect><Top>0</Top><Left>0</Left><Bottom>0</Bottom><Right>7</Right><x>355</x><y>-2</y><xscreen>549</xscreen><yscreen>234</yscreen><sizeHorzCX>428906</sizeHorzCX><sizeHorzCY>365625</sizeHorzCY><sizeVertCX>75000</sizeVertCX><sizeVertCY>276563</sizeVertCY></Rect></Wnd9><Wnd7><Rect><Top>0</Top><Left>0</Left><Bottom>0</Bottom><Right>7</Right><x>902</x><y>-2</y><xscreen>380</xscreen><yscreen>234</yscreen><sizeHorzCX>296875</sizeHorzCX><sizeHorzCY>365625</sizeHorzCY><sizeVertCX>14063</sizeVertCX><sizeVertCY>259375</sizeVertCY></Rect></Wnd7></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Project>
 

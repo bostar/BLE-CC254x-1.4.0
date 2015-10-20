@@ -39,6 +39,7 @@ uint16 SendString(uint8 in ,uint8 len );
 uint16 ProcessTransmitStatus(XBeeUartRecDataDef temp_rbuf);
 void ProcessAT(volatile XBeeUartRecDataDef temp_rbuf);
 void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf);
+void ProcessNodeIden(XBeeUartRecDataDef temp_rbuf);
 void ProcessAR(XBeeUartRecDataDef temp_rbuf);
 uint8 SetXBeeSleepMode(void);
 uint8 JionParkNet(void);

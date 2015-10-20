@@ -54,7 +54,7 @@
 #include "hci_tl.h"
 
 #if defined ( OSAL_CBTIMER_NUM_TASKS )
-  #include "osal_cbTimer.h"
+  #include "osal_cbTimer.h" 
 #endif
 
 /* L2CAP */

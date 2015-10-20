@@ -24,7 +24,7 @@ extern "C"
 #define XBEE_READ_SENSER_EVT                               0x0008
 #define XBEE_REC_DATA_PROCESS_EVT                          0x0010
 #define XBEE_TEST_EVT                                      0x0020
-#define z3                                     0x0040
+#define XBEE_CLOSE_BUZZER_EVT                              0x0040
 #define z4                                      0x0080
 #define XBEE_MOTOR_CTL_EVT                                 0x0100
 #define XBEE_HMC5983_EVT                                   0x0200
@@ -33,7 +33,6 @@ extern "C"
 #define z8                                    0x1000
 #define z6                         0x2000
 #define z9                         0x4000
-#define z7                         0x8000
   
 #define XBeeOpenBuzzer()   XBeeSetIO(IO_P2,High)
 #define XBeeCloseBuzzer()  XBeeSetIO(IO_P2,Low)
@@ -151,6 +150,8 @@ typedef struct
     uint8 panID[8];
     uint8 FlagReadFlash;
     uint8 ParentLost;
+    uint8 GetSM;
+    uint8 Test;
 }XBeeInfoType;
 
 typedef struct 

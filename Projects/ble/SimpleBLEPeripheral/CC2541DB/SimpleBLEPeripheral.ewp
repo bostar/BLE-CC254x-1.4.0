@@ -308,6 +308,7 @@
           <state>_XBEE_APP_</state>
           <state>ZAPP_P1</state>
           <state>HAL_ADC=TRUE</state>
+          <state>_TEST_LARGE_MODES</state>
         </option>
         <option>
           <name>CCPreprocFile</name>

@@ -40,7 +40,7 @@ void XBeeJoinNet(void)
     XBeeSetPanID(panID,NO_RES);             //设置ID的值
     XBeeSetChannel(SCAN_CHANNEL,NO_RES);    //设置信道
     //XBeeSetSD(3,NO_RES);
-    XBeeSetZS(1,NO_RES);
+    //XBeeSetZS(1,NO_RES);
     XbeeRunAC(NO_RES);
     XBeeRunWR(NO_RES);
 }
@@ -270,19 +270,32 @@ uint8 ControlMotor(void)
     switch(LockObjState)
     {
         case lock:
-            MotorLock();
-            if(MotorCurrentState == LockObjState || MotorCurrentState == over_lock)
+            if(MotorCurrentState == LockObjState)
             {
                 MotorStop();
                 reval = 1;
             }
+            else if(MotorCurrentState == over_lock)
+            {
+                MotorUnlock();
+                reval = 0;
+            }
+            else
+            {
+                MotorLock();
+                reval = 0;
+            }
             break;
         case unlock:
-            MotorUnlock();
             if(MotorCurrentState == LockObjState)
             {
                 MotorStop();
                 reval = 2;
+            }
+            else
+            {
+                MotorUnlock();
+                reval = 0;
             }
             break;
         default:

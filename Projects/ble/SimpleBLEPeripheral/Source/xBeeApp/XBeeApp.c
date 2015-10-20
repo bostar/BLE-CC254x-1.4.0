@@ -56,6 +56,7 @@ void XBeeInit( uint8 task_id )
     InitUart1();  //初始化串口1
     HalAdcSetReference ( HAL_ADC_REF_AVDD );
     RegisterForKeys( XBeeTaskID );
+    //osal_set_event( XBeeTaskID, XBEE_MOTOR_CTL_EVT );
     osal_set_event( XBeeTaskID, XBEE_START_DEVICE_EVT );  //触发事件
     //osal_set_event( XBeeTaskID, XBEE_SCAN_ROUTE_PATH );  
     //osal_set_event( XBeeTaskID, XBEE_HMC5983_EVT );
@@ -65,18 +66,21 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
 {
     VOID  task_id;    
     uint8 i;
-    if ( events & XBEE_START_DEVICE_EVT )       //起始任务
+    uint32 reval;
+    if ( events & XBEE_START_DEVICE_EVT )       //start event
     {
         for(i=0;i<8;i++)
             XBeeInfo.panID[i] = 0;
         SenFlag=0x88;
         parkingState.vehicleState = ParkingUnUsed;
         LockObjState = unlock;
-        osal_set_event( XBeeTaskID, XBEE_MOTOR_CTL_EVT );
-        osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
+        XBeeReset();
+        osal_set_event( XBeeTaskID, XBEE_MOTOR_CTL_EVT );   
+        osal_set_event( XBeeTaskID, XBEE_CLOSE_BUZZER_EVT );
+        //osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
         return (events ^ XBEE_START_DEVICE_EVT) ;
     }
-    if( events & XBEE_JOIN_NET_EVT)             //加入网络、设置休眠
+    if( events & XBEE_JOIN_NET_EVT)             //join the park net
     {
         uint32 time_delay;
         if(XBeeInfo.InPark != 1)
@@ -86,12 +90,12 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         }
         return (events ^ XBEE_JOIN_NET_EVT) ;
     }
-    if( events & XBEE_MOTOR_CTL_EVT )           //控制MOTOR动作
+    if( events & XBEE_MOTOR_CTL_EVT )           //control motor
     {
         if(CheckMotor() == 0) //when 0 the motor works properly
-        {                     //监测周期，checkmotor内计数10，checkmotor没10ms运行，电流监测周期是100ms
-            if(ControlMotor() != 1 && ControlMotor() != 2)
-                osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, 10 );
+        {
+            ControlMotor();
+            reval = 10;
         }
         else
         {
@@ -100,24 +104,27 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
                 XBeeLockState(ParkLockFailed);
             else if(LockObjState == unlock)
                 XBeeLockState(ParkLockFailed);
-            osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, 4000 );
+            reval = 4000;
         }
+        osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, reval );
         return (events ^ XBEE_MOTOR_CTL_EVT);
     }
-    if(events & XBEE_HMC5983_EVT)               //处理传感器数据
+    if(events & XBEE_HMC5983_EVT)               //process senser data
     {
         ReportSenser();
         hmc5983Data.state = 1;
         osal_start_timerEx( XBeeTaskID , XBEE_HMC5983_EVT,1000);
         return (events ^ XBEE_HMC5983_EVT) ;
     }
-    if(events & XBEE_REPORT_EVT)               //事件上报
+    if(events & XBEE_REPORT_EVT)               //report event
     {
+#if !defined _TEST_LARGE_MODES
         ReportLockState();
         osal_start_timerEx( XBeeTaskID , XBEE_REPORT_EVT,5000);
+#endif
         return (events ^ XBEE_REPORT_EVT) ;
     }
-    if( events & XBEE_REC_DATA_PROCESS_EVT )    //处理串口收到的xbee数据,处理完毕，清除XBeeUartRec.num
+    if( events & XBEE_REC_DATA_PROCESS_EVT )    //process the data by xbee send
     {
         if(XBeeUartRec.num != 0)
             ProcessSerial(XBeeUartRec);
@@ -125,13 +132,22 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         UART_XBEE_EN;
         return (events ^ XBEE_REC_DATA_PROCESS_EVT);
     }
-    if( events & XBEE_VBT_CHENCK_EVT )          //读取当前电压
+    if( events & XBEE_VBT_CHENCK_EVT )          //report the battery voltage
     {
-        //ReportVbat();       //每执行10次上报一次电压
+        //ReportVbat();
         osal_start_timerEx( XBeeTaskID, XBEE_VBT_CHENCK_EVT, 1000 );
         return (events ^ XBEE_VBT_CHENCK_EVT) ;
     }
-    if( events & XBEE_TEST_EVT )                //测试
+    if(events & XBEE_CLOSE_BUZZER_EVT)
+    {
+        if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
+        {
+            XBeeCloseBuzzer();
+        }
+        osal_start_timerEx( XBeeTaskID, XBEE_CLOSE_BUZZER_EVT, 500 );
+        return (events ^ XBEE_CLOSE_BUZZER_EVT) ;
+    }
+    if( events & XBEE_TEST_EVT )                //test event
     {   
         osal_start_timerEx( XBeeTaskID, XBEE_TEST_EVT, 1000 );
         return (events ^ XBEE_TEST_EVT) ;
@@ -143,25 +159,24 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
 **********************************************************/
 uint8 CheckMotor(void)
 {
-    static float sen_v_0=0,sen_v_1=0;
-    static uint8 cnt=0,cnt_state=10;
+    static volatile float sen_v_0=0,sen_v_1=0;
+    static volatile uint8 cnt=0;
+    static uint8 cnt_state=9;
     uint8 reval=0;
 
-    if(cnt == 1)
+    if(cnt > cnt_state)
+    {
+        cnt = 0;
+        sen_v_0 = sen_v_1 =0;
+    }
+    if(cnt == 0)
         sen_v_0 = ReadMotorSen();
     else if(cnt == cnt_state)
         sen_v_1 = ReadMotorSen();
     cnt++;
     if(sen_v_0 > SEN_MOTOR && sen_v_1 > SEN_MOTOR)
     {
-        cnt = 0;
-        sen_v_0 = sen_v_1 =0;
         reval = 1;
-    }
-    if(cnt >= cnt_state)
-    {
-        cnt = 0;
-        sen_v_0 = sen_v_1 =0;
     }
     return reval;
 }
@@ -198,7 +213,7 @@ void ProcessSerial(XBeeUartRecDataDef temp_rbuf)
             ProcessAT(temp_rbuf);
             break;
         case transmit_status:
-            ProcessTransmitStatus(temp_rbuf);
+            //ProcessTransmitStatus(temp_rbuf);
             break;
         case modem_status:         //Zigbee模块状态
             ProcessModeStatus(temp_rbuf);
