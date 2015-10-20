@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=2106999793
+Checksum=102462902
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -53,13 +53,7 @@ ShowSource=1
 [struct_types]
 Fmt0=dev_info_t-devChannel	3	0
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.169.9" 0 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.70.5" 0 0 0 0 "" 0 ""
-Bp2=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.c}.232.9" 0 0 0 0 "" 0 ""
-Bp3=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.86.9" 0 0 0 0 "" 0 ""
-Bp4=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.c}.323.17" 0 0 0 0 "" 0 ""
-Bp5=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.102.13" 1 0 0 0 "" 0 ""
-Count=6
+Count=0
 [ChipconEmu]
 Stop timers on halt=0
 Leave target running=1

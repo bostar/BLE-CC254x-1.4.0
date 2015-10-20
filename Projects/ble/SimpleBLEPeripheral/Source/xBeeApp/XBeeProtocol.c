@@ -148,7 +148,7 @@ void ProcessAT(XBeeUartRecDataDef temp_rbuf)
     }
     else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='M')
     {
-        if(temp_rbuf.data[7] == 0)
+        if(temp_rbuf.data[7] == 0)  //get device type
         {
             if(temp_rbuf.data[8] == 0)
                 XBeeInfo.DevType = router;
@@ -215,27 +215,26 @@ void ProcessAR(XBeeUartRecDataDef temp_rbuf)
 *********************************************************/
 void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf)
 {
-    if(temp_rbuf.data[4] == 3)
+    if(temp_rbuf.data[4] == 3 && XBeeInfo.InPark == 1)
     {
-        HAL_SYSTEM_RESET();
-    /*    XBeeInfo.ParentLost = 1;
+        //HAL_SYSTEM_RESET();
+        XBeeInfo.ParentLost = 1;
         XBeeInfo.InPark = 0;
         XBeeInfo.XBeeAI = 0;
         osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
         osal_stop_timerEx( XBeeTaskID, XBEE_HMC5983_EVT );
         osal_stop_timerEx( XBeeTaskID, XBEE_VBT_CHENCK_EVT );
         osal_stop_timerEx( XBeeTaskID, XBEE_REPORT_EVT ); 
-      */
     }
     else if(temp_rbuf.data[4] == 0)
     {
-        osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
+        //osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
     }
     else if(temp_rbuf.data[4] == 2)
     {
-        XBeeInfo.GetSM = 1;
-        XBeeCloseBuzzer();
-        osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 1 );
+        //XBeeInfo.GetSM = 1;
+        //XBeeCloseBuzzer();
+        //osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 1 );
     }
     else
     {
@@ -306,27 +305,27 @@ uint32 SleepModeAndJoinNet(void)
         XBeeInfo.ParentLost = 0;
         JoinState = GetAI;
     }
-    else if(XBeeInfo.GetSM == 1)
-    {
-        XBeeInfo.GetSM = 0;
-        JoinState = GetSM;
-        osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
-    }
+    //else if(XBeeInfo.GetSM == 1)
+    //{
+        //XBeeInfo.GetSM = 0;
+        //JoinState = GetSM;
+        //osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
+    //}
     switch(JoinState)
     {
         case SetCB:
             if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
             {
                 XBeeLeaveNet();
-                //JoinState = GetSM;
+                JoinState = GetSM;
                 XBeeInfo.Test = 1;
-                reval = 20000;
+                reval = 1500;
             }
             break;
         case GetSM:
             if(HalGpioGet(GPIO_XBEE_SLEEP_INDER)==1)  //high--wake  low--sleep
             {
-                //XBeeCloseBuzzer();
+                XBeeCloseBuzzer();
                 XBeeReadAT("SM");
                 JoinState = SetSM;
                 reval = 500;
@@ -338,23 +337,40 @@ uint32 SleepModeAndJoinNet(void)
                 if(XBeeInfo.DevType == end_dev)
                 {
                     XBeeSetSM(PinCyc,NO_RES);
-                    JoinState = GetSH;
+                    JoinState = JoinNet;
                     reval = 100;
                 }
                 else if(XBeeInfo.DevType == router)
                 {
-                    JoinState = GetSH;
+                    JoinState = JoinNet;
                     reval = 1;
                 }      
                 else
                 {
                     XBeeReadAT("SM");
                     JoinState = SetSM;
-                    reval = 500;
+                    reval = 300;
                 }
             }
             break;
-       
+        case JoinNet:
+            XBeeJoinNet();
+            //XBeeReadAT("AI");
+            JoinState = GetAI;
+            //reval = 2000;
+            //break;
+        case GetAI:
+            if(XBeeInfo.XBeeAI == 1)
+            {
+                JoinState = GetSH;
+                reval = 1;
+            }
+            else
+            {
+                XBeeReadAT("AI");
+                reval = 500;
+            }
+            break;
         case GetSH:
             XBeeReadAT("SH");
             JoinState = GetSL;
@@ -377,25 +393,6 @@ uint32 SleepModeAndJoinNet(void)
                 reval = 5000;
             }
             break;
-      /*   case JoinNet:
-            XBeeJoinNet();
-            XBeeReadAT("AI");
-            JoinState = GetAI;
-            reval = 2000;
-            break;
-        case GetAI:
-            if(XBeeInfo.XBeeAI == 1)
-            {
-                JoinState = GetSH;
-                reval = 1;
-            }
-            else
-            {
-                XBeeReadAT("AI");
-                reval = 500;
-            }
-            break;
-        */
         default:
             break;
     }

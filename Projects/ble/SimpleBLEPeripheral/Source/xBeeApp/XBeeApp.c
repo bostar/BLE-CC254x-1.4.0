@@ -74,9 +74,10 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         SenFlag=0x88;
         parkingState.vehicleState = ParkingUnUsed;
         LockObjState = unlock;
-        XBeeReset();
+        //XBeeReset();
         osal_set_event( XBeeTaskID, XBEE_MOTOR_CTL_EVT );   
         osal_set_event( XBeeTaskID, XBEE_CLOSE_BUZZER_EVT );
+        osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 500 );
         //osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
         return (events ^ XBEE_START_DEVICE_EVT) ;
     }
@@ -118,10 +119,8 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     }
     if(events & XBEE_REPORT_EVT)               //report event
     {
-#if !defined _TEST_LARGE_MODES
         ReportLockState();
         osal_start_timerEx( XBeeTaskID , XBEE_REPORT_EVT,5000);
-#endif
         return (events ^ XBEE_REPORT_EVT) ;
     }
     if( events & XBEE_REC_DATA_PROCESS_EVT )    //process the data by xbee send
@@ -297,10 +296,13 @@ static void npiCBack_uart( uint8 port, uint8 events )
 ********************************************************/
 void DailyEvt(void)
 {
+#if !defined _TEST_LARGE_MODES
     osal_set_event( XBeeTaskID, XBEE_HMC5983_EVT );
     osal_set_event( XBeeTaskID, XBEE_VBT_CHENCK_EVT );
     osal_set_event( XBeeTaskID, XBEE_REPORT_EVT );
+#endif 
     osal_stop_timerEx( XBeeTaskID,XBEE_JOIN_NET_EVT);
+    osal_stop_timerEx( XBeeTaskID, XBEE_CLOSE_BUZZER_EVT );
 }
 /************************************************************
 **brief read motor_sen 
