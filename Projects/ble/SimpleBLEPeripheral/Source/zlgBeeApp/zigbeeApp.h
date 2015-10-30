@@ -16,6 +16,7 @@ extern "C"
 #define ZLG_ZIGBEE_CFG_NV_ID      80        //zlg config NV item ID
 #define APPLY_NETWORK_FLAG_NV_ID  81
 #define LOCK_STATE_NV_ID          82
+//#define SENSOR_DATA_NV_ID         83    //change to defined in hal_uart.h
 // Simple BLE Peripheral Task Events
 #define ZIGBEE_START_DEVICE_EVT                              0x0001
 #define ZIGBEE_RESET_ZM516X_EVT                              0x0002

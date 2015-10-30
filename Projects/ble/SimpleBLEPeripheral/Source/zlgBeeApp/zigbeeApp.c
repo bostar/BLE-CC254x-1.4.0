@@ -104,7 +104,12 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
       }
             
       zlgSleepOrwake = wakeState; 
-      Uart1_Send_Byte( "get", osal_strlen( "get" ) );
+      if( osal_snv_read( SENSOR_DATA_NV_ID, sizeof( mag_xyz_t ), &old_mag_xyz ) == SUCCESS )
+      {
+        if( old_mag_xyz.checked != 1)
+          Uart1_Send_Byte( "get", osal_strlen( "get" ) );
+      }
+      
       osal_set_event( zigbee_TaskID, ZIGBEE_READ_ZM516X_INFO_EVT );   
       return ( events ^ ZIGBEE_START_DEVICE_EVT );
   }

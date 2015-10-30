@@ -50,7 +50,8 @@
 #include "OSAL.h"
 #include "OSAL_PwrMgr.h"
 #endif
-
+#include "bcomdef.h"
+#include "osal_snv.h"
 /*********************************************************************
  * GLOBAL FUNCTIONS
  */
@@ -447,6 +448,7 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
           old_mag_xyz.x = mag_xyz.x;
           old_mag_xyz.y = mag_xyz.y;
           old_mag_xyz.z = mag_xyz.z;
+          VOID osal_snv_write( SENSOR_DATA_NV_ID, sizeof( mag_xyz_t ), &old_mag_xyz );
           mag_xyz.checked = 1;
         }
     }
