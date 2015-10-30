@@ -38,14 +38,24 @@ void setMotorStop( void )
 
 void setMotorForward( void )
 {
+#ifdef SHIWODE_HW
     HalGpioSet( HAL_GPIO_ZM516X_MOTOR1, 0 );
     HalGpioSet( HAL_GPIO_ZM516X_MOTOR2, 1 );
+#else
+    HalGpioSet( HAL_GPIO_ZM516X_MOTOR1, 1 );
+    HalGpioSet( HAL_GPIO_ZM516X_MOTOR2, 0 );
+#endif
 }
 
 void setMotorReverse( void )
 {
+#ifdef SHIWODE_HW
     HalGpioSet( HAL_GPIO_ZM516X_MOTOR1, 1 );
     HalGpioSet( HAL_GPIO_ZM516X_MOTOR2, 0 );
+#else
+    HalGpioSet( HAL_GPIO_ZM516X_MOTOR1, 0 );
+    HalGpioSet( HAL_GPIO_ZM516X_MOTOR2, 1 );
+#endif
 }
 
 void update_adc_value( void )

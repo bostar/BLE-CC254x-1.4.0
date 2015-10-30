@@ -312,7 +312,11 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
       HAL_GPIO_CHANGE_DELAY();
       sen_v = 3.482 * (float)sen / 0x7f;
 //          motorStopAdcReport(uartReturnFlag->adc_value);   
+#ifdef SHIWODE_HW
       if( sen_v > 0.8 )
+#else
+      if( sen_v > 1.0 )
+#endif
       {
           if( parkingState->lockState == cmdLocking )  
           {
@@ -790,6 +794,7 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
     VOID osal_snv_write( LOCK_STATE_NV_ID, sizeof( uint8 ), &keys );
     parkingState->lockState = cmdLockSuccess;
   }
+#ifdef SHIWODE_HW
 //over limit
   else if ( keys == SK_LIMIT_LOCKED_OVER )
   {  
@@ -799,6 +804,7 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
   {
     setMotorReverse();
   }
+#endif
   else
   {
     if( parkingState->lockState != cmdLocking && parkingState->lockState != cmdUnlocking )

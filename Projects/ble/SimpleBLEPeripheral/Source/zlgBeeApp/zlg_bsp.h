@@ -4,7 +4,7 @@
 #define ZLG_GPIO_DIR        0x4c
 #define BEEPON         (unsigned char)(0x01 << 6)
 #define BEEPOFF        (unsigned char)(0x00)
-
+//#define SHIWODE_HW
 
 void initZlgBsp( void );
 void lowZlgAllIOs( void );
