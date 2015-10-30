@@ -415,7 +415,6 @@ static  uint8 temp[10] = {0};
 HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
 { 
   static uint8 index = 0;
-  static int old_flag = 0;
   uint8 add_sum,check;
   
   HAL_ENTER_ISR();
@@ -442,12 +441,13 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
         mag_xyz.z = (unsigned short)temp[7] << 8 | temp[8];
         mag_xyz.checked = 0;
         
-        if(!old_flag)
+        if(!old_mag_xyz.checked)
         {
-          old_flag = 1;
+          old_mag_xyz.checked = 1;
           old_mag_xyz.x = mag_xyz.x;
           old_mag_xyz.y = mag_xyz.y;
           old_mag_xyz.z = mag_xyz.z;
+          mag_xyz.checked = 1;
         }
     }
   }

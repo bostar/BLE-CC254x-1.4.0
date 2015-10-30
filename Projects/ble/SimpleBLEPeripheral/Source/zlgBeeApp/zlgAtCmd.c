@@ -503,6 +503,10 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
                     {
                       state = stateOTAPrepare;
                     }
+                    else if( *(rbuf+4) == 0x08 )
+                    {
+                      state =  stateResetSensor;
+                    }
                     else
                     {
                       setMotorStop();

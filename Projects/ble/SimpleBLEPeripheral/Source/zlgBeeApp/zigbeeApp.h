@@ -57,6 +57,7 @@ typedef enum {
     stateAckLinkTest = 0x16,
     stateRestoreFactoryConfig = 0x17,
     stateOTAPrepare = 0x18,
+    stateResetSensor = 0x1B,
     stateTest = 0x99,
     stateNoWork = 0xff
 } state_t;

@@ -307,7 +307,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
       HAL_GPIO_CHANGE_DELAY();
       sen_v = 3.482 * (float)sen / 0x7f;
 //          motorStopAdcReport(uartReturnFlag->adc_value);   
-      if( sen_v > 0.3 )
+      if( sen_v > 0.8 )
       {
           if( parkingState->lockState == cmdLocking )  
           {
@@ -338,33 +338,6 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
       osal_start_reload_timer( zigbee_TaskID, READ_ZIGBEE_ADC_EVT, 1000 );
       return ( events ^ READ_ZIGBEE_ADC_EVT );
   }
-  
-//  if( events & EVENT_REPORT_EVT )
-//  {
-//      if( eventReportData->reportSuccess )
-//      {
-//          osal_stop_timerEx( zigbee_TaskID, EVENT_REPORT_EVT );
-//          return ( events ^ EVENT_REPORT_EVT );
-//      }
-//      if( zlgSleepOrwake == sleepState )
-//      {
-//          osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT );//stop timer
-//          SET_ZM516X_WAKEUP();//and wake up right now
-//          zlgSleepOrwake = wakeState;
-//          osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,2000 );
-//      }     
-//      else
-//      {
-//        if( osal_get_timeoutEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT ) > 0 )
-//        {
-//          osal_stop_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT );
-//          osal_start_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT ,1000 );
-//        }
-//      }
-//      eventReport( ( parkingEvent_t )eventReportData->event );
-//      osal_start_timerEx( zigbee_TaskID, EVENT_REPORT_EVT, 2000 );
-//      return ( events ^ EVENT_REPORT_EVT );
-//  }
      
   if( events & ZIGBEE_RESTORE_FACTORY_EVT )
   {
@@ -467,6 +440,9 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
               }
               if( zlgSleepOrwake == wakeState )
                   osal_stop_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT );
+              break;
+            case stateResetSensor:
+              old_mag_xyz.checked = 0;
               break;
             default:
               break;
