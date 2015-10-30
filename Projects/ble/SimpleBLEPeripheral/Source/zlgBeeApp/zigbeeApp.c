@@ -217,9 +217,9 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
       { 
           mag_xyz.checked = 1;
           
-          if( (abs(old_mag_xyz.x - mag_xyz.x) > 100) || \
-              (abs(old_mag_xyz.y - mag_xyz.y) > 100) || \
-              (abs(old_mag_xyz.z - mag_xyz.z) > 100) )
+          if( (abs(old_mag_xyz.x - mag_xyz.x) > 50) || \
+              (abs(old_mag_xyz.y - mag_xyz.y) > 50) || \
+              (abs(old_mag_xyz.z - mag_xyz.z) > 50) )
           {
             if( parkingState->vehicleState == cmdVehicleLeave )
             {                
