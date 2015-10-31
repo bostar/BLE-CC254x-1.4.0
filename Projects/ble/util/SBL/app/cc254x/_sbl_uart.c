@@ -216,6 +216,8 @@ static void sblRun(void)
 
   while (1)
   {
+    WDCTL = 0xa0; 
+    WDCTL = 0x50; 
     if (txLen == 0)
     {
       if ((resetF != 0) && ((UxCSR & CSR_ACTIVE) == 0))  // If the last Tx byte has flushed out.

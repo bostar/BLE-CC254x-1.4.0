@@ -107,7 +107,8 @@ void main(void)
       //HAL_SYSTEM_RESET();  // Should not get here.
     }
   }
-
+  WDCTL = 0x00; //这是必须的，打开IDLE才能设置看门狗
+  WDCTL |= 0x08; 
   //while (!HalAdcCheckVdd(VDD_MIN_NV));
   sblRun();
   HAL_SYSTEM_RESET();

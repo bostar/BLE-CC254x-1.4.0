@@ -310,6 +310,8 @@ static void sblProc(void)
   case SBL_HANDSHAKE_CMD:
     for(loop = 0x800 / 4 / SBL_PAGE_SIZE;loop < 256 / 4 * (1024 / SBL_PAGE_SIZE);loop ++)
     {
+      WDCTL = 0xa0; 
+      WDCTL = 0x50; 
       HalFlashErase(loop);
     }
     break;
@@ -384,6 +386,8 @@ static uint16 calcCRC(void)
 
   for (addr = HAL_SBL_IMG_BEG; addr < HAL_SBL_IMG_END; addr++)
   {
+    WDCTL = 0xa0; 
+    WDCTL = 0x50; 
     if (addr != HAL_SBL_IMG_CRC)
     {
       uint8 buf[HAL_FLASH_WORD_SIZE];
@@ -423,7 +427,19 @@ static uint8 checkRC(void)
   uint16 crc[2];
   HalFlashRead(HAL_SBL_IMG_CRC / SBL_PAGE_SIZE,
               (HAL_SBL_IMG_CRC % SBL_PAGE_SIZE) << 2, (uint8 *)crc, HAL_FLASH_WORD_SIZE);
-
+  if((crc[0] == crc[1]) && (crc[0] != 0xffff) && (crc[0] != 0x0000))
+  {
+    return TRUE;
+  }
+  else
+  {
+    if ((crc[0] == 0) && (crc[1] == 0))
+    {
+      HalFlashErase(0x800 / 4 / SBL_PAGE_SIZE);
+    }
+    return FALSE;
+  }
+#if 0
   if ((crc[0] == 0) && (crc[1] == 0))
   {
     HalFlashErase(0x800 / 4 / SBL_PAGE_SIZE);
@@ -444,7 +460,7 @@ static uint8 checkRC(void)
   else
   {
   }
-
+#endif
   if (SBL_CALC_CRC && (crc[0] != crc[1])&& (crc[1] == 0xFFFF))
   {
     crc[1] = calcCRC();

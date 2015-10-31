@@ -10,7 +10,7 @@
 #include "OnBoard.h"
 
 const unsigned short broadcastAddr = 0xffff;
-const uint16 firmware_version @ "VERSION" = 0X0001;
+const uint16 firmware_version @ "VERSION" = 0X0005;
 //uint16 firmware_version = 0x0001;
 
 dev_info_t * stDevInfo;
@@ -536,7 +536,7 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
         case 0x00:
             firmwareVersion = *(uint16*)(rbuf+4);
             firmwareSize =  *(uint16*)(rbuf+6);
-            //if( firmwareVersion > firmware_version )
+            if( firmwareVersion > firmware_version )
             {
               SET_ZM516X_WAKEUP();
               osal_memset(rbuf,0,4);
