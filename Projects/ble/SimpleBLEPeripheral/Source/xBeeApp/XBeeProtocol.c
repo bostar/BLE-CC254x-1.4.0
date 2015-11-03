@@ -319,7 +319,7 @@ uint32 SleepModeAndJoinNet(void)
                 XBeeLeaveNet();
                 JoinState = GetSM;
                 XBeeInfo.Test = 1;
-                reval = 1500;
+                reval = 2000;
             }
             break;
         case GetSM:
@@ -390,7 +390,7 @@ uint32 SleepModeAndJoinNet(void)
             if(XBeeInfo.InPark != 1)
             {
                 XBeeReqJionPark();
-                reval = 5000;
+                reval = 20000;
             }
             break;
         default:

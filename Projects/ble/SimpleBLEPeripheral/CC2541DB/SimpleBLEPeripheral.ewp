@@ -308,7 +308,7 @@
           <state>_XBEE_APP_</state>
           <state>ZAPP_P1</state>
           <state>HAL_ADC=TRUE</state>
-          <state>_TEST_LARGE_MODES</state>
+          <state>x_TEST_LARGE_MODES</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -6829,6 +6829,12 @@
     <name>APP</name>
     <group>
       <name>xBeeApp</name>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\c_queue.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Source\xBeeApp\c_queue.h</name>
+      </file>
       <file>
         <name>$PROJ_DIR$\..\Source\xBeeApp\hal_xbee.c</name>
       </file>

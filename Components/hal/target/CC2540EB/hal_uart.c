@@ -46,7 +46,9 @@
 #include "hal_drivers.h"
 #include "hal_types.h"
 #include "hal_uart.h"
+#if defined (_XBEE_APP_)
 #include "XBeeApp.h"
+#endif
 #include "OSAL.h"
 #if defined POWER_SAVING
 #include "OSAL.h"
@@ -75,9 +77,9 @@ void HalUARTIsrDMA(void);
 #if HAL_UART_USB
 #include "_hal_uart_usb.c"
 #endif
-
+#if defined (_XBEE_APP_)
 #include "XBeeApp.h"
-
+#endif
 /******************************************************************************
  * @fn      HalUARTInit
  *
@@ -398,6 +400,7 @@ IEN0 |= 0x08; // 开总中断，接收中断
 ****************************************************************/ 
 void Uart1_Send_Byte(char *Data,int len) 
 {
+#if defined (_XBEE_APP_)
   int j; 
   GPIO_XBEE_DIR_TURN_HIGH();
   HAL_GPIO_CHANGE_DELAY();
@@ -410,14 +413,18 @@ void Uart1_Send_Byte(char *Data,int len)
   } 
   HAL_GPIO_CHANGE_DELAY();
   GPIO_XBEE_DIR_TURN_LOW();
+#endif
 }
 
 HMC5983DataType hmc5983Data;
 HMC5983DataType hmc5983DataStandard;
 
+#if defined (_XBEE_APP_)
 static  uint8 temp_uart[10] = {0};
+#endif
 HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
 { 
+#if defined (_XBEE_APP_)
   static uint8 index = 0;
   uint8 add_sum,check;
   
@@ -467,6 +474,7 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
     }
   }
   HAL_EXIT_ISR();
+#endif
 }
 /******************************************************************************
 ******************************************************************************/

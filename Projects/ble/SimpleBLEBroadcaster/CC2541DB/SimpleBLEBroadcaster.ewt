@@ -3,25 +3,6 @@
 <project>
   <fileVersion>2</fileVersion>
   <configuration>
-    <name>CC2541DK-MINI Keyfob</name>
-    <toolchain>
-      <name>8051</name>
-    </toolchain>
-    <debug>1</debug>
-    <settings>
-      <name>C-STAT</name>
-      <archiveVersion>1</archiveVersion>
-      <data>
-        <version>1</version>
-        <cstatargs>
-          <useExtraArgs>0</useExtraArgs>
-          <extraArgs></extraArgs>
-        </cstatargs>
-        <cstatsettings/>
-      </data>
-    </settings>
-  </configuration>
-  <configuration>
     <name>CC2541</name>
     <toolchain>
       <name>8051</name>
@@ -41,64 +22,7 @@
     </settings>
   </configuration>
   <configuration>
-    <name>CC2541-OAD-ImgA</name>
-    <toolchain>
-      <name>8051</name>
-    </toolchain>
-    <debug>1</debug>
-    <settings>
-      <name>C-STAT</name>
-      <archiveVersion>1</archiveVersion>
-      <data>
-        <version>1</version>
-        <cstatargs>
-          <useExtraArgs>0</useExtraArgs>
-          <extraArgs></extraArgs>
-        </cstatargs>
-        <cstatsettings/>
-      </data>
-    </settings>
-  </configuration>
-  <configuration>
-    <name>CC2541-OAD-ImgB</name>
-    <toolchain>
-      <name>8051</name>
-    </toolchain>
-    <debug>1</debug>
-    <settings>
-      <name>C-STAT</name>
-      <archiveVersion>1</archiveVersion>
-      <data>
-        <version>1</version>
-        <cstatargs>
-          <useExtraArgs>0</useExtraArgs>
-          <extraArgs></extraArgs>
-        </cstatargs>
-        <cstatsettings/>
-      </data>
-    </settings>
-  </configuration>
-  <configuration>
-    <name>CC2541-OAD-Encrypted-ImgA</name>
-    <toolchain>
-      <name>8051</name>
-    </toolchain>
-    <debug>1</debug>
-    <settings>
-      <name>C-STAT</name>
-      <archiveVersion>1</archiveVersion>
-      <data>
-        <version>1</version>
-        <cstatargs>
-          <useExtraArgs>0</useExtraArgs>
-          <extraArgs></extraArgs>
-        </cstatargs>
-        <cstatsettings/>
-      </data>
-    </settings>
-  </configuration>
-  <configuration>
-    <name>CC2541-OAD-Encrypted-ImgB</name>
+    <name>CC2541DK-MINI Keyfob</name>
     <toolchain>
       <name>8051</name>
     </toolchain>
@@ -118,83 +42,17 @@
   </configuration>
   <group>
     <name>APP</name>
-    <group>
-      <name>xBeeApp</name>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\c_queue.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\c_queue.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\hal_xbee.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\hal_xbee.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAtCmd.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAtCmd.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeBsp.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeBsp.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.h</name>
-      </file>
-    </group>
-    <group>
-      <name>zlgBeeApp</name>
-      <file>
-        <name>$PROJ_DIR$\..\Source\zlgBeeApp\zigbeeApp.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\zlgBeeApp\zigbeeApp.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\zlgBeeApp\zlg_bsp.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\zlgBeeApp\zlg_bsp.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\zlgBeeApp\zlg_protocol.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\zlgBeeApp\zlg_protocol.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\zlgBeeApp\zlgAtCmd.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\zlgBeeApp\zlgAtCmd.h</name>
-      </file>
-    </group>
     <file>
-      <name>$PROJ_DIR$\..\Source\OSAL_SimpleBLEPeripheral.c</name>
+      <name>$PROJ_DIR$\..\Source\OSAL_SimpleBLEBroadcaster.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\Source\simpleBLEPeripheral.c</name>
+      <name>$PROJ_DIR$\..\Source\simpleBLEBroadcaster.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\Source\simpleBLEPeripheral.h</name>
+      <name>$PROJ_DIR$\..\Source\simpleBLEBroadcaster.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\Source\SimpleBLEPeripheral_Main.c</name>
+      <name>$PROJ_DIR$\..\Source\SimpleBLEBroadcaster_Main.c</name>
     </file>
   </group>
   <group>
@@ -247,9 +105,6 @@
         <name>$PROJ_DIR$\..\..\..\..\Components\hal\include\hal_uart.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\Components\hal\include\hal_zlg.h</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\..\..\..\Components\services\saddr\saddr.h</name>
       </file>
     </group>
@@ -272,16 +127,10 @@
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_aes.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_crc.c</name>
-          </file>
-          <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_dma.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_flash.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2541ST\hal_i2c.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_key.c</name>
@@ -291,9 +140,6 @@
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_led.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2541ST\hal_sensor.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_sleep.c</name>
@@ -307,9 +153,6 @@
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_uart.c</name>
           </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_zlg.c</name>
-          </file>
         </group>
         <group>
           <name>Includes</name>
@@ -318,9 +161,6 @@
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_ccm.h</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_crc.h</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_dma.h</name>
@@ -374,7 +214,7 @@
   <group>
     <name>LIB</name>
     <file>
-      <name>$PROJ_DIR$\..\..\Libraries\CC2541DB\bin\CC2541_BLE_peri.lib</name>
+      <name>$PROJ_DIR$\..\..\Libraries\CC2541DB\bin\CC2541_BLE_bcast.lib</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Libraries\Common\bin\CC254x_BLE_HCI_TL_None.lib</name>
@@ -384,6 +224,12 @@
     <name>NPI</name>
     <file>
       <name>$PROJ_DIR$\..\..\common\npi\npi_np\npi.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\common\npi\npi_np\npi_spi.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\common\npi\npi_np\npi_uart.c</name>
     </file>
   </group>
   <group>
@@ -419,61 +265,13 @@
   <group>
     <name>PROFILES</name>
     <file>
-      <name>$PROJ_DIR$\..\..\Profiles\DevInfo\devinfoservice.c</name>
+      <name>$PROJ_DIR$\..\..\Profiles\Roles\broadcaster.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\Profiles\DevInfo\devinfoservice.h</name>
+      <name>$PROJ_DIR$\..\..\Profiles\Roles\broadcaster.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Profiles\Roles\gap.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\Roles\gapbondmgr.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\Roles\gapbondmgr.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Include\gapgattserver.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\..\Components\ble\host\gatt_uuid.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Include\gattservapp.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\OAD\oad.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\OAD\oad_target.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\OAD\oad_target.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\Roles\peripheral.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\Roles\peripheral.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\Roles\peripheralBroadcaster.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\Roles\peripheralBroadcaster.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\SimpleProfile\simpleGATTprofile.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\SimpleProfile\simpleGATTprofile.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\Keys\simplekeys.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\Profiles\Keys\simplekeys.h</name>
     </file>
   </group>
   <group>

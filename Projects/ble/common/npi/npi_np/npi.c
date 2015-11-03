@@ -99,8 +99,11 @@ void NPI_InitTransport( npiCBack_t npiCBack )
 
   // configure UART
   uartConfig.configured           = TRUE;
+#if defined (_XBEE_APP_)
   uartConfig.baudRate             = NPI_UART_BR;
-//  uartConfig.flowControl          = NPI_UART_FC;
+#else
+  uartConfig.flowControl          = NPI_UART_FC;
+#endif
   uartConfig.flowControl          = FALSE;
   uartConfig.flowControlThreshold = NPI_UART_FC_THRESHOLD;
   uartConfig.rx.maxBufSize        = NPI_UART_RX_BUF_SIZE;
