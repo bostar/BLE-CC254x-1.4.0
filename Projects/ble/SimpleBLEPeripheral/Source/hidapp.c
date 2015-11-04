@@ -439,43 +439,8 @@ uint16 Hidapp_ProcessEvent(uint8 taskId, uint16 events)
   if ( events & HIDAPP_EVT_START )
   {
     hidappStart();
-#if 0
-  //if (keys & HAL_KEY_SW_1)
-  {
-    // If bonds exist, erase all of them
-    if ( ( hidappBondCount() > 0 ) && ( hidappBLEState != BLE_STATE_CONNECTED ) )
-    {
-      if ( hidappBLEState == BLE_STATE_CONNECTING )
-      {
-        hidappBLEState = BLE_STATE_DISCONNECTING;
-        VOID GAPCentralRole_TerminateLink( GAP_CONNHANDLE_INIT );
-      }
 
-      VOID GAPBondMgr_SetParameter( GAPBOND_ERASE_ALLBONDS, 0, NULL );
-    }
-  }
-
-  //if (keys & HAL_KEY_SW_2)
-  {
-    if ( hidappBLEState == BLE_STATE_CONNECTED )
-    {
-      hidappBLEState = BLE_STATE_DISCONNECTING;
-      VOID GAPCentralRole_TerminateLink( connHandle );
-    }
-    else if ( hidappBLEState == BLE_STATE_IDLE )
-    {
-      #if defined ( NANO_DONGLE )
-
-      HalLedSet( HAL_LED_2, HAL_LED_MODE_OFF ); // red led
-
-      // Notify our task to start initial discovey
-      osal_set_event( hidappTaskId, HIDAPP_EVT_START_DISCOVERY );
-
-      #endif //  #if defined ( NANO_DONGLE )
-    }
-  }
-#endif
-  osal_set_event( hidappTaskId, HIDAPP_EVT_START_DISCOVERY );
+    osal_set_event( hidappTaskId, HIDAPP_EVT_START_DISCOVERY );
     return (events ^ HIDAPP_EVT_START);
   }
 
@@ -913,7 +878,7 @@ static void hidappCentralEventCB( gapCentralRoleEvent_t *pEvent )
         // See if device has a valid BD Address
         if ( osal_isbufset( pEvt->devAddr, 0xFF, B_ADDR_LEN ) == FALSE )
         {
-          #if defined ( NANO_DONGLE )
+          //#if defined ( NANO_DONGLE )
 
           if ( hidappBondCount() > 0 )
           {
@@ -926,7 +891,7 @@ static void hidappCentralEventCB( gapCentralRoleEvent_t *pEvent )
             hidappSetIdle();
           }
 
-          #endif //  #if defined ( NANO_DONGLE )
+          //#endif //  #if defined ( NANO_DONGLE )
         }
         else
         {
