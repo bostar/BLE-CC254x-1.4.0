@@ -33,7 +33,7 @@ void ackLinkTest( unsigned char *IEEEAddress )
     NPI_WriteTransport( (unsigned char *)wbuf , 11 );
 }
 
-void dateRequset( void )
+void dateRequset( unsigned char status )
 {
     osal_memset( wbuf, 0x00, WBUF_LEN );
     
@@ -45,9 +45,9 @@ void dateRequset( void )
     wbuf[5] = stDevInfo->devLoacalNetAddr[1];
     wbuf[6] = parkingState->lockState;
     wbuf[7] = parkingState->vehicleState;
-//    wbuf[8] = eventReportData->event;
+    wbuf[8] = status;
     
-    NPI_WriteTransport( (unsigned char *)wbuf , 8 );
+    NPI_WriteTransport( (unsigned char *)wbuf , 9 );
 }
 
 void batteryRemainingReport( unsigned char voltage )

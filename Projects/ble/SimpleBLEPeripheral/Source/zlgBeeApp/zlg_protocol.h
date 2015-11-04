@@ -55,7 +55,7 @@ extern parkingState_t * parkingState;
 
 void applicateForNetwork( unsigned char *IEEEAddress );
 void ackLinkTest( unsigned char *IEEEAddress );
-void dateRequset( void );
+void dateRequset( unsigned char status );
 void eventReport( parkingEvent_t event );
 void batteryRemainingReport( unsigned char voltage );
 void motorStopAdcReport( unsigned short voltage );

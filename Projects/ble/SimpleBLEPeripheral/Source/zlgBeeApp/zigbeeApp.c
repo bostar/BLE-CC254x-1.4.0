@@ -32,6 +32,7 @@ parkingState_t * parkingState;
 static sleepOrwake_t zlgSleepOrwake;
 static void npiCBack_uart( uint8 port, uint8 events );
 static unsigned char referenceCmdLength( unsigned char * const command,unsigned char cmd );
+static void keep_WakeUp( void );
 
 #if defined ( STARBO_BOARD )
 static void zigBee_ProcessOSALMsg( osal_event_hdr_t *pMsg );
@@ -293,16 +294,16 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   
   if( events & ZIGBEE_LINK_TEST_EVT )
   {
-    if( zlgSleepOrwake == sleepState )
-    {
-      osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT );
-      SET_ZM516X_WAKEUP();
-      zlgSleepOrwake = wakeState;
-      osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,1000 );
-      ackLinkTest( &stDevInfo->devLoacalIEEEAddr[0] );
-    }
-    else
-      ackLinkTest( &stDevInfo->devLoacalIEEEAddr[0] );
+//    if( zlgSleepOrwake == sleepState )
+//    {
+//      osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT );
+//      SET_ZM516X_WAKEUP();
+//      zlgSleepOrwake = wakeState;
+//      osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,1000 );
+//      ackLinkTest( &stDevInfo->devLoacalIEEEAddr[0] );
+//    }
+//    else
+//      ackLinkTest( &stDevInfo->devLoacalIEEEAddr[0] );
      return ( events ^ ZIGBEE_LINK_TEST_EVT );
   }
   
@@ -377,7 +378,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
         SET_ZM516X_WAKEUP();
         zlgSleepOrwake = wakeState;
      }
-     dateRequset();
+     dateRequset(0x00);
      osal_start_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT ,150 );
      return ( events ^ ZIGBEE_WAKE_ZM516X_EVT );
   }
@@ -442,13 +443,16 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
               osal_set_event( zigbee_TaskID, BOARD_TEST_EVT );
               break;
             case stateOTAPrepare:
-              if( zlgSleepOrwake == sleepState )
-              {
-                  osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT );//stop timer
-                  SET_ZM516X_WAKEUP();//and wake up right now
-              }
-              if( zlgSleepOrwake == wakeState )
-                  osal_stop_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT );
+              keep_WakeUp();
+              break;
+            case stateSynSleep:
+              osal_set_event( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT );//
+              break;
+//            case stateTestLink:
+//              need2send.needAckType = needAckLinkTest;
+//              break;
+            case stateKeepWake:
+              keep_WakeUp();
               break;
             case stateResetSensor:
               old_mag_xyz.checked = 0;
@@ -822,6 +826,17 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
   // Set the value of the keys state to the Simple Keys Profile;
   // This will send out a notification of the keys state if enabled
   //SK_SetParameter( SK_KEY_ATTR, sizeof ( uint8 ), &SK_Keys );
+}
+static void keep_WakeUp( void )
+{
+  if( zlgSleepOrwake == sleepState )
+  {
+      osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT );//stop timer
+      SET_ZM516X_WAKEUP();//and wake up right now
+  }
+  if( zlgSleepOrwake == wakeState )
+      osal_stop_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT );
+  return;
 }
 #endif // !STARBO_BOARD
 

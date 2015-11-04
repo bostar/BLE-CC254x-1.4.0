@@ -10,7 +10,7 @@
 #include "OnBoard.h"
 
 const unsigned short broadcastAddr = 0xffff;
-const uint16 firmware_version @ "VERSION" = 0X0005;
+const uint16 firmware_version @ "VERSION" = 0X0006;
 //uint16 firmware_version = 0x0001;
 
 dev_info_t * stDevInfo;
@@ -502,6 +502,22 @@ uint8 receive_data( uint8 *rbuf, uint16 len )
                     else if( *(rbuf+4) == 0x03 )
                     {
                       state = stateOTAPrepare;
+                    }
+                    else if( *(rbuf+4) == 0x04)
+                    {
+                      HAL_SYSTEM_RESET();
+                    }
+                    else if( *(rbuf+4) == 0x05)
+                    {
+                      state = stateSynSleep;
+                    }
+//                    else if( *(rbuf+4) == 0x06)
+//                    {
+//                      state = stateTestLink;
+//                    }
+                    else if( *(rbuf+4) == 0x07)
+                    {
+                      state = stateKeepWake;
                     }
                     else if( *(rbuf+4) == 0x08 )
                     {
