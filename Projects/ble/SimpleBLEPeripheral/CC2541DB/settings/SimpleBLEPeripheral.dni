@@ -52,6 +52,13 @@ Enabled=0
 ShowSource=1
 [struct_types]
 Fmt0=dev_info_t-devChannel	3	0
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Breakpoints]
 Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.c}.113.13" 0 0 0 0 "" 0 ""
 Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.193.5" 0 0 0 0 "" 0 ""
@@ -61,13 +68,6 @@ Count=4
 [ChipconEmu]
 Stop timers on halt=0
 Leave target running=1
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [Aliases]
 Count=0
 SuppressDialog=0

@@ -10,11 +10,23 @@
     <debug>1</debug>
     <settings>
       <name>General</name>
-      <archiveVersion>3</archiveVersion>
+      <archiveVersion>1</archiveVersion>
       <data>
-        <version>8</version>
+        <version>5</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
+        <option>
+          <name>DerivativeDescriptionFile</name>
+          <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC2541F256.i51</state>
+        </option>
+        <option>
+          <name>Previous Derivative File</name>
+          <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC2541F256.i51</state>
+        </option>
+        <option>
+          <name>Showed Derivative</name>
+          <state>CC2541F256</state>
+        </option>
         <option>
           <name>CPU Core</name>
           <version>1</version>
@@ -65,7 +77,7 @@
         <option>
           <name>Workseg Size</name>
           <version>0</version>
-          <state>0</state>
+          <state>8</state>
         </option>
         <option>
           <name>Constant Placement</name>
@@ -184,7 +196,7 @@
         </option>
         <option>
           <name>General Xdata Heap Size</name>
-          <state>0xFFF</state>
+          <state>0xFF</state>
         </option>
         <option>
           <name>General Far Heap Size</name>
@@ -238,53 +250,13 @@
           <version>0</version>
           <state>3</state>
         </option>
-        <option>
-          <name>Extended stack address</name>
-          <state>0x9B</state>
-        </option>
-        <option>
-          <name>Extended stack mask</name>
-          <state>0x03</state>
-        </option>
-        <option>
-          <name>Extended stack is offset</name>
-          <state>0</state>
-        </option>
-        <option>
-          <name>OGChipSelectMenu</name>
-          <state>CC2541F256	CC2541F256</state>
-        </option>
-        <option>
-          <name>OGChipSelectMenuSlave</name>
-          <state>CC2541F256	CC2541F256</state>
-        </option>
-        <option>
-          <name>DPC Address</name>
-          <state></state>
-        </option>
-        <option>
-          <name>AutoModificationType</name>
-          <state></state>
-        </option>
-        <option>
-          <name>UseHWMulDivUnit</name>
-          <state>0</state>
-        </option>
-        <option>
-          <name>UseMDU</name>
-          <state></state>
-        </option>
-        <option>
-          <name>AdditionalDriver</name>
-          <state></state>
-        </option>
       </data>
     </settings>
     <settings>
       <name>ICC8051</name>
-      <archiveVersion>6</archiveVersion>
+      <archiveVersion>5</archiveVersion>
       <data>
-        <version>11</version>
+        <version>10</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -299,15 +271,8 @@
           <state>HAL_AES_DMA=TRUE</state>
           <state>HAL_DMA=TRUE</state>
           <state>POWER_SAVING</state>
-          <state>HAL_LCD=FALSE</state>
-          <state>HAL_LED=FALSE</state>
-          <state>HAL_KEY=FALSE</state>
-          <state>CC2540_MINIDK</state>
-          <state>HAL_XBEE_ZIGBEE</state>
-          <state>_XBEE_APP_</state>
-          <state>ZAPP_P1</state>
-          <state>HAL_ADC=TRUE</state>
-          <state>x_TEST_LARGE_MODES</state>
+          <state>HAL_LCD=TRUE</state>
+          <state>HAL_LED=TRUE</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -497,7 +462,6 @@
           <state>$PROJ_DIR$\..\..\Include</state>
           <state>$PROJ_DIR$\..\..\Profiles\Roles</state>
           <state>$PROJ_DIR$\..\..\Profiles\SimpleProfile</state>
-          <state>$PROJ_DIR$\..\Source\xBeeApp</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -569,10 +533,6 @@
         <option>
           <name>NoSizeConstraints</name>
           <state>0</state>
-        </option>
-        <option>
-          <name>UseHWMulDivUnit</name>
-          <state>1</state>
         </option>
       </data>
     </settings>
@@ -736,7 +696,6 @@
       <data>
         <extensions></extensions>
         <cmdline></cmdline>
-        <hasPrio>0</hasPrio>
       </data>
     </settings>
     <settings>
@@ -754,9 +713,9 @@
     </settings>
     <settings>
       <name>XLINK</name>
-      <archiveVersion>4</archiveVersion>
+      <archiveVersion>3</archiveVersion>
       <data>
-        <version>21</version>
+        <version>18</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -1076,30 +1035,6 @@
           <version>0</version>
           <state>0</state>
         </option>
-        <option>
-          <name>XLink DPC Address</name>
-          <state>1</state>
-        </option>
-        <option>
-          <name>XlinkLogEnable</name>
-          <state>0</state>
-        </option>
-        <option>
-          <name>XlinkLogInputFiles</name>
-          <state>0</state>
-        </option>
-        <option>
-          <name>XlinkLogModuleSelection</name>
-          <state>0</state>
-        </option>
-        <option>
-          <name>XlinkLogPrintfScanf</name>
-          <state>0</state>
-        </option>
-        <option>
-          <name>XlinkLogSegmentSelection</name>
-          <state>0</state>
-        </option>
       </data>
     </settings>
     <settings>
@@ -1128,11 +1063,6 @@
       </data>
     </settings>
     <settings>
-      <name>HWMUL</name>
-      <archiveVersion>0</archiveVersion>
-      <data/>
-    </settings>
-    <settings>
       <name>BILINK</name>
       <archiveVersion>0</archiveVersion>
       <data/>
@@ -1140,45 +1070,6 @@
   </configuration>
   <group>
     <name>APP</name>
-    <group>
-      <name>XBeeApp</name>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\c_queue.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\c_queue.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\hal_xbee.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\hal_xbee.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAtCmd.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeAtCmd.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeBsp.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeBsp.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.h</name>
-      </file>
-    </group>
     <file>
       <name>$PROJ_DIR$\..\Source\OSAL_simpleBLECentral.c</name>
     </file>

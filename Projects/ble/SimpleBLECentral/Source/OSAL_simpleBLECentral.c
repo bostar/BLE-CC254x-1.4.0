@@ -76,6 +76,9 @@
 /* Application */
 #include "simpleBLECentral.h"
 
+#if defined _XBEE_APP_
+  #include "XBeeApp.h"
+#endif
 /*********************************************************************
  * GLOBAL VARIABLES
  */
@@ -96,6 +99,9 @@ const pTaskEventHandlerFn tasksArr[] =
   GAPCentralRole_ProcessEvent,
   GAPBondMgr_ProcessEvent,
   GATTServApp_ProcessEvent,
+#if defined _XBEE_APP_
+  XBeeProcessEvent,
+#endif
   SimpleBLECentral_ProcessEvent
 };
 
@@ -157,6 +163,10 @@ void osalInitTasks( void )
 
   /* Application */
   SimpleBLECentral_Init( taskID );
+
+#if defined _XBEE_APP_
+  XBeeInit(taskID);
+#endif
 }
 
 /*********************************************************************
