@@ -103,81 +103,81 @@ uint16 TSTProcess(XBeeUartRecDataDef rf_data)
 /*********************************************************
 **
 *********************************************************/
-void ProcessAT(XBeeUartRecDataDef temp_rbuf)
+void ProcessAT(uint8 *temp_rbuf)
 {
     uint8 i;
-    if(temp_rbuf.data[5]=='A' && temp_rbuf.data[6]=='I')
+    if(temp_rbuf[5]=='A' && temp_rbuf[6]=='I')
     {
-        if(temp_rbuf.data[7]==0 && temp_rbuf.data[8]==0)
+        if(temp_rbuf[7]==0 && temp_rbuf[8]==0)
         {
             XBeeInfo.XBeeAI = 1;
             osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 1);
         }
-        else if(temp_rbuf.data[7]==0 && temp_rbuf.data[8]==0x22)
+        else if(temp_rbuf[7]==0 && temp_rbuf[8]==0x22)
         {
             //for(i=0;i<8;i++)
                 //XBeeInfo.panID[i] = 0;
         }
     }
-    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='H')
+    else if(temp_rbuf[5]=='S' && temp_rbuf[6]=='H')
     {
-        if(temp_rbuf.data[7]==0)
+        if(temp_rbuf[7]==0)
         {
             uint8 cnt;
             for(cnt=0;cnt<4;cnt++)
-                XBeeInfo.MacAdr[cnt] = temp_rbuf.data[8+cnt];
+                XBeeInfo.MacAdr[cnt] = temp_rbuf[8+cnt];
         }
     }
-    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='L')
+    else if(temp_rbuf[5]=='S' && temp_rbuf[6]=='L')
     {
-        if(temp_rbuf.data[7]==0)
+        if(temp_rbuf[7]==0)
         {
             uint8 cnt;
             for(cnt=0;cnt<4;cnt++)
-                XBeeInfo.MacAdr[4+cnt] = temp_rbuf.data[8+cnt];    
+                XBeeInfo.MacAdr[4+cnt] = temp_rbuf[8+cnt];    
         }
     }
-    else if(temp_rbuf.data[5]=='M' && temp_rbuf.data[6]=='Y')
+    else if(temp_rbuf[5]=='M' && temp_rbuf[6]=='Y')
     {
-        if(temp_rbuf.data[7]==0 && XBeeInfo.InPark != 1)
+        if(temp_rbuf[7]==0 && XBeeInfo.InPark != 1)
         {
             uint8 cnt;
             for(cnt=0;cnt<2;cnt++)
-                XBeeInfo.NetAdr[cnt] = temp_rbuf.data[8+cnt];
+                XBeeInfo.NetAdr[cnt] = temp_rbuf[8+cnt];
         }
     }
-    else if(temp_rbuf.data[5]=='S' && temp_rbuf.data[6]=='M')
+    else if(temp_rbuf[5]=='S' && temp_rbuf[6]=='M')
     {
-        if(temp_rbuf.data[7] == 0)  //get device type
+        if(temp_rbuf[7] == 0)  //get device type
         {
-            if(temp_rbuf.data[8] == 0)
+            if(temp_rbuf[8] == 0)
                 XBeeInfo.DevType = router;
-            else if(temp_rbuf.data[8] == 4)
+            else if(temp_rbuf[8] == 4)
                 XBeeInfo.DevType = end_dev;
             osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 1);
         }
     }
-    else if(temp_rbuf.data[5]=='O' && temp_rbuf.data[6]=='P')
+    else if(temp_rbuf[5]=='O' && temp_rbuf[6]=='P')
     {
-        if(temp_rbuf.data[7] == 0)
+        if(temp_rbuf[7] == 0)
         {
             for(i=0;i<8;i++)
-                XBeeInfo.panID[i] = temp_rbuf.data[8+i];
+                XBeeInfo.panID[i] = temp_rbuf[8+i];
         }
         else
             XBeeReadAT("OP");
     }
-    else if(temp_rbuf.data[5]=='C' && temp_rbuf.data[6]=='H')
-        XBeeInfo.channel = temp_rbuf.data[8];
+    else if(temp_rbuf[5]=='C' && temp_rbuf[6]=='H')
+        XBeeInfo.channel = temp_rbuf[8];
 }
 /*********************************************************
 **brief 
 *********************************************************/
-uint16 ProcessTransmitStatus(XBeeUartRecDataDef temp_rbuf)
+uint16 ProcessTransmitStatus(uint8 *temp_rbuf)
 {    
     static uint8 time_out_cnt=0;
     
-    if(temp_rbuf.data[8] != 0)
+    if(temp_rbuf[8] != 0)
         time_out_cnt++;
     else
         time_out_cnt = 0;
@@ -213,9 +213,9 @@ void ProcessAR(XBeeUartRecDataDef temp_rbuf)
 /*********************************************************
 **brief mode status process
 *********************************************************/
-void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf)
+void ProcessModeStatus(uint8 *temp_rbuf)
 {
-    if(temp_rbuf.data[4] == 3 && XBeeInfo.InPark == 1)
+    if(temp_rbuf[4] == 3 && XBeeInfo.InPark == 1)
     {
         //HAL_SYSTEM_RESET();
         XBeeInfo.ParentLost = 1;
@@ -226,11 +226,11 @@ void ProcessModeStatus(XBeeUartRecDataDef temp_rbuf)
         osal_stop_timerEx( XBeeTaskID, XBEE_VBT_CHENCK_EVT );
         osal_stop_timerEx( XBeeTaskID, XBEE_REPORT_EVT ); 
     }
-    else if(temp_rbuf.data[4] == 0)
+    else if(temp_rbuf[4] == 0)
     {
         //osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
     }
-    else if(temp_rbuf.data[4] == 2)
+    else if(temp_rbuf[4] == 2)
     {
         //XBeeInfo.GetSM = 1;
         //XBeeCloseBuzzer();

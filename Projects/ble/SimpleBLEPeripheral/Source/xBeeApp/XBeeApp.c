@@ -27,6 +27,7 @@
 #include <string.h>
 #include "hal_adc.h"
 #include "XBeeProtocol.h"
+#include "c_queue.h"
 
 //#define __TEST
 
@@ -35,12 +36,10 @@
 
 
 
-uint8 XBeeTaskID;                           // Task ID for internal task/event processing       
-XBeeUartRecDataDef XBeeUartRec;             //串口接收缓存数据  
+uint8 XBeeTaskID;                           // Task ID for internal task/event processing        
 XBeeInfoType XBeeInfo;                
 ToReadUARTType ToReadUART=ReadHead;         //读取串口状态
 ToReadUARTType CtlToReadUART=ReadNone;      //控制读取串口状态
-uint8 XBeeUartEn=0;                         //串口读取使能
 uint8 LcokState;                            //锁状态标志
 ParkingStateType parkingState;              //当前车位状态
 uint8 SenFlag=0x88;                         //传感器初值
@@ -48,6 +47,7 @@ LockCurrentStateType LockObjState;
 FlashLockStateType FlashLockState;
 uint8 ReadFlashFlag;
 uint32 BuzzerTime=200;
+CircularQueueType serialBuf;
 
 void XBeeInit( uint8 task_id )
 {
@@ -56,6 +56,7 @@ void XBeeInit( uint8 task_id )
     InitUart1();  //初始化串口1
     HalAdcSetReference ( HAL_ADC_REF_AVDD );
     RegisterForKeys( XBeeTaskID );
+    creat_circular_queue( &serialBuf);
     //osal_set_event( XBeeTaskID, XBEE_MOTOR_CTL_EVT );
     osal_set_event( XBeeTaskID, XBEE_START_DEVICE_EVT );  //触发事件
     //osal_set_event( XBeeTaskID, XBEE_SCAN_ROUTE_PATH );  
@@ -77,6 +78,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         //XBeeReset();
         osal_set_event( XBeeTaskID, XBEE_MOTOR_CTL_EVT );   
         osal_set_event( XBeeTaskID, XBEE_CLOSE_BUZZER_EVT );
+        osal_set_event( XBeeTaskID, XBEE_REC_DATA_PROCESS_EVT );
         osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 500 );
         //osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
         return (events ^ XBEE_START_DEVICE_EVT) ;
@@ -125,10 +127,14 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     }
     if( events & XBEE_REC_DATA_PROCESS_EVT )    //process the data by xbee send
     {
-        if(XBeeUartRec.num != 0)
-            ProcessSerial(XBeeUartRec);
-        XBeeUartRec.num=0;
-        UART_XBEE_EN;
+        uint8 buff[128];
+        uint16 bufLen=0;
+        bufLen = read_one_package_f_queue(&serialBuf , buff);
+        if(bufLen)
+        {
+            ProcessSerial(buff);
+        }
+        osal_start_timerEx( XBeeTaskID , XBEE_REC_DATA_PROCESS_EVT,10);
         return (events ^ XBEE_REC_DATA_PROCESS_EVT);
     }
     if( events & XBEE_VBT_CHENCK_EVT )          //report the battery voltage
@@ -182,30 +188,30 @@ uint8 CheckMotor(void)
 /**********************************************************
 **brief process serial data
 **********************************************************/
-void ProcessSerial(XBeeUartRecDataDef temp_rbuf)
+void ProcessSerial(uint8 *temp_rbuf)
 {
-    switch(temp_rbuf.data[3])
+    switch(temp_rbuf[3])
     {
         case receive_packet:  //处理收到的RF包
-            if(temp_rbuf.data[15]=='C' && temp_rbuf.data[16]=='F' && temp_rbuf.data[17]=='G')
-                CFGProcess((uint8*)&XBeeUartRec.data[18]);
-            else if(temp_rbuf.data[15]=='C' && temp_rbuf.data[16]=='T' && temp_rbuf.data[17]=='L')
-                CTLProcess((uint8*)&temp_rbuf.data[18]);
-            else if(temp_rbuf.data[15]=='S' && temp_rbuf.data[16]=='E' && temp_rbuf.data[17]=='N')
-                SENProcess((uint8*)&temp_rbuf.data[18]);
-            else if(temp_rbuf.data[15]=='O' && temp_rbuf.data[16]=='T' && temp_rbuf.data[17]=='A')
+            if(temp_rbuf[15]=='C' && temp_rbuf[16]=='F' && temp_rbuf[17]=='G')
+                CFGProcess(temp_rbuf+18);
+            else if(temp_rbuf[15]=='C' && temp_rbuf[16]=='T' && temp_rbuf[17]=='L')
+                CTLProcess(temp_rbuf+18);
+            else if(temp_rbuf[15]=='S' && temp_rbuf[16]=='E' && temp_rbuf[17]=='N')
+                SENProcess(temp_rbuf+18);
+            else if(temp_rbuf[15]=='O' && temp_rbuf[16]=='T' && temp_rbuf[17]=='A')
             {}
-            else if(temp_rbuf.data[15]=='T' && temp_rbuf.data[16]=='S' && temp_rbuf.data[17]=='T')
-                TSTProcess(temp_rbuf);
+            else if(temp_rbuf[15]=='T' && temp_rbuf[16]=='S' && temp_rbuf[17]=='T')
+            {}
             break;
         case explicit_rx_indeicator:
-            if(temp_rbuf.data[21]=='C' && temp_rbuf.data[22]=='F' && temp_rbuf.data[23]=='G')
-                CFGProcess((uint8*)&XBeeUartRec.data[24]);
-            else if(temp_rbuf.data[21]=='C' && temp_rbuf.data[22]=='T' && temp_rbuf.data[23]=='L')
-                CTLProcess((uint8*)&temp_rbuf.data[24]);
-            else if(temp_rbuf.data[21]=='S' && temp_rbuf.data[22]=='E' && temp_rbuf.data[23]=='N')
-                SENProcess((uint8*)&temp_rbuf.data[24]);
-            else if(temp_rbuf.data[21]=='O' && temp_rbuf.data[22]=='T' && temp_rbuf.data[23]=='A')
+            if(temp_rbuf[21]=='C' && temp_rbuf[22]=='F' && temp_rbuf[23]=='G')
+                CFGProcess(temp_rbuf+24);
+            else if(temp_rbuf[21]=='C' && temp_rbuf[22]=='T' && temp_rbuf[23]=='L')
+                CTLProcess(temp_rbuf+24);
+            else if(temp_rbuf[21]=='S' && temp_rbuf[22]=='E' && temp_rbuf[23]=='N')
+                SENProcess(temp_rbuf+24);
+            else if(temp_rbuf[21]=='O' && temp_rbuf[22]=='T' && temp_rbuf[23]=='A')
             {}
             break;
         case at_command_response:  //处理收到的AT指令返回值
@@ -230,21 +236,18 @@ void ProcessSerial(XBeeUartRecDataDef temp_rbuf)
 **********************************************************/
 static void npiCBack_uart( uint8 port, uint8 events )
 {
-    uint16 rev_data_temp;
-    uint8 cnt;
     static uint8 checksum=0;
     uint16 numBytes=0,RecLen=0;
     static uint16 APICmdLen=0;
-
-    if(XBeeUartEn == 1)  //默认值为0 使能
-        return;
+    static XBeeUartRecDataDef XBeeUartRec;             //串口接收缓存数据 
+    
     numBytes = NPI_RxBufLen();
     if(numBytes==0)
         return; 
     switch(ToReadUART)
     {
         case ReadHead:
-            RecLen = NPI_ReadTransport( XBeeUartRec.data, 1); 
+            RecLen = NPI_ReadTransport( XBeeUartRec.data, 1);
             if(*XBeeUartRec.data == 0x7E)
             {
                 XBeeUartRec.num = 1;
@@ -261,9 +264,9 @@ static void npiCBack_uart( uint8 port, uint8 events )
                 return;
             }
             XBeeUartRec.num += 2;
-            rev_data_temp = (uint16)*(XBeeUartRec.data+1);
-            rev_data_temp <<= 8;
-            APICmdLen = rev_data_temp + (uint16)*(XBeeUartRec.data+2);
+            APICmdLen = 0;
+            APICmdLen |= (uint16)*(XBeeUartRec.data+2);
+            APICmdLen |= (uint16)*(XBeeUartRec.data+1) << 8;
             ToReadUART = ReadData;
             break;
         case ReadData:
@@ -276,15 +279,13 @@ static void npiCBack_uart( uint8 port, uint8 events )
                 return;
             }
             XBeeUartRec.num += RecLen;
-            checksum = 0;
-            for(cnt=3;cnt<APICmdLen+3;cnt++)
-                checksum += *(XBeeUartRec.data + cnt);
-            checksum = 0xFF - checksum;
+            checksum = XBeeApiChecksum(XBeeUartRec.data+3 , APICmdLen);
             if(*(XBeeUartRec.data + APICmdLen+3) != checksum)
                 return;
             ToReadUART = ReadHead; 
-            UART_XBEE_DIS; 
-            osal_set_event( XBeeTaskID, XBEE_REC_DATA_PROCESS_EVT ); 
+            write_cqueue(&serialBuf , XBeeUartRec.data , XBeeUartRec.num);
+            XBeeUartRec.num = 0;
+            //osal_set_event( XBeeTaskID, XBEE_REC_DATA_PROCESS_EVT ); 
             break;
         default:
             break;

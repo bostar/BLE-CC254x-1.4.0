@@ -122,14 +122,14 @@ uint16 read_one_package_f_queue( CircularQueueType* p_cqueue , uint8* buf )
 	if(len < DataLen+1)
 		return 0;
 	checksum = XBeeApiChecksum(UartRevBuf+3,DataLen); //校验数据
-	if(checksum != UartRevBuf[DataLen+3])
-		return 0;
-	else
+	if(checksum == UartRevBuf[DataLen+3])
 	{	
 		for(cnt=0;cnt<DataLen+4;cnt++)
 			*(buf+cnt) = *(UartRevBuf+cnt);
 		return DataLen+4;
 	}
+    else
+        return 0;
 }
 
 

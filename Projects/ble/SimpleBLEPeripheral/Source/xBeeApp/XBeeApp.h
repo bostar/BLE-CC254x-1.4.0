@@ -51,8 +51,6 @@ extern "C"
 #define IN_PARK_NET   3
 #define SUCCESS_TRANS 1
 #define FAIL_TRANS    2
-#define UART_XBEE_EN   XBeeUartEn = 0
-#define UART_XBEE_DIS  XBeeUartEn = 1
 #define SEN_THR       100
 #define SEN_MOTOR       0.7
 /*********************************************************************
@@ -162,7 +160,7 @@ typedef struct
 
 typedef struct
 {
-    uint8 data[256];
+    uint8 data[128];
     uint8 num;
 }XBeeUartRecDataDef;
    
@@ -175,11 +173,9 @@ typedef struct
 
 /***************************************************************/
 extern XBeeInfoType XBeeInfo;  
-extern XBeeUartRecDataDef XBeeUartRec; //串口接收缓存数据  
 extern uint8 XBeeTaskID;
 extern uint8 UartCtl; 
 extern uint8 SenFlag; 
-extern uint8 XBeeUartEn;
 extern LockCurrentStateType LockObjState;
 extern uint8 SetSleepMode;
 extern FlashLockStateType FlashLockState;
@@ -196,7 +192,7 @@ extern uint32 BuzzerTime;
  * Task Initialization for the BLE Application
  */
 void XBeeInit( uint8 task_id );
-void ProcessSerial(XBeeUartRecDataDef temp_rbuf);
+void ProcessSerial(uint8 *temp_rbuf);
 void DailyEvt(void);
 float ReadMotorSen(void);
 uint32 SleepAndJoinNet(void);
