@@ -15,8 +15,6 @@
 #include "bcomdef.h"
 
 #if defined _XBEE_APP_
-
-static uint8 my_msg=0;
 /*****************************************************
 **
 *****************************************************/
@@ -39,7 +37,11 @@ uint16 CFGProcess(uint8 *rf_data)
                 XBeeSendAT("WR");
                 XBeeInfo.InPark = 1;
                 XBeeReadAT("OP");
-                DailyEvt();
+                CreatXBeeMsg(XBEE_HMC5983_EVT,ACTIVATE);
+                CreatXBeeMsg(XBEE_VBT_CHENCK_EVT,ACTIVATE);
+                CreatXBeeMsg(XBEE_REPORT_EVT,ACTIVATE);
+                CreatXBeeMsg(XBEE_JOIN_NET_EVT,INACTIVATE);
+                CreatXBeeMsg(XBEE_CLOSE_BUZZER_EVT,INACTIVATE);
             }
             else if(*(rf_data+1) == 0x00)   //禁止入网
                 HAL_SYSTEM_RESET();
@@ -64,9 +66,9 @@ void CTLProcess(uint8 *rf_data)
             XBeeLockState(ParkLockSuccess);
 #else
             if(*(rf_data+1) == 0)  //解锁
-                LockObjState = unlock;
+                LockState.FinalState = unlock;
             else if(*(rf_data+1) == 1)  //上锁
-                LockObjState = lock;
+                LockState.FinalState = lock;
 #endif
             break;
         default:
@@ -81,22 +83,30 @@ void SENProcess(uint8 *rf_data)
     switch(*rf_data)
     {
         case 0x00:
+            UartStop();
             SenFlag = 0x88;
+            UartStart();
             break;
         default:
             break;
     }
 }
+/**************************************************
+**brief process OTA
+**************************************************/
 void OTAProcess(uint8 *rf_data)
 {}
-uint16 TSTProcess(XBeeUartRecDataDef rf_data)
+/**************************************************
+**brief process TST
+**************************************************/
+uint16 TSTProcess(uint8 *rf_data)
 {
     int8 data[4];
     data[0] = 'T';
     data[1] = 'E';
     data[2] = 'S';
     data[3] = 'T';
-    if(rf_data.data[18] == 'T' && rf_data.data[18] == 'E' && rf_data.data[18] == 'S' && rf_data.data[18] == 'T')
+    if(rf_data[18] == 'T' && rf_data[18] == 'E' && rf_data[18] == 'S' && rf_data[18] == 'T')
         return XBeeSendToCoor((uint8*)data,4,RES);
     return 0;
 }
@@ -111,7 +121,8 @@ void ProcessAT(uint8 *temp_rbuf)
         if(temp_rbuf[7]==0 && temp_rbuf[8]==0)
         {
             XBeeInfo.XBeeAI = 1;
-            osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 1);
+            //osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 1);
+            CreatXBeeMsg(XBEE_JOIN_NET_EVT,ACTIVATE);
         }
         else if(temp_rbuf[7]==0 && temp_rbuf[8]==0x22)
         {
@@ -154,7 +165,8 @@ void ProcessAT(uint8 *temp_rbuf)
                 XBeeInfo.DevType = router;
             else if(temp_rbuf[8] == 4)
                 XBeeInfo.DevType = end_dev;
-            osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 1);
+            //osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 1);
+            CreatXBeeMsg(XBEE_JOIN_NET_EVT,ACTIVATE);
         }
     }
     else if(temp_rbuf[5]=='O' && temp_rbuf[6]=='P')
@@ -186,31 +198,6 @@ uint16 ProcessTransmitStatus(uint8 *temp_rbuf)
     return 0;
 }
 /*********************************************************
-**brief 
-*********************************************************/
-void ProcessNodeIden(XBeeUartRecDataDef temp_rbuf)
-{
-    
-}
-/*********************************************************
-**brief 
-*********************************************************/
-void ProcessAR(XBeeUartRecDataDef temp_rbuf)
-{
-    uint8 i;
-    if(temp_rbuf.data[12] == 0 && temp_rbuf.data[13] == 0)
-    {
-        for(i=0;i<8;i++)
-            CoorMAC[i] = temp_rbuf.data[4+i];
-        if(my_msg == 1)
-        {   
-            my_msg++;
-            osal_set_event( XBeeTaskID,XBEE_JOIN_NET_EVT);
-        }
-    }
-    return;
-}
-/*********************************************************
 **brief mode status process
 *********************************************************/
 void ProcessModeStatus(uint8 *temp_rbuf)
@@ -221,24 +208,15 @@ void ProcessModeStatus(uint8 *temp_rbuf)
         XBeeInfo.ParentLost = 1;
         XBeeInfo.InPark = 0;
         XBeeInfo.XBeeAI = 0;
-        osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
-        osal_stop_timerEx( XBeeTaskID, XBEE_HMC5983_EVT );
-        osal_stop_timerEx( XBeeTaskID, XBEE_VBT_CHENCK_EVT );
-        osal_stop_timerEx( XBeeTaskID, XBEE_REPORT_EVT ); 
+        CreatXBeeMsg(XBEE_JOIN_NET_EVT,ACTIVATE);
+        CreatXBeeMsg(XBEE_HMC5983_EVT,INACTIVATE);
+        CreatXBeeMsg(XBEE_VBT_CHENCK_EVT,INACTIVATE);
+        CreatXBeeMsg(XBEE_REPORT_EVT,INACTIVATE);
     }
     else if(temp_rbuf[4] == 0)
-    {
-        //osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
-    }
+    {}
     else if(temp_rbuf[4] == 2)
-    {
-        //XBeeInfo.GetSM = 1;
-        //XBeeCloseBuzzer();
-        //osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 1 );
-    }
-    else
-    {
-    }
+    {}
 }
 /*********************************************************
 **brief 发送锁状态函数
@@ -405,9 +383,11 @@ uint16 ReportSenser(void)
 {
     HMC5983DataType temp_hmc5983Data,temp_hmc5983DataStandard;
  
+    UartStop();
     temp_hmc5983Data = hmc5983Data;
     temp_hmc5983DataStandard = hmc5983DataStandard;
-    if(temp_hmc5983Data.state!=0x88)
+    UartStart();
+    if(temp_hmc5983Data.state != 0x88)
     {
         Uart1_Send_Byte("get",osal_strlen("get"));
         return 0;
@@ -425,7 +405,7 @@ uint16 ReportSenser(void)
     else if(parkingState.vehicleState == ParkingUsed)
     {
         parkingState.vehicleState = ParkingUnUsed;
-        return XBeeParkState(ParkingUnUsed);  
+        return XBeeParkState(ParkingUnUsed);
     }
     return 0;
 }
@@ -437,34 +417,37 @@ uint16 ReportLockState(void)
     if(GetCurrentMotorState() == lock)
         XBeeLockState(ParkLockSuccess);
     else if(GetCurrentMotorState() == unlock )
-        XBeeLockState(ParkUnlockSuccess);   
-    //else if(LockObjState == lock)
-       // XBeeLockState(ParkLockFailed);
-    //else if(LockObjState == unlock)
-        //XBeeLockState(ParkLockFailed);
+        XBeeLockState(ParkUnlockSuccess);
+#if 0
+    else if(LockObjState == lock)
+        XBeeLockState(ParkLockFailed);
+    else if(LockObjState == unlock)
+        XBeeLockState(ParkLockFailed);
+#endif
     return 0;
 }
 /**********************************************************
 **brief report Vbat to gateway
 **********************************************************/
-void ReportVbat(void)
+float ReportVbat(void)
 {
-    volatile static uint8 v_cnt=0;
-    volatile static float vbat=0;
-    //检测电压十次，取平均值
-    float vbt_v=0;
+    static uint16 v_cnt=0;
+    static float vbat=0;
+    float reval=0,vbt_v=0;
     int16 vbt=0;
+    
     vbt = HalAdcRead (HAL_ADC_CHANNEL_1, HAL_ADC_RESOLUTION_8);
-    vbt_v = 3.482 * (float)vbt / 0x7f;
+    vbt_v = 3.2 * (float)vbt / 0x7f;
     v_cnt++;
     vbat += vbt_v;
     if(v_cnt == 10)
     {
+        vbat = vbat/(float)v_cnt;  //检测电压十次，取平均值
+        reval = vbat * 6;
         v_cnt = 0;
-        vbat = vbat/(float)10;
-        //发送报告
         vbat = 0;
     }
+    return reval;
 }
 /**********************************************************
 **brief 向网关发送字符串

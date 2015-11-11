@@ -15,9 +15,6 @@
 #include <stdio.h>
 
 #if defined _XBEE_APP_
-
-
-
 /************************************************************
 **brief xbee发送数据请求
 **param adr 指向64位地址的指针
@@ -30,7 +27,7 @@
 ************************************************************/
 uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len, IsResp IsRes)
 {
-  static uint8 wbuf[256],cnt=0;
+  static uint8 wbuf[128],cnt=0;
   XBeeTransReqType *frame = (XBeeTransReqType*)wbuf;
   
   frame->start_delimiter = 0x7E;
@@ -60,7 +57,8 @@ uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,
 **************************************************/
 uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes)
 {
-    uint8 wbuf[128],i;
+    static uint8 wbuf[64];
+    uint8 i;
     XBeeApiATCmdType *cmd = (XBeeApiATCmdType*)wbuf;
     cmd->start_delimiter  = 0x7E;
     cmd->len_msb          = (uint8)((4+len)>>8);

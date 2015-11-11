@@ -36,8 +36,7 @@ LockCurrentStateType GetCurrentMotorState(void);
 void Delay1ms(void);		//@33.000MHz
 void Delay100us(void);		//@33.000MHz
 uint8 GetCurrentMotorStateTest(void);
-void KeepLockState(void);
-uint8 ControlMotor(void);
+uint8 ControlMotor(LockCurrentStateType state);
 uint8 CheckADC(void);
 void XBeeReset(void);
 void NetReset(uint8 param);
@@ -45,6 +44,8 @@ void XBeeBuzzer(uint8 times);
 void Delay1ms(void);
 void Delay100us(void);
 void XBeeDevInit(void);
+void UartStop(void);
+void UartStart(void);
 #endif
 
 

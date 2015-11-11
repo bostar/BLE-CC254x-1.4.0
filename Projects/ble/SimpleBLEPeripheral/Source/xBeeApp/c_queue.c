@@ -100,36 +100,31 @@ uint16 read_cqueue(CircularQueueType* p_cqueue , uint8* buf , uint16 n)
 **param	
 **reval	
 *****************************************************************************/
-uint16 read_one_package_f_queue( CircularQueueType* p_cqueue , uint8* buf )
+uint16 read_one_package_f_queue( CircularQueueType* p_cqueue , uint8* UartRevBuf )
 {
 	int16 len;
-	uint16 DataLen=0,cnt=0;
-	uint8 checksum;
-	static uint8 UartRevBuf[128];
+	uint16 DataLen=0;
+	uint8 checksum,reval=0;
 	
 	len = read_cqueue(p_cqueue , UartRevBuf , 1);
-	if(len == 0)
-		return 0;
-	if(UartRevBuf[0] != 0x7E)
-		return 0;
-	len = read_cqueue(p_cqueue , UartRevBuf+1 , 2);
-	if(len < 2)
-		return 0;
-	DataLen = 0;
-	DataLen |= UartRevBuf[2];
-	DataLen |= (uint16)UartRevBuf[1]<<8;
-	len = read_cqueue(p_cqueue , UartRevBuf+3 , DataLen+1);
-	if(len < DataLen+1)
-		return 0;
-	checksum = XBeeApiChecksum(UartRevBuf+3,DataLen); //校验数据
-	if(checksum == UartRevBuf[DataLen+3])
-	{	
-		for(cnt=0;cnt<DataLen+4;cnt++)
-			*(buf+cnt) = *(UartRevBuf+cnt);
-		return DataLen+4;
-	}
-    else
-        return 0;
+    if(len == 1 && UartRevBuf[0] == 0x7E)
+    {
+        len = read_cqueue(p_cqueue , UartRevBuf+1 , 2);
+        if(len == 2)
+        {
+            DataLen = 0;
+            DataLen |= UartRevBuf[2];
+            DataLen |= (uint16)UartRevBuf[1]<<8;
+            len = read_cqueue(p_cqueue , UartRevBuf+3 , DataLen+1);
+            if(len == DataLen+1)
+            {
+                checksum = XBeeApiChecksum(UartRevBuf+3,DataLen); //校验数据
+                if(checksum == UartRevBuf[DataLen+3])
+                    reval = DataLen+4;
+            }
+        }
+    }
+    return reval;
 }
 
 

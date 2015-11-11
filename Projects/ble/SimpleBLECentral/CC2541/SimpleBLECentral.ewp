@@ -303,9 +303,6 @@
           <state>HAL_LED=FALSE</state>
           <state>HAL_KEY=FALSE</state>
           <state>CC2540_MINIDK</state>
-          <state>HAL_XBEE_ZIGBEE</state>
-          <state>_XBEE_APP_</state>
-          <state>ZAPP_P1</state>
           <state>HAL_ADC=TRUE</state>
           <state>x_TEST_LARGE_MODES</state>
         </option>
@@ -497,7 +494,6 @@
           <state>$PROJ_DIR$\..\..\Include</state>
           <state>$PROJ_DIR$\..\..\Profiles\Roles</state>
           <state>$PROJ_DIR$\..\..\Profiles\SimpleProfile</state>
-          <state>$PROJ_DIR$\..\Source\xBeeApp</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>

@@ -226,51 +226,19 @@ uint8 GetCurrentMotorStateTest(void)
         valve |= 0x04;
     return valve;
 }
-/****************************************************
-**brief keep current locker state
-****************************************************/
-void KeepLockState(void)
-{
-    LockCurrentStateType MotorCurrentState;
-    MotorCurrentState = GetCurrentMotorState();
-    if(MotorCurrentState != LockObjState )
-    {
-        switch(LockObjState)
-        {
-            case lock:
-                if(MotorCurrentState == over_lock)
-                    MotorUnlock();
-                else
-                    MotorLock();
-                if(MotorCurrentState == LockObjState)
-                    MotorStop();
-                break;
-            case unlock:
-                MotorUnlock();
-                if(MotorCurrentState == LockObjState)
-                    MotorStop();
-                break;
-            default:
-                break;
-        }
-    }
-    else
-        MotorStop();
-    return; 
-}
 /***************************************************
 **brief conrtol motor
 ***************************************************/
-uint8 ControlMotor(void)
+uint8 ControlMotor(LockCurrentStateType state)
 {
     LockCurrentStateType MotorCurrentState;
     uint8 reval=0;
    
     MotorCurrentState = GetCurrentMotorState();
-    switch(LockObjState)
+    switch(state)
     {
         case lock:
-            if(MotorCurrentState == LockObjState)
+            if(MotorCurrentState == state)
             {
                 MotorStop();
                 reval = 1;
@@ -287,7 +255,7 @@ uint8 ControlMotor(void)
             }
             break;
         case unlock:
-            if(MotorCurrentState == LockObjState)
+            if(MotorCurrentState == state)
             {
                 MotorStop();
                 reval = 2;
@@ -335,6 +303,21 @@ uint8 CheckADC(void)
     
     return reval;
 }
+/*****************************************************
+**brief 关中断
+*****************************************************/
+void UartStop(void)
+{
+    IEN0 &= 0xf7; // 关总中断
+}
+/*****************************************************
+**brief 开中断
+*****************************************************/
+void UartStart(void)
+{
+    IEN0 |= 0x08; // 开总中断
+}
+
 void Delay1ms(void)		//@33.000MHz
 {
 	unsigned char i, j;

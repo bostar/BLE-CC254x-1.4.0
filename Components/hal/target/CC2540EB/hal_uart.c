@@ -392,11 +392,11 @@ U1CSR |= 0xC0;
 U1GCR |= 11;
 U1BAUD |= 216;
 UTX1IF = 0; 
-IEN0 |= 0x08; // 开总中断，接收中断 
+IEN0 |= 0x08; // 开总中断，接收中断
 }
 
 /**************************************************************** 
-串口发送字符串函数 
+串口发送字符串函数
 ****************************************************************/ 
 void Uart1_Send_Byte(char *Data,int len) 
 {
@@ -404,7 +404,7 @@ void Uart1_Send_Byte(char *Data,int len)
   int j; 
   GPIO_XBEE_DIR_TURN_HIGH();
   HAL_GPIO_CHANGE_DELAY();
-  for(j=0;j<len;j++) 
+  for(j=0;j<len;j++)
   { 
     U1DBUF = *Data++;
     //U1DBUF = *(Data+j); 
@@ -427,30 +427,30 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
 #if defined (_XBEE_APP_)
   static uint8 index = 0;
   uint8 add_sum,check;
+  uint8 flag;
   
   HAL_ENTER_ISR();
   URX1IF = 0; // 清中断标志 
-  if(U1DBUF == 0xAA)
+  if(index == 0 && U1DBUF == 0xAA)
   {
     temp_uart[0] = U1DBUF; 
     index = 1;
   }
-  else if(U1DBUF == 0xBB)
+  else if(index == 1 && U1DBUF == 0xBB)
   {
     temp_uart[index] = U1DBUF;
     index = 2;
   }
-  else if(U1DBUF == 0xCC)
+  else if(index ==2 && U1DBUF == 0xCC)
   {
     temp_uart[index] = U1DBUF;
     index = 3;
   }
-  else if(index >2)
+  else if(index >= 3)
   {
     temp_uart[index] = U1DBUF;
     index++;
   }
-  
   if( index >= 10 )
   {
     index = 0;
@@ -458,13 +458,15 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
     for(int i=0;i<9;i++)
         add_sum += temp_uart[i];
     check = 0xFF - add_sum;
-    if(temp_uart[0] == 0xAA && temp_uart[1] == 0xBB && temp_uart[2] == 0xCC && temp_uart[9] == check)
+    if(temp_uart[0] == 0xAA && temp_uart[1] == 0xBB && temp_uart[2] == 0xCC \
+      && temp_uart[9] == check)
     {
         hmc5983Data.x = (unsigned short)temp_uart[3] << 8 | temp_uart[4];
         hmc5983Data.y = (unsigned short)temp_uart[5] << 8 | temp_uart[6];
         hmc5983Data.z = (unsigned short)temp_uart[7] << 8 | temp_uart[8];
-        hmc5983Data.state = 0x88;       
-        if(SenFlag == 0x88)
+        hmc5983Data.state = 0x88;
+        flag = SenFlag;
+        if(flag == 0x88)
         {
             SenFlag = 1;
             hmc5983DataStandard.x = hmc5983Data.x;

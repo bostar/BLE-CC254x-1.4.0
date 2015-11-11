@@ -71,11 +71,11 @@
 #include "gattservapp.h"
 
 /* Profiles */
-#include "peripheral.h"
+#include "central.h"
 
 
 /* Application */
-#include "simpleBLEPeripheral.h"
+#include "hidapp.h"
 #include "OnBoard.h"
 #if defined ( ZIGBEE_APP )
   #include "zigbeeApp.h"
@@ -103,14 +103,15 @@ const pTaskEventHandlerFn tasksArr[] =
   GAP_ProcessEvent,                                                 // task 5
   GATT_ProcessEvent,                                                // task 6
   SM_ProcessEvent,                                                  // task 7
-  GAPRole_ProcessEvent,                                             // task 8
+  GAPCentralRole_ProcessEvent,                                             // task 8
   GAPBondMgr_ProcessEvent,                                          // task 9
-  GATTServApp_ProcessEvent,                                         // task 10
+  //GATTServApp_ProcessEvent,                                         // task 10
 #if defined ( ZIGBEE_APP )
   Zigbee_ProcessEvent,                                              // task 11
 #endif 
 #if defined _XBEE_APP_
   XBeeProcessEvent,
+  Hidapp_ProcessEvent
 #endif
   //SimpleBLEPeripheral_ProcessEvent                                  // task 12
 };
@@ -166,17 +167,17 @@ void osalInitTasks( void )
   SM_Init( taskID++ );
 
   /* Profiles */
-  GAPRole_Init( taskID++ );
+  GAPCentralRole_Init( taskID++ );
   GAPBondMgr_Init( taskID++ );
 
-  GATTServApp_Init( taskID++ );
 
   /* Application */
 #if defined ( ZIGBEE_APP )
   Zigbee_Init( taskID++ );
 #endif
 #if defined _XBEE_APP_
-  XBeeInit(taskID);
+  XBeeInit(taskID ++);
+  Hidapp_Init( taskID );
 #endif
   //SimpleBLEPeripheral_Init( taskID ); 
 }

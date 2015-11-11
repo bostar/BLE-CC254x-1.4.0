@@ -32,20 +32,21 @@ uint16 CFGProcess(uint8 *rf_data);  //CFG´¦Àíº¯Êý
 void CTLProcess(uint8 *rf_data);
 void SENProcess(uint8 *rf_data);
 void OTAProcess(uint8 *rf_data);
-uint16 TSTProcess(XBeeUartRecDataDef rf_data);
-uint16 XBeeLockState(parkingEventType LockState);
-uint16 XBeeParkState(parkingEventType CarState);
-uint16 SendString(uint8 in ,uint8 len );
+uint16 TSTProcess(uint8 *rf_data);
+
 uint16 ProcessTransmitStatus(uint8 *temp_rbuf);
 void ProcessAT(uint8 *temp_rbuf);
 void ProcessModeStatus(uint8 *temp_rbuf);
-void ProcessNodeIden(XBeeUartRecDataDef temp_rbuf);
-void ProcessAR(XBeeUartRecDataDef temp_rbuf);
+
+uint16 XBeeLockState(parkingEventType LockState);
+uint16 XBeeParkState(parkingEventType CarState);
+uint16 SendString(uint8 in ,uint8 len );
 uint8 SetXBeeSleepMode(void);
 uint8 JionParkNet(void);
 uint16 ReportSenser(void);
 uint16 ReportLockState(void);
-void ReportVbat(void);
+float ReportVbat(void);
+
 int8 arrncmp(uint8 *arr1,uint8 *arr2,uint8 n);
 void connectarr(uint8 *arr1,uint8 *arr2,uint8 *arr);
 uint32 SleepModeAndJoinNet(void);
