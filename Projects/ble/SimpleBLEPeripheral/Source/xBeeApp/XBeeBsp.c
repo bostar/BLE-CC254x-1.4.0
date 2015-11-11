@@ -164,12 +164,14 @@ void MotorLock(void)
 **************************************************/
 void XBeePinWake(void)
 {   
-    if(XBeeInfo.DevType == end_dev)
+    uint32 cnt=0;
+    if(XBeeInfo.DevType == end_dev && HalGpioGet(GPIO_XBEE_SLEEP_INDER) != 1)
     {
-        GPIO_XBEE_SLEEP_TURN_HIGH();
-        Delay100us();	
         GPIO_XBEE_SLEEP_TURN_LOW();
-        while(HalGpioGet(GPIO_XBEE_SLEEP_INDER) != 1);
+        while(HalGpioGet(GPIO_XBEE_CTS) == 1 && cnt < 72000)
+        {
+            cnt++;
+        }
     }
 }
 /**************************************************

@@ -40,9 +40,9 @@ void HalXbeeInit (void)
     GPIO_XBEE_RESET_TURN_LOW();
     HAL_GPIO_CHANGE_DELAY();
     GPIO_XBEE_RESET_TURN_HIGH();   
-    GPIO_XBEE_RTS_TURN_HIGH();
-    //GPIO_XBEE_SLEEP_TURN_HIGH();
-    GPIO_XBEE_SLEEP_TURN_LOW();
+    GPIO_XBEE_RTS_TURN_LOW();
+    GPIO_XBEE_SLEEP_TURN_HIGH();
+    //GPIO_XBEE_SLEEP_TURN_LOW();
     GPIO_XBEE_DIR_TURN_LOW();
     GPIO_XBEE_MOTOR1_TURN_HIGH();
     GPIO_XBEE_MOTOR2_TURN_HIGH();
@@ -70,6 +70,9 @@ uint8 HalGpioGet(GPIOType pin)
             break;
         case GPIO_XBEE_MOTOR2:
             reval = GPIO_XBEE_MOTOR2_SBIT;
+            break;
+        case GPIO_XBEE_CTS:
+            reval = GPIO_XBEE_CTS_SBIT;
             break;
         default:
             break;

@@ -28,6 +28,7 @@
 uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len, IsResp IsRes)
 {
   static uint8 wbuf[128],cnt=0;
+  uint16 reval;
   XBeeTransReqType *frame = (XBeeTransReqType*)wbuf;
   
   frame->start_delimiter = 0x7E;
@@ -45,7 +46,9 @@ uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,
     *((uint8*)frame + 17 + cnt) = *(rf_data + cnt);
   *(((uint8*)frame)+17+len) = XBeeApiChecksum(((uint8*)frame)+3,14+len);
   XBeePinWake();
-  return NPI_WriteTransport((uint8*)frame,18+len);
+  reval = NPI_WriteTransport((uint8*)frame,18+len);
+  XBeePinSleep();
+  return reval;
 }
 
 /**************************************************
@@ -59,6 +62,7 @@ uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes)
 {
     static uint8 wbuf[64];
     uint8 i;
+    uint16 reval;
     XBeeApiATCmdType *cmd = (XBeeApiATCmdType*)wbuf;
     cmd->start_delimiter  = 0x7E;
     cmd->len_msb          = (uint8)((4+len)>>8);
@@ -77,7 +81,9 @@ uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes)
     printf("\n");
 #endif
     XBeePinWake();
-    return NPI_WriteTransport((uint8*)cmd,8+len);
+    reval = NPI_WriteTransport((uint8*)cmd,8+len);
+    XBeePinSleep();
+    return reval;
 }
 
 
@@ -157,6 +163,7 @@ void XBeeSetIO(XBeeIOParam ioparam,IOStatus state)
   cmd->checksum = XBeeApiChecksum(((uint8*)cmd)+3,5);
   XBeePinWake();
   NPI_WriteTransport((uint8*)cmd,9);
+  XBeePinSleep();
 }
 
 /*********************************************************

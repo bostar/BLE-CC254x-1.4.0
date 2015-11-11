@@ -116,7 +116,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
                 XBeeLockState(ParkLockFailed);
             else if(LockState.FinalState == unlock)
                 XBeeLockState(ParkLockFailed);
-            reval = 4000;
+            reval = 2000;
         }
         osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, reval );
         return (events ^ XBEE_MOTOR_CTL_EVT);
