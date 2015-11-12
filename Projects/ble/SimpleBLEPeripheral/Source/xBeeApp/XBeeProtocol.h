@@ -28,6 +28,20 @@ typedef enum
     GetSM       =   0x19
 }_type__;
 
+typedef struct
+{
+    uint8 senerEn;
+    uint8 senerEvt;
+    uint8 lockEn;
+    uint8 lockEvt;
+    uint8 batEn;
+    uint8 batMsb;
+    uint8 batLsb;
+}eventInfoType;
+
+
+extern eventInfoType eventInfo;    //事件上报参数
+
 uint16 CFGProcess(uint8 *rf_data);  //CFG处理函数
 void CTLProcess(uint8 *rf_data);
 void SENProcess(uint8 *rf_data);
@@ -38,8 +52,7 @@ uint16 ProcessTransmitStatus(uint8 *temp_rbuf);
 void ProcessAT(uint8 *temp_rbuf);
 void ProcessModeStatus(uint8 *temp_rbuf);
 
-uint16 XBeeLockState(parkingEventType LockState);
-uint16 XBeeParkState(parkingEventType CarState);
+uint16 XBeeReport(eventInfoType eventInfo);
 uint16 SendString(uint8 in ,uint8 len );
 uint8 SetXBeeSleepMode(void);
 uint8 JionParkNet(void);

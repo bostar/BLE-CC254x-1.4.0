@@ -43,7 +43,7 @@ extern "C"
 #define XBeeOpenLED3()     XBeeSetIO(IO_D5,High)
 #define XBeeCloseLED3()    XBeeSetIO(IO_D5,Low)
 
-#define SEN_THR         100
+#define SEN_THR         50
 #define SEN_MOTOR       0.7
 /*******************XBeeProcessEvent msg operation*******************/
 #define MOTOR_LOCK      (uint8)1

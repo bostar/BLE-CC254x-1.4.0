@@ -44,6 +44,7 @@ uint8 SenFlag=0x88;                         //´«¸ÐÆ÷³õÖµ
 LockCurrentStateType LockObjState;
 FlashLockStateType FlashLockState;
 CircularQueueType serialBuf;
+eventInfoType eventInfo;
 
 void XBeeInit( uint8 task_id )
 {
@@ -79,11 +80,14 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     {
         for(i=0;i<8;i++)
             XBeeInfo.panID[i] = 0;
-        UartStop();
+        //UartStop();
         SenFlag=0x88;
-        UartStart();
+        //UartStart();
         parkingState.vehicleState = ParkingUnUsed;
         LockState.FinalState = unlock;
+        eventInfo.batEn = 0;
+        eventInfo.lockEn = 0;
+        eventInfo.senerEn = 0;
         //XBeeReset();
         osal_set_event( XBeeTaskID, XBEE_MOTOR_CTL_EVT );
         osal_set_event( XBeeTaskID, XBEE_CLOSE_BUZZER_EVT );
@@ -113,9 +117,17 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         {
             MotorStop();
             if(LockState.FinalState == lock)
-                XBeeLockState(ParkLockFailed);
+            {
+                eventInfo.lockEn = 1;
+                eventInfo.lockEvt = ParkLockFailed;
+                XBeeReport(eventInfo);
+            }
             else if(LockState.FinalState == unlock)
-                XBeeLockState(ParkLockFailed);
+            {
+                eventInfo.lockEn = 1;
+                eventInfo.lockEvt = ParkUnlockFailed;
+                XBeeReport(eventInfo);
+            }
             reval = 2000;
         }
         osal_start_timerEx( XBeeTaskID, XBEE_MOTOR_CTL_EVT, reval );
@@ -124,9 +136,9 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     if(events & XBEE_HMC5983_EVT)               //process senser data
     {
         ReportSenser();
-        UartStop();
+        //UartStop();
         hmc5983Data.state = 1;
-        UartStart();
+        //UartStart();
         osal_start_timerEx( XBeeTaskID , XBEE_HMC5983_EVT,1000);
         return (events ^ XBEE_HMC5983_EVT) ;
     }

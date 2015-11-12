@@ -62,14 +62,10 @@ void CTLProcess(uint8 *rf_data)
     switch(*rf_data)
     {
         case 0:
-#if defined _TEST_LARGE_MODES
-            XBeeLockState(ParkLockSuccess);
-#else
             if(*(rf_data+1) == 0)  //解锁
                 LockState.FinalState = unlock;
             else if(*(rf_data+1) == 1)  //上锁
                 LockState.FinalState = lock;
-#endif
             break;
         default:
             break;
@@ -83,9 +79,9 @@ void SENProcess(uint8 *rf_data)
     switch(*rf_data)
     {
         case 0x00:
-            UartStop();
+            //UartStop();
             SenFlag = 0x88;
-            UartStart();
+            //UartStart();
             break;
         default:
             break;
@@ -219,39 +215,27 @@ void ProcessModeStatus(uint8 *temp_rbuf)
     {}
 }
 /*********************************************************
-**brief 发送锁状态函数
-*********************************************************/
-uint16 XBeeLockState(parkingEventType LockState)
-{
-  uint8 data[5];
-  
-  data[0]   =   'S';
-  data[1]   =   'E';
-  data[2]   =   'N';
-  data[3]   =  0x01;
-  data[4]   =  LockState;
-#if defined BY_MAC
-  return XBeeSendToCoorByMac(data,5,RES);
-#else
-  return XBeeSendToCoor(data,5,RES);
-#endif
-}
-/*********************************************************
 **brief 发送车位状态
 *********************************************************/
-uint16 XBeeParkState(parkingEventType ParkState)
+uint16 XBeeReport(eventInfoType eventInfo)
 {
-  uint8 data[5];
+  uint8 data[11];
   
   data[0]   =   'S';
   data[1]   =   'E';
   data[2]   =   'N';
   data[3]   =  0x01;
-  data[4]   =  ParkState;
+  data[4]   =  eventInfo.senerEn;
+  data[5]   =  eventInfo.senerEvt;
+  data[6]   =  eventInfo.lockEn;
+  data[7]   =  eventInfo.lockEvt;
+  data[8]   =  eventInfo.batEn;
+  data[9]   =  eventInfo.batMsb;
+  data[10]   =  eventInfo.batLsb;
 #if defined BY_MAC
-  return XBeeSendToCoorByMac(data,5,RES);
+  return XBeeSendToCoorByMac(data,11,RES);
 #else
-  return XBeeSendToCoor(data,5,RES);
+  return XBeeSendToCoor(data,11,RES);
 #endif
 }
 /*********************************************************
@@ -383,10 +367,10 @@ uint16 ReportSenser(void)
 {
     HMC5983DataType temp_hmc5983Data,temp_hmc5983DataStandard;
  
-    UartStop();
+    //UartStop();
     temp_hmc5983Data = hmc5983Data;
     temp_hmc5983DataStandard = hmc5983DataStandard;
-    UartStart();
+    //UartStart();
     if(temp_hmc5983Data.state != 0x88)
     {
         Uart1_Send_Byte("get",osal_strlen("get"));
@@ -395,17 +379,24 @@ uint16 ReportSenser(void)
     if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > SEN_THR \
         || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > SEN_THR \
         || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > SEN_THR)  
-    {   
+    {
+        eventInfo.senerEvt = ParkingUsed;
+        eventInfo.senerEn = 1;
         if(parkingState.vehicleState == ParkingUnUsed)
         {
             parkingState.vehicleState = ParkingUsed;
-            return XBeeParkState(ParkingUsed);               
+            return XBeeReport(eventInfo);
         }
     }
-    else if(parkingState.vehicleState == ParkingUsed)
+    else
     {
-        parkingState.vehicleState = ParkingUnUsed;
-        return XBeeParkState(ParkingUnUsed);
+        eventInfo.senerEvt = ParkingUnUsed;
+        eventInfo.senerEn = 1;
+        if(parkingState.vehicleState == ParkingUsed)
+        {
+            parkingState.vehicleState = ParkingUnUsed;
+            return XBeeReport(eventInfo);
+        }
     }
     return 0;
 }
@@ -415,15 +406,17 @@ uint16 ReportSenser(void)
 uint16 ReportLockState(void)
 {
     if(GetCurrentMotorState() == lock)
-        XBeeLockState(ParkLockSuccess);
+    {
+        eventInfo.lockEn = 1;
+        eventInfo.lockEvt = ParkLockSuccess;
+        XBeeReport(eventInfo);
+    }
     else if(GetCurrentMotorState() == unlock )
-        XBeeLockState(ParkUnlockSuccess);
-#if 0
-    else if(LockObjState == lock)
-        XBeeLockState(ParkLockFailed);
-    else if(LockObjState == unlock)
-        XBeeLockState(ParkLockFailed);
-#endif
+    {
+        eventInfo.lockEn = 1;
+        eventInfo.lockEvt = ParkUnlockSuccess;
+        XBeeReport(eventInfo);
+    }
     return 0;
 }
 /**********************************************************
