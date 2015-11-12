@@ -35,8 +35,7 @@ typedef struct
     uint8 lockEn;
     uint8 lockEvt;
     uint8 batEn;
-    uint8 batMsb;
-    uint8 batLsb;
+    uint8 batEvt;
 }eventInfoType;
 
 

@@ -162,7 +162,10 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     }
     if( events & XBEE_VBT_CHENCK_EVT )          //report the battery voltage
     {
-        ReportVbat();
+        float vbat;
+        vbat = ReportVbat();
+        if(vbat > 0)
+            eventInfo.batEvt = (uint8)(vbat*10);
         osal_start_timerEx( XBeeTaskID, XBEE_VBT_CHENCK_EVT, 1000 );
         return (events ^ XBEE_VBT_CHENCK_EVT) ;
     }

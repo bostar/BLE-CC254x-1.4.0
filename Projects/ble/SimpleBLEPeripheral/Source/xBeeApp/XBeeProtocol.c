@@ -15,6 +15,7 @@
 #include "bcomdef.h"
 
 #if defined _XBEE_APP_
+static uint8 JoinState = SetCB;
 /*****************************************************
 **
 *****************************************************/
@@ -117,13 +118,10 @@ void ProcessAT(uint8 *temp_rbuf)
         if(temp_rbuf[7]==0 && temp_rbuf[8]==0)
         {
             XBeeInfo.XBeeAI = 1;
-            //osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 1);
             CreatXBeeMsg(XBEE_JOIN_NET_EVT,ACTIVATE);
         }
         else if(temp_rbuf[7]==0 && temp_rbuf[8]==0x22)
         {
-            //for(i=0;i<8;i++)
-                //XBeeInfo.panID[i] = 0;
         }
     }
     else if(temp_rbuf[5]=='S' && temp_rbuf[6]=='H')
@@ -144,14 +142,27 @@ void ProcessAT(uint8 *temp_rbuf)
                 XBeeInfo.MacAdr[4+cnt] = temp_rbuf[8+cnt];    
         }
     }
-    else if(temp_rbuf[5]=='M' && temp_rbuf[6]=='Y')
+    else if(temp_rbuf[5]=='M' && temp_rbuf[6]=='Y')   //获取网络地址
     {
+        uint8 cnt;
         if(temp_rbuf[7]==0 && XBeeInfo.InPark != 1)
         {
-            uint8 cnt;
             for(cnt=0;cnt<2;cnt++)
                 XBeeInfo.NetAdr[cnt] = temp_rbuf[8+cnt];
         }
+        /*else if(temp_rbuf[7] == 0 && XBeeInfo.InPark == 1 )
+        {
+            if(temp_rbuf[8] != XBeeInfo.NetAdr[0] || temp_rbuf[9] != XBeeInfo.NetAdr[1])
+            {
+                for(cnt=0;cnt<2;cnt++)
+                    XBeeInfo.NetAdr[cnt] = temp_rbuf[8+cnt];
+                XBeeInfo.InPark = 0;
+                JoinState = JoinPark;
+                CreatXBeeMsg(XBEE_JOIN_NET_EVT,ACTIVATE);
+                CreatXBeeMsg(XBEE_HMC5983_EVT,INACTIVATE);
+                CreatXBeeMsg(XBEE_REPORT_EVT,INACTIVATE);
+            }
+        }*/
     }
     else if(temp_rbuf[5]=='S' && temp_rbuf[6]=='M')
     {
@@ -206,7 +217,6 @@ void ProcessModeStatus(uint8 *temp_rbuf)
         XBeeInfo.XBeeAI = 0;
         CreatXBeeMsg(XBEE_JOIN_NET_EVT,ACTIVATE);
         CreatXBeeMsg(XBEE_HMC5983_EVT,INACTIVATE);
-        CreatXBeeMsg(XBEE_VBT_CHENCK_EVT,INACTIVATE);
         CreatXBeeMsg(XBEE_REPORT_EVT,INACTIVATE);
     }
     else if(temp_rbuf[4] == 0)
@@ -219,7 +229,7 @@ void ProcessModeStatus(uint8 *temp_rbuf)
 *********************************************************/
 uint16 XBeeReport(eventInfoType eventInfo)
 {
-  uint8 data[11];
+  uint8 data[10];
   
   data[0]   =   'S';
   data[1]   =   'E';
@@ -230,12 +240,11 @@ uint16 XBeeReport(eventInfoType eventInfo)
   data[6]   =  eventInfo.lockEn;
   data[7]   =  eventInfo.lockEvt;
   data[8]   =  eventInfo.batEn;
-  data[9]   =  eventInfo.batMsb;
-  data[10]   =  eventInfo.batLsb;
+  data[9]   =  eventInfo.batEvt;
 #if defined BY_MAC
-  return XBeeSendToCoorByMac(data,11,RES);
+  return XBeeSendToCoorByMac(data,10,RES);
 #else
-  return XBeeSendToCoor(data,11,RES);
+  return XBeeSendToCoor(data,10,RES);
 #endif
 }
 /*********************************************************
@@ -261,18 +270,11 @@ uint16 XBeeBatPower(uint8 PowerVal)
 uint32 SleepModeAndJoinNet(void)
 {
     uint32 reval=10;   //单位ms
-    static uint8 JoinState = SetCB;
     if(XBeeInfo.ParentLost == 1)
     {
         XBeeInfo.ParentLost = 0;
         JoinState = GetAI;
     }
-    //else if(XBeeInfo.GetSM == 1)
-    //{
-        //XBeeInfo.GetSM = 0;
-        //JoinState = GetSM;
-        //osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
-    //}
     switch(JoinState)
     {
         case SetCB:
