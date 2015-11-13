@@ -373,7 +373,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   if( events & ZIGBEE_SLEEP_ZM516X_EVT )
   {
      SET_ZM516X_SLEEP();
-     osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,1850);// + (osal_rand()%1000) );
+     osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,1350 + (osal_rand()%1000) );
      return ( events ^ ZIGBEE_SLEEP_ZM516X_EVT );
   }
   
