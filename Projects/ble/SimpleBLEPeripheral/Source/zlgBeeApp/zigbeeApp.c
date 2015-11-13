@@ -29,7 +29,7 @@ static uint8 zigbee_TaskID;   // Task ID for internal task/event processing
 static uint8 rbuf[255];
 static uint8 idx = 0;
 parkingState_t * parkingState;
-static sleepOrwake_t zlgSleepOrwake;
+//static sleepOrwake_t zlgSleepOrwake;
 static void npiCBack_uart( uint8 port, uint8 events );
 static unsigned char referenceCmdLength( unsigned char * const command,unsigned char cmd );
 static void keep_WakeUp( void );
@@ -56,6 +56,15 @@ void Zigbee_Init( uint8 task_id )
   
   VOID vbt_v;
 
+  //init global variable
+  stDevInfo = osal_mem_alloc( sizeof( dev_info_t ) );
+  osal_memset( stDevInfo, 0x00, sizeof( dev_info_t ) );
+  uartReturnFlag = osal_mem_alloc( sizeof( uartReturnStatus_t ) );
+  osal_memset( uartReturnFlag, 0x00, sizeof( uartReturnStatus_t ) );
+  parkingState = osal_mem_alloc( sizeof( parkingState_t ) );
+  parkingState->vehicleState = cmdVehicleLeave;
+  parkingState->lockState = 0xff;
+
 #if defined( STARBO_BOARD )
   // Register for all key events - This app will handle all key events
   RegisterForKeys( zigbee_TaskID );
@@ -64,7 +73,6 @@ void Zigbee_Init( uint8 task_id )
   // Setup a delayed profile startup
   osal_start_timerEx( zigbee_TaskID, ZIGBEE_START_DEVICE_EVT ,1000 );
 }
-
 
 uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
 {
@@ -75,14 +83,6 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   {
       uint8 keys;
       setMotorStop();      
-      //init global variable
-      stDevInfo = osal_mem_alloc( sizeof( dev_info_t ) );
-      osal_memset( stDevInfo, 0x00, sizeof( dev_info_t ) );
-      uartReturnFlag = osal_mem_alloc( sizeof( uartReturnStatus_t ) );
-      osal_memset( uartReturnFlag, 0x00, sizeof( uartReturnStatus_t ) );
-      parkingState = osal_mem_alloc( sizeof( parkingState_t ) );
-      parkingState->vehicleState = cmdVehicleLeave;
-      parkingState->lockState = 0xff;
       
       if( osal_snv_read( LOCK_STATE_NV_ID, sizeof( uint8 ), &keys ) == SUCCESS )
       {
@@ -104,7 +104,6 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
         }
       }
             
-      zlgSleepOrwake = wakeState; 
       if( osal_snv_read( SENSOR_DATA_NV_ID, sizeof( mag_xyz_t ), &old_mag_xyz ) == SUCCESS )
       {
         if( old_mag_xyz.checked != 1)
@@ -149,7 +148,9 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
             ( stDevInfo->devLoacalNetAddr[0] != 0xFF ) || \
             ( stDevInfo->devLoacalNetAddr[1] != 0xFE ) || \
             ( stDevInfo->devPanid[0]         != 0x00 ) || \
-            ( stDevInfo->devPanid[1]         != 0x00 ) )
+            ( stDevInfo->devPanid[1]         != 0x00 ) || \
+            ( stDevInfo->devRetryNum         != 0x00 ) || \
+            ( stDevInfo->devReserve2         != 0x00 ) )//cast-type:unicast
         {
           osal_start_timerEx( zigbee_TaskID, ZIGBEE_WRITE_ZM516X_INFO_EVT, 10 );          
         }
@@ -200,6 +201,8 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
           stDevInfo->devLoacalNetAddr[1] = 0xFE;
           stDevInfo->devPanid[0]         = 0x00;
           stDevInfo->devPanid[1]         = 0x00;
+          stDevInfo->devRetryNum         = 0x00;
+          stDevInfo->devReserve2         = 0x00;
         }
         write_local_cfg( localAddress, stDevInfo );
         osal_start_timerEx( zigbee_TaskID, ZIGBEE_WRITE_ZM516X_INFO_EVT ,1000 );
@@ -359,6 +362,10 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
      }
      uartReturnFlag->restoreSuccessFlag = 0;
      osal_stop_timerEx( zigbee_TaskID, ZIGBEE_RESTORE_FACTORY_EVT );
+     applicatedForNetwork = 0;
+     VOID osal_snv_write( APPLY_NETWORK_FLAG_NV_ID, sizeof( uint8 ), &applicatedForNetwork );
+     old_mag_xyz.checked = 0;
+     VOID osal_snv_write( SENSOR_DATA_NV_ID, sizeof( mag_xyz_t ), &old_mag_xyz );
      osal_start_timerEx( zigbee_TaskID, ZIGBEE_START_DEVICE_EVT ,100 );
      return ( events ^ ZIGBEE_RESTORE_FACTORY_EVT );
   }
@@ -366,18 +373,13 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   if( events & ZIGBEE_SLEEP_ZM516X_EVT )
   {
      SET_ZM516X_SLEEP();
-     zlgSleepOrwake = sleepState;
-     osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,1850 );
+     osal_start_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT ,1850);// + (osal_rand()%1000) );
      return ( events ^ ZIGBEE_SLEEP_ZM516X_EVT );
   }
   
   if( events & ZIGBEE_WAKE_ZM516X_EVT )
-  { 
-     if( zlgSleepOrwake != wakeState )
-     {
-        SET_ZM516X_WAKEUP();
-        zlgSleepOrwake = wakeState;
-     }
+  {
+     SET_ZM516X_WAKEUP();
      dateRequset(0x00);
      osal_start_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT ,150 );
      return ( events ^ ZIGBEE_WAKE_ZM516X_EVT );
@@ -827,15 +829,12 @@ static void zigBee_HandleKeys( uint8 shift, uint8 keys )
   // This will send out a notification of the keys state if enabled
   //SK_SetParameter( SK_KEY_ATTR, sizeof ( uint8 ), &SK_Keys );
 }
+
 static void keep_WakeUp( void )
 {
-  if( zlgSleepOrwake == sleepState )
-  {
-      osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT );//stop timer
-      SET_ZM516X_WAKEUP();//and wake up right now
-  }
-  if( zlgSleepOrwake == wakeState )
-      osal_stop_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT );
+  osal_stop_timerEx( zigbee_TaskID, ZIGBEE_WAKE_ZM516X_EVT );//stop timer
+  osal_stop_timerEx( zigbee_TaskID, ZIGBEE_SLEEP_ZM516X_EVT );
+  SET_ZM516X_WAKEUP();//and wake up right now
   return;
 }
 #endif // !STARBO_BOARD
