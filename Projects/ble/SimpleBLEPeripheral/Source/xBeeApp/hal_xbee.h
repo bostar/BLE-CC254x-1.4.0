@@ -20,8 +20,8 @@ typedef enum
 void HalXbeeInit(void);
 uint8 HalGpioSet(uint8 pin, uint8 level);
 uint8 HalGpioGet(GPIOType pin);
-
-
+void wd_init(void);
+void feed_dog(void);
 
 
 

@@ -401,6 +401,7 @@ IEN0 |= 0x08; // 开总中断，接收中断
 void Uart1_Send_Byte(char *Data,int len) 
 {
 #if defined (_XBEE_APP_)
+  static uint32 cnt=0;
   int j; 
   GPIO_XBEE_DIR_TURN_HIGH();
   HAL_GPIO_CHANGE_DELAY();
@@ -408,9 +409,13 @@ void Uart1_Send_Byte(char *Data,int len)
   { 
     U1DBUF = *Data++;
     //U1DBUF = *(Data+j); 
-    while(UTX1IF == 0); //发送完成标志位
+    cnt = 0;
+    while(UTX1IF == 0 && cnt < 320000) //发送完成标志位
+    {
+        cnt++;
+    }
     UTX1IF = 0; 
-  } 
+  }
   HAL_GPIO_CHANGE_DELAY();
   GPIO_XBEE_DIR_TURN_LOW();
 #endif

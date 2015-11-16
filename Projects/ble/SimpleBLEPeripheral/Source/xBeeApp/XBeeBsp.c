@@ -168,7 +168,8 @@ void XBeePinWake(void)
     if(XBeeInfo.DevType == end_dev && HalGpioGet(GPIO_XBEE_SLEEP_INDER) != 1)
     {
         GPIO_XBEE_SLEEP_TURN_LOW();
-        while(HalGpioGet(GPIO_XBEE_CTS) == 1 && cnt < 72000)
+        cnt = 0;
+        while(HalGpioGet(GPIO_XBEE_CTS) == 1 && cnt < 320000)
         {
             cnt++;
         }

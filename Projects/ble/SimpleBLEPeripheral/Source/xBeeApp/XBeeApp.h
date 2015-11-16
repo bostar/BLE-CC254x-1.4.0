@@ -25,7 +25,7 @@ extern "C"
 #define XBEE_REC_DATA_PROCESS_EVT                          0x0010
 #define XBEE_TEST_EVT                                      0x0020
 #define XBEE_CLOSE_BUZZER_EVT                              0x0040
-#define z4                                      0x0080
+#define FEED_DOG                                           0x0080
 #define XBEE_MOTOR_CTL_EVT                                 0x0100
 #define XBEE_HMC5983_EVT                                   0x0200
 #define z5                               0x0400
@@ -45,6 +45,7 @@ extern "C"
 
 #define SEN_THR         50
 #define SEN_MOTOR       0.7
+#define _WD             0
 /*******************XBeeProcessEvent msg operation*******************/
 #define MOTOR_LOCK      (uint8)1
 #define MOTOR_UNLOCK    (uint8)2
@@ -184,7 +185,6 @@ extern LockCurrentStateType LockObjState;
 extern LcokStateType LockState;
 extern uint8 SetSleepMode;
 extern FlashLockStateType FlashLockState;
-extern ParkingStateType parkingState;              //当前车位状态
 extern uint8 test_cnt;
 extern uint8 CoorMAC[8];
 /*********************************************************************

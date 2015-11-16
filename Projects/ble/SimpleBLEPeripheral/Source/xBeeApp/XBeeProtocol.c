@@ -382,23 +382,25 @@ uint16 ReportSenser(void)
         || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > SEN_THR \
         || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > SEN_THR)  
     {
-        eventInfo.senerEvt = ParkingUsed;
         eventInfo.senerEn = 1;
-        if(parkingState.vehicleState == ParkingUnUsed)
+        if(eventInfo.senerEvt == ParkingUnUsed)
         {
-            parkingState.vehicleState = ParkingUsed;
+            eventInfo.senerEvt = ParkingUsed;
             return XBeeReport(eventInfo);
         }
+        else
+            eventInfo.senerEvt = ParkingUsed;
     }
     else
     {
-        eventInfo.senerEvt = ParkingUnUsed;
         eventInfo.senerEn = 1;
-        if(parkingState.vehicleState == ParkingUsed)
+        if(eventInfo.senerEvt == ParkingUsed)
         {
-            parkingState.vehicleState = ParkingUnUsed;
+            eventInfo.senerEvt = ParkingUnUsed;
             return XBeeReport(eventInfo);
         }
+        else
+            eventInfo.senerEvt = ParkingUnUsed;
     }
     return 0;
 }

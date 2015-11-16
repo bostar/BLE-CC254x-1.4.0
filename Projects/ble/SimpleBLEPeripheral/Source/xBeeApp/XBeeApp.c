@@ -39,7 +39,6 @@
 uint8 XBeeTaskID;                           // Task ID for internal task/event processing        
 XBeeInfoType XBeeInfo;                
 LcokStateType LockState;                    //锁状态标志
-ParkingStateType parkingState;              //当前车位状态
 uint8 SenFlag=0x88;                         //传感器初值
 LockCurrentStateType LockObjState;
 FlashLockStateType FlashLockState;
@@ -59,12 +58,24 @@ void XBeeInit( uint8 task_id )
     //osal_set_event( XBeeTaskID, XBEE_SCAN_ROUTE_PATH );  
     //osal_set_event( XBeeTaskID, XBEE_HMC5983_EVT );
     //osal_set_event( XBeeTaskID, XBEE_TEST_EVT );
+#if _WD
+    osal_set_event( XBeeTaskID, FEED_DOG );
+    wd_init();
+#endif
 }
 uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
 {
     VOID  task_id;
     uint8 i;
     uint32 reval;
+    if( events & FEED_DOG)
+    {
+#if _WD
+        feed_dog();
+#endif
+        osal_start_timerEx( XBeeTaskID ,FEED_DOG ,50 );
+        return (events ^ FEED_DOG);
+    }
     if (events & SYS_EVENT_MSG)
     {
         XBeeMsgType *pMsg;
@@ -83,7 +94,6 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         //UartStop();
         SenFlag=0x88;
         //UartStart();
-        parkingState.vehicleState = ParkingUnUsed;
         LockState.FinalState = unlock;
         eventInfo.batEn = 0;
         eventInfo.lockEn = 0;
@@ -110,8 +120,31 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     {
         if(CheckMotor() == 0) //when 0 the motor works properly
         {
-            ControlMotor(LockState.FinalState);
-            reval = 10;
+            uint8 state;
+            state = ControlMotor(LockState.FinalState);
+            if(state == 1)
+            {
+                eventInfo.lockEn = 1;
+                if(eventInfo.lockEvt == ParkUnlockSuccess)
+                {
+                    eventInfo.lockEvt = ParkLockSuccess;
+                    XBeeReport(eventInfo);
+                }
+                else
+                    eventInfo.lockEvt = ParkLockSuccess;
+            }
+            else if(state == 2)
+            {
+                eventInfo.lockEn = 1;
+                if(eventInfo.lockEvt == ParkLockSuccess)
+                {
+                    eventInfo.lockEvt = ParkUnlockSuccess;
+                    XBeeReport(eventInfo);
+                }
+                else
+                    eventInfo.lockEvt = ParkUnlockSuccess;
+            }
+            reval = 30;
         }
         else
         {
@@ -144,7 +177,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     }
     if(events & XBEE_REPORT_EVT)               //report event
     {
-        ReportLockState();
+        XBeeReport(eventInfo);
         osal_start_timerEx( XBeeTaskID , XBEE_REPORT_EVT,5000);
         return (events ^ XBEE_REPORT_EVT) ;
     }

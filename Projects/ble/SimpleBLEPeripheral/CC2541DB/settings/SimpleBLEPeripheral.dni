@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-659525503
+Checksum=-971863141
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -60,11 +60,13 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_uart.c}.464.9" 0 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeProtocol.c}.381.5" 0 0 0 0 "" 0 ""
-Count=2
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.180.9" 0 0 0 0 "" 0 ""
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.270.13" 0 0 0 0 "" 0 ""
+Bp2=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.127.17" 0 0 0 0 "" 0 ""
+Bp3=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.138.17" 0 0 0 0 "" 0 ""
+Count=4
 [ChipconEmu]
-Stop timers on halt=0
+Stop timers on halt=1
 Leave target running=1
 [Aliases]
 Count=0
