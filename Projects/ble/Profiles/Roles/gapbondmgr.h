@@ -204,6 +204,13 @@ typedef struct
   pfnPairStateCB_t    pairStateCB;      //!< Pairing state callback
 } gapBondCBs_t;
 
+// Structure of NV data for the connected device's address information
+typedef struct
+{
+  uint8   publicAddr[B_ADDR_LEN];     // Master's address
+  uint8   reconnectAddr[B_ADDR_LEN];  // Privacy Reconnection Address
+  uint16  stateFlags;                 // State flags: SM_AUTH_STATE_AUTHENTICATED & SM_AUTH_STATE_BONDING
+} gapBondRec_t;
 /*-------------------------------------------------------------------
  * MACROS
  */

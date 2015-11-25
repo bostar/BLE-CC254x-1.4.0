@@ -135,13 +135,13 @@ typedef struct
 } gapBondLTK_t;
 
 // Structure of NV data for the connected device's address information
-typedef struct
+/*typedef struct
 {
   uint8   publicAddr[B_ADDR_LEN];     // Master's address
   uint8   reconnectAddr[B_ADDR_LEN];  // Privacy Reconnection Address
   uint16  stateFlags;                 // State flags: SM_AUTH_STATE_AUTHENTICATED & SM_AUTH_STATE_BONDING
 } gapBondRec_t;
-
+*/
 // Structure of NV data for the connected device's characteristic configuration
 typedef struct
 {
@@ -195,7 +195,7 @@ static uint8  gapBond_BondFailOption = GAPBOND_FAIL_TERMINATE_LINK;
 static const gapBondCBs_t *pGapBondCB = NULL;
 
 // Local RAM shadowed bond records
-static gapBondRec_t bonds[GAP_BONDINGS_MAX] = {0};
+gapBondRec_t bonds[GAP_BONDINGS_MAX] = {0};
 
 static uint8 autoSyncWhiteList = FALSE;
 
