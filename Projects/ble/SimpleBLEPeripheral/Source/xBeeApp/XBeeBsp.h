@@ -21,9 +21,9 @@ void setBeepOn(void);
 void setBeepOff(void);
 void setLedBit(unsigned char bits);
 uint16 XBeeUartRead(uint8* buff);
-void XBeeJoinNet(void);  //加入网络
-void XBeeLeaveNet(void);       //离开网络
-uint16 XBeeReqJionPark(void);  // 加入停车场
+void XBeeJoinNet(void);         //加入网络
+void XBeeLeaveNet(void);        //离开网络
+uint16 XBeeReqJionPark(void);   // 加入停车场
 void MotorLock(void);
 void MotorUnlock(void);
 void MotorStop(void);    
@@ -33,8 +33,6 @@ void XBeePinWake(void);
 void XBeePinSleep(void);
 void XBeeMode5Wake(void);
 LockCurrentStateType GetCurrentMotorState(void);
-void Delay1ms(void);		//@33.000MHz
-void Delay100us(void);		//@33.000MHz
 uint8 GetCurrentMotorStateTest(void);
 uint8 ControlMotor(LockCurrentStateType state);
 uint8 CheckADC(void);

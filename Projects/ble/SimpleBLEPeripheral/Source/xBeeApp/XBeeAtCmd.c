@@ -15,6 +15,7 @@
 #include <stdio.h>
 
 #if defined _XBEE_APP_
+static uint8 wbuf[50];
 /************************************************************
 **brief xbee发送数据请求
 **param adr 指向64位地址的指针
@@ -27,7 +28,7 @@
 ************************************************************/
 uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,uint16 len, IsResp IsRes)
 {
-  static uint8 wbuf[128],cnt=0;
+  uint8 cnt=0;
   uint16 reval;
   XBeeTransReqType *frame = (XBeeTransReqType*)wbuf;
   
@@ -50,7 +51,6 @@ uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,
   XBeePinSleep();
   return reval;
 }
-
 /**************************************************
 **brief api模式发送AT指令
 **param atcmd  指向命令字符串的指针
@@ -60,7 +60,6 @@ uint16 XBeeTransReq(uint8 *adr,uint8 *net_adr,SetOptions options,uint8 *rf_data,
 **************************************************/
 uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes)
 {
-    static uint8 wbuf[64];
     uint8 i;
     uint16 reval;
     XBeeApiATCmdType *cmd = (XBeeApiATCmdType*)wbuf;
@@ -74,7 +73,7 @@ uint16 XBeeSendATCmd(int8* atcmd,uint8* pparam,uint16 len,IsResp IsRes)
     for(i=0;i<len;i++)
         *(((uint8*)cmd)+7+i) = *(pparam+i);
     *(((uint8*)cmd)+7+len) = XBeeApiChecksum(((uint8*)cmd)+3,4+len); 
-#if defined _PRINTF
+#if 0
     printf("send AT command:\n");
     for(i=0;i<8+len;i++)
         printf("0x%02x ",wbuf[i]);

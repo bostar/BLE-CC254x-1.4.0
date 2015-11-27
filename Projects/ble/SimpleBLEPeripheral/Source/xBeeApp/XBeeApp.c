@@ -41,7 +41,7 @@ XBeeInfoType XBeeInfo;
 LcokStateType LockState;                    //锁状态标志
 uint8 SenFlag=0x88;                         //传感器初值
 LockCurrentStateType LockObjState;
-FlashLockStateType FlashLockState;
+//FlashLockStateType FlashLockState;
 CircularQueueType serialBuf;
 eventInfoType eventInfo;
 
@@ -66,7 +66,6 @@ void XBeeInit( uint8 task_id )
 uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
 {
     VOID  task_id;
-    uint8 i;
     uint32 reval;
     if( events & FEED_DOG)
     {
@@ -83,14 +82,14 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         {
             ProcessXBeeMsg(pMsg);
             osal_msg_deallocate((uint8*)pMsg);
-            pMsg = NULL;
+            //pMsg = NULL;
         }
         return (events ^ SYS_EVENT_MSG) ;
     }
     if ( events & XBEE_START_DEVICE_EVT )       //start event
     {
-        for(i=0;i<8;i++)
-            XBeeInfo.panID[i] = 0;
+        //for(i=0;i<8;i++)
+            //XBeeInfo.panID[i] = 0;
         //UartStop();
         SenFlag=0x88;
         //UartStart();
@@ -98,23 +97,12 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         eventInfo.batEn = 0;
         eventInfo.lockEn = 0;
         eventInfo.senerEn = 0;
-        //XBeeReset();
         osal_set_event( XBeeTaskID, XBEE_MOTOR_CTL_EVT );
         osal_set_event( XBeeTaskID, XBEE_CLOSE_BUZZER_EVT );
         osal_set_event( XBeeTaskID, XBEE_REC_DATA_PROCESS_EVT );
         osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, 500 );
         //osal_set_event( XBeeTaskID, XBEE_JOIN_NET_EVT );
         return (events ^ XBEE_START_DEVICE_EVT) ;
-    }
-    if( events & XBEE_JOIN_NET_EVT)             //join the park net
-    {
-        uint32 time_delay;
-        if(XBeeInfo.InPark != 1)
-        {
-            time_delay = SleepModeAndJoinNet();
-            osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, time_delay );
-        }
-        return (events ^ XBEE_JOIN_NET_EVT) ;
     }
     if( events & XBEE_MOTOR_CTL_EVT )           //control motor
     {
@@ -128,7 +116,9 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
                 if(eventInfo.lockEvt == ParkUnlockSuccess)
                 {
                     eventInfo.lockEvt = ParkLockSuccess;
-                    XBeeReport(eventInfo);
+                    if(XBeeInfo.InPark == 1)
+                        CreatXBeeMsg(XBEE_REPORT_EVT,ACTIVATE);
+                    //XBeeReport(eventInfo);
                 }
                 else
                     eventInfo.lockEvt = ParkLockSuccess;
@@ -139,7 +129,9 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
                 if(eventInfo.lockEvt == ParkLockSuccess)
                 {
                     eventInfo.lockEvt = ParkUnlockSuccess;
-                    XBeeReport(eventInfo);
+                    if(XBeeInfo.InPark == 1)
+                        CreatXBeeMsg(XBEE_REPORT_EVT,ACTIVATE);
+                    //XBeeReport(eventInfo);
                 }
                 else
                     eventInfo.lockEvt = ParkUnlockSuccess;
@@ -153,13 +145,15 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
             {
                 eventInfo.lockEn = 1;
                 eventInfo.lockEvt = ParkLockFailed;
-                XBeeReport(eventInfo);
+                CreatXBeeMsg(XBEE_REPORT_EVT,ACTIVATE);
+                //XBeeReport(eventInfo);
             }
             else if(LockState.FinalState == unlock)
             {
                 eventInfo.lockEn = 1;
                 eventInfo.lockEvt = ParkUnlockFailed;
-                XBeeReport(eventInfo);
+                CreatXBeeMsg(XBEE_REPORT_EVT,ACTIVATE);
+                //XBeeReport(eventInfo);
             }
             reval = 2000;
         }
@@ -169,6 +163,7 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     if(events & XBEE_HMC5983_EVT)               //process senser data
     {
         ReportSenser();
+//        XBeeReadAT("MY");
         //UartStop();
         hmc5983Data.state = 1;
         //UartStart();
@@ -178,6 +173,9 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
     if(events & XBEE_REPORT_EVT)               //report event
     {
         XBeeReport(eventInfo);
+        eventInfo.batEn = 0;
+        eventInfo.lockEn = 0;
+        eventInfo.senerEn = 0;
         osal_start_timerEx( XBeeTaskID , XBEE_REPORT_EVT,5000);
         return (events ^ XBEE_REPORT_EVT) ;
     }
@@ -201,6 +199,16 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
             eventInfo.batEvt = (uint8)(vbat*10);
         osal_start_timerEx( XBeeTaskID, XBEE_VBT_CHENCK_EVT, 1000 );
         return (events ^ XBEE_VBT_CHENCK_EVT) ;
+    }
+    if( events & XBEE_JOIN_NET_EVT)             //join the park net
+    {
+        uint32 time_delay;
+        if(XBeeInfo.InPark != 1)
+        {
+            time_delay = SleepModeAndJoinNet();
+            osal_start_timerEx( XBeeTaskID, XBEE_JOIN_NET_EVT, time_delay );
+        }
+        return (events ^ XBEE_JOIN_NET_EVT) ;
     }
     if(events & XBEE_CLOSE_BUZZER_EVT)
     {
@@ -312,7 +320,8 @@ void ProcessSerial(uint8 *temp_rbuf)
             {}
             break;
         case at_command_response:  //处理收到的AT指令返回值
-            ProcessAT(temp_rbuf);
+            if(XBeeInfo.InPark != 1)
+                ProcessJoinRes(temp_rbuf);
             break;
         case transmit_status:
             ProcessTransmitStatus(temp_rbuf);

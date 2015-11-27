@@ -33,11 +33,11 @@ void ClearDMA(void)
 *******************************************/
 void XBeeJoinNet(void)
 {
-    uint8 panID[8],i;
+    //uint8 panID[8],i;
     
-    for(i=0;i<8;i++)
-        panID[i] = XBeeInfo.panID[i];
-    XBeeSetPanID(panID,NO_RES);             //设置ID的值
+    //for(i=0;i<8;i++)
+        //panID[i] = XBeeInfo.panID[i];
+    //XBeeSetPanID(panID,NO_RES);             //设置ID的值
     XBeeSetChannel(SCAN_CHANNEL,NO_RES);    //设置信道
     //XBeeSetSD(3,NO_RES);
     //XBeeSetZS(1,NO_RES);
@@ -68,20 +68,22 @@ void XBeeLeaveNet(void)
 *******************************************/
 uint16 XBeeReqJionPark(void)
 {
-  uint8 data[14],i;
+  uint8 data[5];
 	
   data[0]  =  'C';	
   data[1]  =  'F';
   data[2]  =  'G';
   data[3]  = 0X01;
+/*
   for(i=0;i<8;i++)
     data[4+i] = XBeeInfo.MacAdr[i];
   for(i=0;i<2;i++)
     data[12+i] = XBeeInfo.NetAdr[i];
+*/
 #if defined BY_MAC
-  return XBeeSendToCoorByMac(data,14,RES);
+  return XBeeSendToCoorByMac(data,4,RES);
 #else
-  return XBeeSendToCoor(data,14,RES);
+  return XBeeSendToCoor(data,4,RES);
 #endif
 }
 /***************************************************
@@ -319,29 +321,6 @@ void UartStop(void)
 void UartStart(void)
 {
     IEN0 |= 0x08; // 开总中断
-}
-
-void Delay1ms(void)		//@33.000MHz
-{
-	unsigned char i, j;
-
-	i = 33;
-	j = 22;
-	do
-	{
-		while (--j);
-	} while (--i);
-}
-void Delay100us(void)		//@33.000MHz
-{
-	unsigned char i, j;
-
-	i = 4;
-	j = 50;
-	do
-	{
-		while (--j);
-	} while (--i);
 }
 
 void setLedBit(unsigned char bits)

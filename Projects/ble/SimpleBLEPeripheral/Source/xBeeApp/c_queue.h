@@ -28,7 +28,7 @@ uint16 read_cqueue(CircularQueueType* p_cqueue , uint8* buf , uint16 n);
 uint16 write_cqueue(CircularQueueType* p_cqueue , uint8* buf , uint16 n);
 uint16 read_cqueue(CircularQueueType* p_cqueue , uint8* buf , uint16 n);
 uint16 read_one_package_f_queue( CircularQueueType* p_cqueue , uint8* UartRevBuf );
-
+void clear_queue(CircularQueueType* p_cqueue);
 
 
 

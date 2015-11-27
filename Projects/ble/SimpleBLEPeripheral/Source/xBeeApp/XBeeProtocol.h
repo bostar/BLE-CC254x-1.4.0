@@ -25,7 +25,9 @@ typedef enum
     SetRE       =   0x16,
     SetCB       =   0x17,
     SetSM       =   0x18,
-    GetSM       =   0x19
+    GetSM       =   0x19,
+    SetCh       =   0x20,
+    SendAC      =   0x21
 }_type__;
 
 typedef struct
@@ -48,7 +50,7 @@ void OTAProcess(uint8 *rf_data);
 uint16 TSTProcess(uint8 *rf_data);
 
 uint16 ProcessTransmitStatus(uint8 *temp_rbuf);
-void ProcessAT(uint8 *temp_rbuf);
+void ProcessJoinRes(uint8 *temp_rbuf);
 void ProcessModeStatus(uint8 *temp_rbuf);
 
 uint16 XBeeReport(eventInfoType eventInfo);

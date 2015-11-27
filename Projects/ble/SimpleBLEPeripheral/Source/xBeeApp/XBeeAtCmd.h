@@ -19,15 +19,6 @@ typedef enum
 
 typedef enum
 {
-  ModemStatus     =     0x8A,
-  ATCmdRep        =     0x88,
-  XBeeRevPacket   =     0x90,
-  XBeeTransStatus =     0x8B,
-  
-}FrameTypeStateType;
-
-typedef enum
-{
   NoSleep     =     0,
   PinSleep    =     1,
   CycSleep    =     4,
@@ -42,15 +33,15 @@ typedef enum
 
 typedef enum
 {
-  Default       =  0,
-  DisableACK    =  0x01,
-  EnableAPS     =  0x20,
-  ExtTimeout    =  0x40,
+    Default       =  0,
+    DisableACK    =  0x01,
+    EnableAPS     =  0x20,
+    ExtTimeout    =  0x40,
 }SetOptions;
 
 typedef enum
 {
-  D0    =       0x4430,         //DIO0
+    D0    =       0x4430,         //DIO0
 }ATCommand;     //AT命令集
 
 typedef struct
@@ -75,25 +66,8 @@ typedef struct
     uint8 readius;
     uint8 options;
 }XBeeTransReqType;  //zb发送请求帧
-  
-typedef struct
-{
-  uint8 start_delimiter;
-  uint8 len_msb;
-  uint8 len_lsb;
-  uint8 frame_type;
-  uint8 frame_id;
-  uint8 atCmd[2];
-  uint8 atPara;
-//  uint8 CheckSum;
-}TypeAPICmd;    //API透传命令帧
 
-typedef struct
-{
-  uint8 a;     //无意义 调试用
-}TypeAPIEsCmd;  //API转义命令帧
-
-typedef struct       //IO口API没命令帧
+typedef struct       //IO口API命令帧
 {
   uint8 start_delimiter;
   uint8 len_msb;

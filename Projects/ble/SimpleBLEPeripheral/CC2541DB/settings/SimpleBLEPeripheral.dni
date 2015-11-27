@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-971863141
+Checksum=1989872774
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -60,13 +60,9 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.180.9" 0 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.270.13" 0 0 0 0 "" 0 ""
-Bp2=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.127.17" 0 0 0 0 "" 0 ""
-Bp3=_ "STD_CODE" "{$PROJ_DIR$\..\Source\xBeeApp\XBeeApp.c}.138.17" 0 0 0 0 "" 0 ""
-Count=4
+Count=0
 [ChipconEmu]
-Stop timers on halt=1
+Stop timers on halt=0
 Leave target running=1
 [Aliases]
 Count=0

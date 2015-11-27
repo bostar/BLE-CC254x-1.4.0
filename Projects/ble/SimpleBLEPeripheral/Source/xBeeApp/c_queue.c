@@ -126,8 +126,17 @@ uint16 read_one_package_f_queue( CircularQueueType* p_cqueue , uint8* UartRevBuf
     }
     return reval;
 }
-
-
+/*****************************************************************************
+**brief	clear queue
+**param	
+**reval	
+*****************************************************************************/
+void clear_queue(CircularQueueType* p_cqueue)
+{
+    p_cqueue->count = 0;
+    p_cqueue->front = 0;
+    p_cqueue->rear  = 0;
+}
 
 
 

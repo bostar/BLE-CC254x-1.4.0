@@ -11,7 +11,7 @@ extern "C"
  */
 #include "Hal_types.h"
 #include "hal_uart.h"
-
+#include "c_queue.h"
 /*********************************************************************
  * CONSTANTS
  */
@@ -105,26 +105,6 @@ typedef enum
     ParkLockingOrUnlocking  =   0x07
 } parkingEventType;
 
-typedef enum{
-    stateInit               =   0x00,
-    stateStart              =   0x01,
-    stateReadCfg            =   0x02,
-    stateWriteCfg           =   0x03,
-    stateRestore            =   0x04,
-    stateInitXBee           =   0x05,
-    stateInitXBeeAgain      =   0x06,
-    stateBeepOff            =   0x07,
-    stateBeepOn             =   0x08,
-    stateRecevie            =   0x09,
-    stateLedTest            =   0x0A,
-    stateGpioSet            =   0x0B,
-    stateReset              =   0x10,
-    stateResetOver          =   0x11,
-    stateReadCfgAgain       =   0x12,
-    stateApplyNetwork       =   0x13,
-    stateTest               =   0x99,
-    stateNoWork             =   0xff
-}state_t;
 
 typedef enum
 {
@@ -135,18 +115,17 @@ typedef enum
 
 typedef struct
 {
-    uint8 MacAdr[8];
-    uint8 NetAdr[2];
+    //uint8 MacAdr[8];
+    //uint8 NetAdr[2];
     uint8 DevType;
     uint8 NetState;
-    uint8 channel;
-    uint8 XBeeAI;
+    //uint8 channel;
+    //uint8 XBeeAI;
     uint8 InPark;
-    uint8 panID[8];
-    uint8 FlagReadFlash;
+    //uint8 panID[8];
+    //uint8 FlagReadFlash;
     uint8 ParentLost;
-    uint8 GetSM;
-    uint8 Test;
+    //uint8 Test;
 }XBeeInfoType;
 
 typedef struct 
@@ -184,9 +163,10 @@ extern uint8 SenFlag;
 extern LockCurrentStateType LockObjState;
 extern LcokStateType LockState;
 extern uint8 SetSleepMode;
-extern FlashLockStateType FlashLockState;
+//extern FlashLockStateType FlashLockState;
 extern uint8 test_cnt;
 extern uint8 CoorMAC[8];
+extern CircularQueueType serialBuf;
 /*********************************************************************
  * FUNCTIONS
  */
