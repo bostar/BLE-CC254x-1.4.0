@@ -372,9 +372,17 @@ void HalUARTIsrDMA(void)
 }
 
 #include "ioCC2541.h"
+#include "OSAL.h"
+
+mag_xyz_t *mag_xyz;
+mag_xyz_t *old_mag_xyz;
 
 void InitUart1(void)
 {
+  mag_xyz = osal_mem_alloc( sizeof( mag_xyz_t ) );
+  osal_memset( mag_xyz, 0x00, sizeof( mag_xyz_t ) );
+  old_mag_xyz = osal_mem_alloc( sizeof( mag_xyz_t ) );
+  osal_memset( old_mag_xyz, 0x00, sizeof( mag_xyz_t ) );
  /*CLKCONCMD &= ~0x40; // 设置系统时钟源为 32MHZ晶振
  while(CLKCONSTA & 0x40); // 等待晶振稳定 
 CLKCONCMD &= ~0x47; // 设置系统主时钟频率为 32MHZ
@@ -408,9 +416,6 @@ void Uart1_Send_Byte(char *Data,int len)
   GPIO_ZM516X_DIR_TURN_LOW();
 }
 
-mag_xyz_t mag_xyz;
-mag_xyz_t old_mag_xyz;
-
 static  uint8 temp[10] = {0};
 
 HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
@@ -437,19 +442,19 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
     check = 0xFF - add_sum;
     if(temp[0] == 0xAA && temp[1] == 0xBB && temp[2] == 0xCC && temp[9] == check)
     {
-        mag_xyz.x = (unsigned short)temp[3] << 8 | temp[4];
-        mag_xyz.y = (unsigned short)temp[5] << 8 | temp[6];
-        mag_xyz.z = (unsigned short)temp[7] << 8 | temp[8];
-        mag_xyz.checked = 0;
+        mag_xyz->x = (unsigned short)temp[3] << 8 | temp[4];
+        mag_xyz->y = (unsigned short)temp[5] << 8 | temp[6];
+        mag_xyz->z = (unsigned short)temp[7] << 8 | temp[8];
+        mag_xyz->checked = 0;
         
-        if(!old_mag_xyz.checked)
+        if(!old_mag_xyz->checked)
         {
-          old_mag_xyz.checked = 1;
-          old_mag_xyz.x = mag_xyz.x;
-          old_mag_xyz.y = mag_xyz.y;
-          old_mag_xyz.z = mag_xyz.z;
+          old_mag_xyz->checked = 1;
+          old_mag_xyz->x = mag_xyz->x;
+          old_mag_xyz->y = mag_xyz->y;
+          old_mag_xyz->z = mag_xyz->z;
           VOID osal_snv_write( SENSOR_DATA_NV_ID, sizeof( mag_xyz_t ), &old_mag_xyz );
-          mag_xyz.checked = 1;
+          mag_xyz->checked = 1;
         }
     }
   }

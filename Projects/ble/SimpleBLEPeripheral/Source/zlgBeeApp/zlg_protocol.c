@@ -4,7 +4,7 @@
 #include "zlgAtCmd.h"
 #include "OSAL.h"
 
-#define  WBUF_LEN   12
+#define  WBUF_LEN   20
 static char wbuf[ WBUF_LEN ];
 
 void applicateForNetwork( unsigned char *IEEEAddress )
@@ -45,9 +45,15 @@ void dateRequset( unsigned char status )
     wbuf[5] = stDevInfo->devLoacalNetAddr[1];
     wbuf[6] = parkingState->lockState;
     wbuf[7] = parkingState->vehicleState;
-    wbuf[8] = status;
+    wbuf[8] = (unsigned char)( ( mag_xyz->x & 0xff00 ) >> 8);
+    wbuf[9] = (unsigned char)( mag_xyz->x & 0x00ff );
+    wbuf[10] = (unsigned char)( ( mag_xyz->y & 0xff00 ) >> 8);
+    wbuf[11] = (unsigned char)( mag_xyz->y & 0x00ff );
+    wbuf[12] = (unsigned char)( ( mag_xyz->z & 0xff00 ) >> 8);
+    wbuf[13] = (unsigned char)( mag_xyz->z & 0x00ff );
+    wbuf[14] = status;
     
-    NPI_WriteTransport( (unsigned char *)wbuf , 9 );
+    NPI_WriteTransport( (unsigned char *)wbuf , 15 );
 }
 
 void batteryRemainingReport( unsigned char voltage )

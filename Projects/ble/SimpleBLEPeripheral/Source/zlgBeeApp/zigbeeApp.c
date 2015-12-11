@@ -104,9 +104,9 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
         }
       }
             
-      if( osal_snv_read( SENSOR_DATA_NV_ID, sizeof( mag_xyz_t ), &old_mag_xyz ) == SUCCESS )
+      if( osal_snv_read( SENSOR_DATA_NV_ID, sizeof( mag_xyz_t ), old_mag_xyz ) == SUCCESS )
       {
-        if( old_mag_xyz.checked != 1)
+        if( old_mag_xyz->checked != 1)
           Uart1_Send_Byte( "get", osal_strlen( "get" ) );
       }
       
@@ -217,13 +217,13 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
   if( events & UART1_READ_HMC5983_EVT )
   {
       Uart1_Send_Byte( "get", osal_strlen( "get" ) );
-      if( !mag_xyz.checked )
+      if( !mag_xyz->checked )
       { 
-          mag_xyz.checked = 1;
+          mag_xyz->checked = 1;
           
-          if( (abs(old_mag_xyz.x - mag_xyz.x) > 50) || \
-              (abs(old_mag_xyz.y - mag_xyz.y) > 50) || \
-              (abs(old_mag_xyz.z - mag_xyz.z) > 50) )
+          if( (abs(old_mag_xyz->x - mag_xyz->x) > 100) || \
+              (abs(old_mag_xyz->y - mag_xyz->y) > 100) || \
+              (abs(old_mag_xyz->z - mag_xyz->z) > 100) )
           {
             if( parkingState->vehicleState == cmdVehicleLeave )
             {                
@@ -335,6 +335,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
           else if( parkingState->lockState != cmdLockFailed && \
                    parkingState->lockState != cmdUnlockFailed && (sen_v > 1.5) )
           {
+            parkingState->lockState = 0xff;
             setMotorStop();
           }
           else if( parkingState->lockState == cmdLockFailed )
@@ -347,6 +348,21 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
             parkingState->lockState = cmdUnlocking;
             setMotorForward();
           }
+      }
+      else
+      {
+        if( parkingState->lockState == 0xff )
+        {
+          switch (HalKeyRead())
+          {
+          case SK_LIMIT_LOCKED_OVER:
+            setMotorForward();
+            break;
+          case SK_LIMIT_UNLOCK_OVER:
+            setMotorReverse();
+            break;
+          }
+        }
       }
       osal_start_reload_timer( zigbee_TaskID, READ_ZIGBEE_ADC_EVT, 1000 );
       return ( events ^ READ_ZIGBEE_ADC_EVT );
@@ -364,8 +380,8 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
      osal_stop_timerEx( zigbee_TaskID, ZIGBEE_RESTORE_FACTORY_EVT );
      applicatedForNetwork = 0;
      VOID osal_snv_write( APPLY_NETWORK_FLAG_NV_ID, sizeof( uint8 ), &applicatedForNetwork );
-     old_mag_xyz.checked = 0;
-     VOID osal_snv_write( SENSOR_DATA_NV_ID, sizeof( mag_xyz_t ), &old_mag_xyz );
+     old_mag_xyz->checked = 0;
+     VOID osal_snv_write( SENSOR_DATA_NV_ID, sizeof( mag_xyz_t ), old_mag_xyz );
      osal_start_timerEx( zigbee_TaskID, ZIGBEE_START_DEVICE_EVT ,100 );
      return ( events ^ ZIGBEE_RESTORE_FACTORY_EVT );
   }
@@ -457,7 +473,7 @@ uint16 Zigbee_ProcessEvent( uint8 task_id, uint16 events )
               keep_WakeUp();
               break;
             case stateResetSensor:
-              old_mag_xyz.checked = 0;
+              old_mag_xyz->checked = 0;
               break;
             default:
               break;

@@ -236,8 +236,8 @@ typedef struct _xyz {
     int16 z;
     uint8 checked;
 } mag_xyz_t;
-extern mag_xyz_t mag_xyz;
-extern mag_xyz_t old_mag_xyz;
+extern mag_xyz_t *mag_xyz;
+extern mag_xyz_t *old_mag_xyz;
 /***************************************************************************************************
 ***************************************************************************************************/
 

@@ -289,7 +289,7 @@ static attAttrType_t readReqType;
 static uint16 serviceStartHandle;
 static uint16 serviceEndHandle;
 
-static uint8 numScans = 0;
+//static uint8 numScans = 0;
 
 /* ------------------------------------------------------------------------------------------------
  *                                           Global Variables
@@ -827,7 +827,7 @@ static void hidappProcessGATTMsg( gattMsgEvent_t *pPkt )
  */
 static uint8 hidappSendInReport( attHandleValueNoti_t *pNoti )
 {
-  uint8 endPoint;
+//  uint8 endPoint;
 
   if( pNoti->handle == keyCharHandle )
   {
@@ -943,9 +943,9 @@ static void hidappCentralEventCB( gapCentralRoleEvent_t *pEvent )
         hidappEstablishLink( FALSE, addrType, remoteAddr );
 
         peerDeviceFound = FALSE;
-        numScans = 0;
+//        numScans = 0;
       }
-      //else if ( numScans > 0 )
+      else //if ( numScans > 0 )
       {
         //numScans--;
 
@@ -1075,7 +1075,7 @@ static void hidappStartDiscovery( void )
   {
     hidappBLEState = BLE_STATE_SCANNING;
 
-    numScans = MAX_NUM_SCANS;
+//    numScans = MAX_NUM_SCANS;
 
     // Begin initial scanning
     hidappDiscoverDevices();
