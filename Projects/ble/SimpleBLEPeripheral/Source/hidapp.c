@@ -439,8 +439,13 @@ uint16 Hidapp_ProcessEvent(uint8 taskId, uint16 events)
   if ( events & HIDAPP_EVT_START )
   {
     hidappStart();
-
-    osal_set_event( hidappTaskId, HIDAPP_EVT_START_DISCOVERY );
+    if ( hidappBondCount() > 0 )
+    {
+    }
+    else
+    {
+      osal_set_event( hidappTaskId, HIDAPP_EVT_START_DISCOVERY );
+    }
     return (events ^ HIDAPP_EVT_START);
   }
 
@@ -864,6 +869,8 @@ static uint8 hidappSendInReport( attHandleValueNoti_t *pNoti )
  *
  * @return  none
  */
+#include "gapbondmgr.h"
+extern gapBondRec_t bonds[];
 static void hidappCentralEventCB( gapCentralRoleEvent_t *pEvent )
 {
   static uint8 addrType;
@@ -882,8 +889,10 @@ static void hidappCentralEventCB( gapCentralRoleEvent_t *pEvent )
 
           if ( hidappBondCount() > 0 )
           {
+            osal_memcpy(remoteAddr,bonds[0].publicAddr,6);
             // Initiate connection
             hidappEstablishLink( TRUE, addrType, remoteAddr );
+            //hidappSetIdle();
           }
           else
           {
