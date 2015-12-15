@@ -222,3 +222,23 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+#my files
+*.dep
+*.dbgdt
+*.dni
+*.wsdt
+*.ewd
+*.ewp
+*.ewt
+*.bat
+*.xcl
+*.wspos
+*.wsdt
+
+
+
+
+
+
+
