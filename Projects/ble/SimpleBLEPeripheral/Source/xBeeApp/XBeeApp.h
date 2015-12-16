@@ -156,12 +156,12 @@ typedef struct
 
 
 /***************************************************************/
-extern XBeeInfoType XBeeInfo;  
-extern uint8 XBeeTaskID;
+extern volatile XBeeInfoType XBeeInfo;  
+extern volatile uint8 XBeeTaskID;
 extern uint8 UartCtl; 
-extern uint8 SenFlag; 
+extern volatile uint8 SenFlag; 
 extern LockCurrentStateType LockObjState;
-extern LcokStateType LockState;
+extern volatile LcokStateType LockState;
 extern uint8 SetSleepMode;
 //extern FlashLockStateType FlashLockState;
 extern uint8 test_cnt;

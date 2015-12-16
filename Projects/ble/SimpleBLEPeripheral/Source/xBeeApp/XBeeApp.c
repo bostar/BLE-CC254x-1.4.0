@@ -36,10 +36,10 @@
 
 
 
-uint8 XBeeTaskID;                           // Task ID for internal task/event processing        
-XBeeInfoType XBeeInfo;                
-LcokStateType LockState;                    //锁状态标志
-uint8 SenFlag=0x88;                         //传感器初值
+volatile uint8 XBeeTaskID;                           // Task ID for internal task/event processing        
+volatile XBeeInfoType XBeeInfo;                
+volatile LcokStateType LockState;                    //锁状态标志
+volatile uint8 SenFlag=0x88;                         //传感器初值
 LockCurrentStateType LockObjState;
 //FlashLockStateType FlashLockState;
 CircularQueueType serialBuf;
