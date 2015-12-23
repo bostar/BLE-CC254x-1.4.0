@@ -165,9 +165,8 @@ uint16 XBeeProcessEvent( uint8 task_id, uint16 events )
         ReportSenser();
 //        XBeeReadAT("MY");
         //UartStop();
-        hmc5983Data.state = 1;
         //UartStart();
-        osal_start_timerEx( XBeeTaskID , XBEE_HMC5983_EVT,1000);
+        osal_start_timerEx( XBeeTaskID , XBEE_HMC5983_EVT,500);
         return (events ^ XBEE_HMC5983_EVT) ;
     }
     if(events & XBEE_REPORT_EVT)               //report event

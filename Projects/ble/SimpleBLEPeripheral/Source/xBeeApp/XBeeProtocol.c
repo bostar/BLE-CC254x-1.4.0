@@ -309,9 +309,10 @@ uint16 ReportSenser(void)
         Uart1_Send_Byte("get",osal_strlen("get"));
         return 0;
     }
+    hmc5983Data.state = 1;
     if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > SEN_THR \
         || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > SEN_THR \
-        || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > SEN_THR)  
+        || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > SEN_THR)
     {
         eventInfo.senerEn = 1;
         if(eventInfo.senerEvt == ParkingUnUsed)
