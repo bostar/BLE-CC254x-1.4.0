@@ -121,7 +121,7 @@ typedef struct
     uint8 NetState;
     //uint8 channel;
     //uint8 XBeeAI;
-    uint8 InPark;
+    int8 InPark;
     //uint8 panID[8];
     //uint8 FlagReadFlash;
     uint8 ParentLost;

@@ -32,11 +32,13 @@ typedef enum
 
 typedef struct
 {
-    uint8 senerEn;
-    uint8 senerEvt;
-    uint8 lockEn;
+    int8 senerEn;
+    uint16 senx;
+    uint16 seny;
+    uint16 senz;
+    int8 lockEn;
     uint8 lockEvt;
-    uint8 batEn;
+    int8 batEn;
     uint8 batEvt;
 }eventInfoType;
 
@@ -54,10 +56,9 @@ void ProcessJoinRes(uint8 *temp_rbuf);
 void ProcessModeStatus(uint8 *temp_rbuf);
 
 uint16 XBeeReport(eventInfoType eventInfo);
-uint16 SendString(uint8 in ,uint8 len );
 uint8 SetXBeeSleepMode(void);
 uint8 JionParkNet(void);
-uint16 ReportSenser(void);
+uint16 ReadSenser(void);
 uint16 ReportLockState(void);
 float ReportVbat(void);
 

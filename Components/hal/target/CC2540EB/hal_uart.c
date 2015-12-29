@@ -422,7 +422,6 @@ void Uart1_Send_Byte(char *Data,int len)
 }
 
 HMC5983DataType hmc5983Data;
-HMC5983DataType hmc5983DataStandard;
 
 #if defined (_XBEE_APP_)
 static  uint8 temp_uart[10] = {0};
@@ -432,7 +431,6 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
 #if defined (_XBEE_APP_)
   static uint8 index = 0;
   uint8 add_sum,check;
-  uint8 flag;
   
   HAL_ENTER_ISR();
   URX1IF = 0; // 清中断标志 
@@ -469,15 +467,7 @@ HAL_ISR_FUNCTION(port1Isr, URX1_VECTOR)
         hmc5983Data.x = (unsigned short)temp_uart[3] << 8 | temp_uart[4];
         hmc5983Data.y = (unsigned short)temp_uart[5] << 8 | temp_uart[6];
         hmc5983Data.z = (unsigned short)temp_uart[7] << 8 | temp_uart[8];
-        hmc5983Data.state = 0x88;
-        flag = SenFlag;
-        if(flag == 0x88)
-        {
-            SenFlag = 1;
-            hmc5983DataStandard.x = hmc5983Data.x;
-            hmc5983DataStandard.y = hmc5983Data.y;
-            hmc5983DataStandard.z = hmc5983Data.z;
-        }
+        hmc5983Data.state = 'y';
     }
   }
   HAL_EXIT_ISR();

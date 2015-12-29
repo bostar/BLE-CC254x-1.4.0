@@ -32,7 +32,7 @@ uint16 CFGProcess(uint8 *rf_data)
                 XBeeSetSP(100,NO_RES);
                 XBeeSetST(100,NO_RES);
                 XBeeSendAT("AC");
-                XBeeInfo.InPark = 1;
+                XBeeInfo.InPark = 'y';
                 //XBeeReadAT("OP");
                 CreatXBeeMsg(XBEE_HMC5983_EVT,ACTIVATE);
                 CreatXBeeMsg(XBEE_VBT_CHENCK_EVT,ACTIVATE);
@@ -73,16 +73,6 @@ void CTLProcess(uint8 *rf_data)
 **************************************************/
 void SENProcess(uint8 *rf_data)
 {
-    switch(*rf_data)
-    {
-        case 0x00:
-            //UartStop();
-            SenFlag = 0x88;
-            //UartStart();
-            break;
-        default:
-            break;
-    }
 }
 /**************************************************
 **brief process OTA
@@ -167,11 +157,11 @@ uint16 ProcessTransmitStatus(uint8 *temp_rbuf)
 *********************************************************/
 void ProcessModeStatus(uint8 *temp_rbuf)
 {
-    if(temp_rbuf[4] == 3 && XBeeInfo.InPark == 1)
+    if(temp_rbuf[4] == 3 && XBeeInfo.InPark == 'y')
     {
         //HAL_SYSTEM_RESET();
         XBeeInfo.ParentLost = 1;
-        XBeeInfo.InPark = 0;
+        XBeeInfo.InPark = 'n';
         //XBeeInfo.XBeeAI = 0;
         CreatXBeeMsg(XBEE_JOIN_NET_EVT,ACTIVATE);
         CreatXBeeMsg(XBEE_HMC5983_EVT,INACTIVATE);
@@ -187,40 +177,24 @@ void ProcessModeStatus(uint8 *temp_rbuf)
 *********************************************************/
 uint16 XBeeReport(eventInfoType eventInfo)
 {
-  uint8 data[10];
+    uint8 data[15];
   
-  data[0]   =   'S';
-  data[1]   =   'E';
-  data[2]   =   'N';
-  data[3]   =  0x01;
-  data[4]   =  eventInfo.senerEn;
-  data[5]   =  eventInfo.senerEvt;
-  data[6]   =  eventInfo.lockEn;
-  data[7]   =  eventInfo.lockEvt;
-  data[8]   =  eventInfo.batEn;
-  data[9]   =  eventInfo.batEvt;
-#if defined BY_MAC
-  return XBeeSendToCoorByMac(data,10,RES);
-#else
-  return XBeeSendToCoor(data,10,RES);
-#endif
-}
-/*********************************************************
-**brief 发送电池电量
-*********************************************************/
-uint16 XBeeBatPower(uint8 PowerVal)
-{
-  uint8 data[5];
-  data[0]   =   'S';
-  data[1]   =   'E';
-  data[2]   =   'N';
-  data[3]   =  0x02;
-  data[4]   =  PowerVal;
-#if defined BY_MAC
-  return XBeeSendToCoorByMac(data,5,RES);
-#else
-  return XBeeSendToCoor(data,5,RES);
-#endif
+    data[0]  = 'S';
+    data[1]  = 'E';
+    data[2]  = 'N';
+    data[3]  = 0x01;
+    data[4]  = eventInfo.senerEn;
+    data[5]  = (uint8)(eventInfo.senx>>8);
+    data[6]  = (uint8)eventInfo.senx;
+    data[7]  = (uint8)(eventInfo.seny>>8);
+    data[8]  = (uint8)eventInfo.seny;
+	data[9]  = (uint8)(eventInfo.senz>>8);
+	data[10] = (uint8)eventInfo.senz;
+    data[11] = eventInfo.lockEn;
+    data[12] = eventInfo.lockEvt;
+    data[13] = eventInfo.batEn;
+    data[14] = eventInfo.batEvt;
+    return XBeeSendToCoor(data,15,RES);
 }
 /**********************************************************
 **brief 设置休眠，入网
@@ -296,48 +270,17 @@ uint32 SleepModeAndJoinNet(void)
 /**********************************************************
 **brief report senser data
 **********************************************************/
-uint16 ReportSenser(void)
+uint16 ReadSenser(void)
 {
-    HMC5983DataType temp_hmc5983Data,temp_hmc5983DataStandard;
- 
-    //UartStop();
-    temp_hmc5983Data = hmc5983Data;
-    temp_hmc5983DataStandard = hmc5983DataStandard;
-    //UartStart();
-    if(temp_hmc5983Data.state != 0x88)
+    if(hmc5983Data.state == 'y')
     {
-        Uart1_Send_Byte("get",osal_strlen("get"));
-        return 0;
+        hmc5983Data.state = 'n';
+        eventInfo.senx = hmc5983Data.x;
+        eventInfo.seny = hmc5983Data.y;
+        eventInfo.senz = hmc5983Data.z;
+		eventInfo.senerEn = 'y';
     }
-    hmc5983Data.state = 1;
-    if( abs(temp_hmc5983DataStandard.x - temp_hmc5983Data.x) > SEN_THR \
-        || abs(temp_hmc5983DataStandard.y - temp_hmc5983Data.y) > SEN_THR \
-        || abs(temp_hmc5983DataStandard.z - temp_hmc5983Data.z) > SEN_THR)
-    {
-        eventInfo.senerEn = 1;
-        if(eventInfo.senerEvt == ParkingUnUsed)
-        {
-            eventInfo.senerEvt = ParkingUsed;
-            CreatXBeeMsg(XBEE_REPORT_EVT,ACTIVATE);
-            //return XBeeReport(eventInfo);
-            return 0;
-        }
-        else
-            eventInfo.senerEvt = ParkingUsed;
-    }
-    else
-    {
-        eventInfo.senerEn = 1;
-        if(eventInfo.senerEvt == ParkingUsed)
-        {
-            eventInfo.senerEvt = ParkingUnUsed;
-            CreatXBeeMsg(XBEE_REPORT_EVT,ACTIVATE);
-            //return XBeeReport(eventInfo);
-            return 0;
-        }
-        else
-            eventInfo.senerEvt = ParkingUnUsed;
-    }
+    Uart1_Send_Byte("get",osal_strlen("get"));
     return 0;
 }
 /**********************************************************
@@ -347,14 +290,14 @@ uint16 ReportLockState(void)
 {
     if(GetCurrentMotorState() == lock)
     {
-        eventInfo.lockEn = 1;
+        eventInfo.lockEn = 'y';
         eventInfo.lockEvt = ParkLockSuccess;
         CreatXBeeMsg(XBEE_REPORT_EVT,ACTIVATE);
         //XBeeReport(eventInfo);
     }
     else if(GetCurrentMotorState() == unlock )
     {
-        eventInfo.lockEn = 1;
+        eventInfo.lockEn = 'y';
         eventInfo.lockEvt = ParkUnlockSuccess;
         CreatXBeeMsg(XBEE_REPORT_EVT,ACTIVATE);
         //XBeeReport(eventInfo);
@@ -383,21 +326,6 @@ float ReportVbat(void)
         vbat = 0;
     }
     return reval;
-}
-/**********************************************************
-**brief 向网关发送字符串
-**********************************************************/
-uint16 SendString(uint8 in ,uint8 len )
-{
-  uint8 i;
-  uint8 data[10];
-  for(i=0;i<len;i++)
-    data[i] = in;
-#if defined BY_MAC
-  return XBeeSendToCoorByMac(data,5,RES);
-#else
-  return XBeeSendToCoor(data,5,RES);
-#endif
 }
 /*************************************************************
 **brief	比较数组是否相等

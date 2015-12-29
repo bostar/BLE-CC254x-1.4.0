@@ -80,11 +80,7 @@ uint16 XBeeReqJionPark(void)
   for(i=0;i<2;i++)
     data[12+i] = XBeeInfo.NetAdr[i];
 */
-#if defined BY_MAC
-  return XBeeSendToCoorByMac(data,4,RES);
-#else
   return XBeeSendToCoor(data,4,RES);
-#endif
 }
 /***************************************************
 **brief ½âËø/Ëø¶¨OKÖÕ¶ËÓ¦´ð
@@ -97,11 +93,7 @@ uint16 XBeeEndDeviceLockRepOK(void)
   data[1]  =  'L';
   data[3]  =  0x01;
   data[4]  =  0x01;
-#if defined BY_MAC
-  return XBeeSendToCoorByMac(data,5,RES);
-#else
   return XBeeSendToCoor(data,5,RES);
-#endif
 }
 /***************************************************
 **brief ½âËøNGÖÕ¶ËÓ¦´ð
@@ -114,11 +106,7 @@ uint16 XBeeEndDeviceUnlockRepNG(void)
   data[1]  =  'L';
   data[3]  =  0x01;
   data[4]  =  0x02;
-#if defined BY_MAC
-  return XBeeSendToCoorByMac(data,5,RES);
-#else
   return XBeeSendToCoor(data,5,RES);
-#endif
 }
 /***************************************************
 **brief Ëø¶¨NGÖÕ¶ËÓ¦´ð
@@ -131,11 +119,7 @@ uint16 XBeeEndDeviceLockRepNG(void)
   data[1]  =  'L';
   data[3]  =  0x01;
   data[4]  =  0x03;
-#if defined BY_MAC
-  return XBeeSendToCoorByMac(data,5,RES);
-#else
   return XBeeSendToCoor(data,5,RES);
-#endif
 }
 /**********************************************
 **brief Í£Ö¹Âí´ï

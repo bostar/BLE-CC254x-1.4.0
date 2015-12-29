@@ -486,19 +486,6 @@ uint16 XBeeSendToCoor(uint8 *data,uint16 len,IsResp IsRes)
     net_adr[1] = 0xFE;
     return XBeeTransReq(adr, net_adr, Default, data, len, IsRes);
 }
-/***********************************************************
-**brief 向coordinator发送数据,带明确地址
-**reval 发送的字节数
-***********************************************************/
-uint16 XBeeSendToCoorByMac(uint8 *data,uint16 len,IsResp IsRes)
-{
-    uint8 adr[8],net_adr[2],cnt;
-    for(cnt=0;cnt<8;cnt++)
-        adr[cnt] = CoorMAC[cnt];
-    net_adr[0] = 0;
-    net_adr[1] = 0;
-    return XBeeTransReq(adr, net_adr, Default, data, len, IsRes);
-}
 /********************************************************
 **brief 发送广播
 ********************************************************/

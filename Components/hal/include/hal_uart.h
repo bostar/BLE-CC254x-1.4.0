@@ -231,17 +231,17 @@ void Uart1_Send_Byte(char *Data,int len) ;
 
 /***************************************************************************************************
 ***************************************************************************************************/
+#ifdef _XBEE_APP_
 typedef struct
 {
   int16 x;
   int16 y;
   int16 z;
-  uint8 state;
+  int8 state;
 }HMC5983DataType;
 
 extern HMC5983DataType hmc5983Data;
-extern HMC5983DataType hmc5983DataStandard;
-
+#endif
 
 
 #ifdef __cplusplus
